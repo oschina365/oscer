@@ -1,0 +1,47 @@
+spring:
+  profiles:
+    active: dev
+  mvc:
+    locale: zh_CN
+    date-format: yyyy-MM-dd
+    view:
+      prefix: /templates/
+      suffix: .ftl
+  freemarker:
+    allow-request-override: false
+    cache: false
+    check-template-location: false
+    charset: UTF-8
+    content-type: text/html
+    expose-request-attributes: true
+    expose-session-attributes: true
+    expose-spring-macro-helpers: true
+    suffix: .ftl
+    request-context-attribute: request
+  mail:
+    host: smtp.163.com
+    username: forever7776@163.com
+    password: kz12345678
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 100MB
+
+
+#server
+server:
+  address: 127.0.0.1
+  port: 88
+  session-timeout: 30
+  tomcat.max-threads: 0
+  tomcat.uri-encoding: UTF-8
+  error:
+    path: /error
+

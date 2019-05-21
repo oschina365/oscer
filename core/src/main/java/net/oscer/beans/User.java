@@ -1,0 +1,397 @@
+package net.oscer.beans;
+
+
+import net.oscer.db.DbQuery;
+import net.oscer.db.Entity;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Date;
+
+/**
+ * 注册用户
+ *
+ * @author liudong
+ */
+@Entity.Cache(region = "User")
+public class User extends Entity {
+
+    public final static User ME = new User();
+
+    /**
+     * 用户权限
+     */
+    public final static int ROLE_GENERAL = 1;
+
+    private long id;
+
+    /**
+     * 用户名(登录名,如jack)
+     */
+    private String username;
+    /**
+     * 密码(明文)
+     */
+    private String password;
+    /**
+     * 密码（加密）
+     */
+    private String salt;
+    /**
+     * 头像
+     */
+    private String headimg;
+    /**
+     * 昵称
+     */
+    private String nickname;
+    /**
+     * 用户真实姓名
+     */
+    private String name;
+    /**
+     * 邮箱
+     */
+    private String email;
+    /**
+     * 手机
+     */
+    private String phone;
+    /**
+     * 公司名称
+     */
+    private String company;
+    /**
+     * 职位
+     */
+    private String job;
+    /**
+     * 微信
+     */
+    private String wx;
+    /**
+     * 微信二维码加好友，图片地址
+     */
+    private String wx_qrcode;
+    /**
+     * qq
+     */
+    private String qq;
+    /**
+     * 性别（0：保密 1：男 2：女）
+     */
+    private Integer sex;
+    /**
+     * 自我简介
+     */
+    private String self_info;
+    /**
+     * 最后登录时间
+     */
+    private Date login_time;
+    /**
+     * 登出时间(手动登出,系统登出即session超时时间)
+     */
+    private Date logout_time;
+    /**
+     * 创建时间
+     */
+    private Date insert_date;
+    /**
+     * 更新时间
+     */
+    private Date last_update;
+    /**
+     * 冻结：-1 正常:0 封号：1  手动注销：2  系统销毁：3
+     */
+    private Integer status;
+
+    /**
+     * 个性域名
+     */
+    private String ident;
+
+    /**
+     * 登录IP
+     */
+    private String login_ip;
+
+    /**
+     * 阅读数
+     */
+    public int view_count;
+
+    /**
+     * 用户是否在线
+     * 登录状态（0:下线 1:上线）
+     */
+    public int online;
+
+
+    @Override
+    public long getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
+
+    public String getHeadimg() {
+        return headimg;
+    }
+
+    public void setHeadimg(String headimg) {
+        this.headimg = headimg;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getJob() {
+        return job;
+    }
+
+    public void setJob(String job) {
+        this.job = job;
+    }
+
+    public String getWx() {
+        return wx;
+    }
+
+    public void setWx(String wx) {
+        this.wx = wx;
+    }
+
+    public String getWx_qrcode() {
+        return wx_qrcode;
+    }
+
+    public void setWx_qrcode(String wx_qrcode) {
+        this.wx_qrcode = wx_qrcode;
+    }
+
+    public String getQq() {
+        return qq;
+    }
+
+    public void setQq(String qq) {
+        this.qq = qq;
+    }
+
+    public Integer getSex() {
+        return sex;
+    }
+
+    public void setSex(Integer sex) {
+        this.sex = sex;
+    }
+
+    public String getSelf_info() {
+        return self_info;
+    }
+
+    public void setSelf_info(String self_info) {
+        this.self_info = self_info;
+    }
+
+    public Date getLogin_time() {
+        return login_time;
+    }
+
+    public void setLogin_time(Date login_time) {
+        this.login_time = login_time;
+    }
+
+    public Date getLogout_time() {
+        return logout_time;
+    }
+
+    public void setLogout_time(Date logout_time) {
+        this.logout_time = logout_time;
+    }
+
+    public Date getInsert_date() {
+        return insert_date;
+    }
+
+    public void setInsert_date(Date insert_date) {
+        this.insert_date = insert_date;
+    }
+
+    public Date getLast_update() {
+        return last_update;
+    }
+
+    public void setLast_update(Date last_update) {
+        this.last_update = last_update;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public String getIdent() {
+        return ident;
+    }
+
+    public void setIdent(String ident) {
+        this.ident = ident;
+    }
+
+    public String getLogin_ip() {
+        return login_ip;
+    }
+
+    public void setLogin_ip(String login_ip) {
+        this.login_ip = login_ip;
+    }
+
+    public int getView_count() {
+        return view_count;
+    }
+
+    public void setView_count(int view_count) {
+        this.view_count = view_count;
+    }
+
+    public int getOnline() {
+        return online;
+    }
+
+    public void setOnline(int online) {
+        this.online = online;
+    }
+
+    /**
+     * 用户是否正常
+     *
+     * @return
+     */
+    public boolean status_is_normal() {
+        if (this.getStatus() == Entity.STATUS_NORMAL) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 校验密码
+     *
+     * @param input_pwd
+     * @param user
+     * @return
+     */
+    public boolean _ValidatePwd(String input_pwd, User user) {
+        if (StringUtils.isBlank(input_pwd) || user == null || user.getId() <= 0L) {
+            return false;
+        }
+        return _GeneratePwdHash(input_pwd, user).equals(user.getSalt());
+    }
+
+    /**
+     * 生成密码哈希
+     *
+     * @param input_pwd
+     * @param user
+     * @return
+     */
+    public String _GeneratePwdHash(String input_pwd, User user) {
+        return DigestUtils.shaHex(user.getEmail() + "->" + DigestUtils.shaHex(input_pwd));
+    }
+
+    /**
+     * 生成密码哈希
+     *
+     * @param input_pwd
+     * @param email
+     * @return
+     */
+    public String _GeneratePwdHash(String input_pwd, String email) {
+        return DigestUtils.shaHex(email + "->" + DigestUtils.shaHex(input_pwd));
+    }
+
+    /**
+     * 通过个性域名
+     *
+     * @param ident
+     * @return
+     */
+    public boolean _GeneratePwdHashByIdent(String input_pwd, String ident) {
+        String sql = "select id from users where ident =?";
+        Number n = DbQuery.get("mysql").read(Number.class, sql, ident);
+        if (n != null && n.longValue() > 0L) {
+            User u = User.ME.get(n.longValue());
+            return _ValidatePwd(input_pwd, u);
+        }
+        return false;
+    }
+}
