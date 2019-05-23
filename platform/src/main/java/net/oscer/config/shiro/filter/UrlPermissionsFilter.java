@@ -1,6 +1,9 @@
 package net.oscer.config.shiro.filter;
 
 
+import net.oscer.beans.Node;
+import net.oscer.dao.NodeDAO;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -12,6 +15,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 
 /**
@@ -38,14 +44,31 @@ public class UrlPermissionsFilter extends PermissionsAuthorizationFilter {
             return true;
         }
 
+        if (StringUtils.startsWith(curUrl, "/res/")) {
+            return true;
+        }
+
+        if (StringUtils.startsWith(curUrl, "/q/")) {
+            return true;
+        }
+
+        List<Node> nodes = NodeDAO.ME.nodes(Node.STATUS_NORMAL, 0);
+
+        if (CollectionUtils.isNotEmpty(nodes)) {
+            if (nodes.stream().filter(n -> StringUtils.isNotBlank(n.getUrl())).anyMatch(node -> StringUtils.equalsIgnoreCase(node.getUrl(), curUrl))) {
+                return true;
+            }
+
+        }
+
         if (
-                 StringUtils.endsWithAny(curUrl, ".js", ".css", ".html")
-                || StringUtils.endsWithAny(curUrl, ".jpg", ".png", ".gif", ".jpeg", ".map", ".ico")
-                || StringUtils.startsWith(curUrl, "/api/")
-                || curUrl.contains("/tools/")
-                || curUrl.contains(".js")
-                || curUrl.contains(".css")
-                || StringUtils.equals(curUrl, "/unauthor")) {
+                StringUtils.endsWithAny(curUrl, ".js", ".css", ".html")
+                        || StringUtils.endsWithAny(curUrl, ".jpg", ".png", ".gif", ".jpeg", ".map", ".ico")
+                        || StringUtils.startsWith(curUrl, "/api/")
+                        || curUrl.contains("/tools/")
+                        || curUrl.contains(".js")
+                        || curUrl.contains(".css")
+                        || StringUtils.equals(curUrl, "/unauthor")) {
             return true;
         }
         if (subject.getPrincipal() == null) {

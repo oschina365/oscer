@@ -1,54 +1,5 @@
-
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>注册</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="keywords" content="fly,layui,前端社区">
-  <meta name="description" content="Fly社区是模块化前端UI框架Layui的官网社区，致力于为web开发提供强劲动力">
-  <link rel="stylesheet" href="../../res/layui/css/layui.css">
-  <link rel="stylesheet" href="../../res/css/global.css">
-</head>
-<body>
-
-<div class="fly-header layui-bg-black">
-  <div class="layui-container">
-    <a class="fly-logo" href="/">
-      <img src="../../res/images/logo.png" alt="layui">
-    </a>
-    <ul class="layui-nav fly-nav layui-hide-xs">
-      <li class="layui-nav-item layui-this">
-        <a href="/"><i class="iconfont icon-jiaoliu"></i>交流</a>
-      </li>
-      <li class="layui-nav-item">
-        <a href="../case/case.html"><i class="iconfont icon-iconmingxinganli"></i>案例</a>
-      </li>
-      <li class="layui-nav-item">
-        <a href="http://www.layui.com/" target="_blank"><i class="iconfont icon-ui"></i>框架</a>
-      </li>
-    </ul>
-    
-    <ul class="layui-nav fly-nav-user">
-      <!-- 未登入的状态 -->
-      <li class="layui-nav-item">
-        <a class="iconfont icon-touxiang layui-hide-xs" href="/user/login"></a>
-      </li>
-      <li class="layui-nav-item">
-        <a href="/user/login">登入</a>
-      </li>
-      <li class="layui-nav-item">
-        <a href="/user/reg">注册</a>
-      </li>
-      <li class="layui-nav-item layui-hide-xs">
-        <a href="/app/qq/" onclick="layer.msg('正在通过QQ登入', {icon:16, shade: 0.1, time:0})" title="QQ登入" class="iconfont icon-qq"></a>
-      </li>
-      <li class="layui-nav-item layui-hide-xs">
-        <a href="/app/weibo/" onclick="layer.msg('正在通过微博登入', {icon:16, shade: 0.1, time:0})" title="微博登入" class="iconfont icon-weibo"></a>
-      </li>
-    </ul>
-  </div>
-</div>
+<#include "../layout/front/layout.ftl"/>
+<@html title_="登录">
 
 <div class="layui-container fly-marginTop">
   <div class="fly-panel fly-panel-user" pad20>
@@ -101,8 +52,14 @@
               </div>
               <div class="layui-form-item fly-form-app">
                 <span>或者直接使用社交账号快捷注册</span>
-                <a href="" onclick="layer.msg('正在通过QQ登入', {icon:16, shade: 0.1, time:0})" class="iconfont icon-qq" title="QQ登入"></a>
-                <a href="" onclick="layer.msg('正在通过微博登入', {icon:16, shade: 0.1, time:0})" class="iconfont icon-weibo" title="微博登入"></a>
+                <a href="/oauth/before_bind?rp=gitee"
+                   onclick="layer.msg('正在通过Gitee登入', {icon:16, shade: 0.1, time:0})" title="Gitee登入">
+                  <img src="/res/images/logo_gitee_light_cn_with_domain_name.png" style="max-height: 36px;">
+                </a>
+                <a href="/oauth/before_bind?rp=github"
+                   onclick="layer.msg('正在通过Github登入', {icon:16, shade: 0.1, time:0})" title="Github登入">
+                  <img src="/res/images/github.png" style="max-height: 36px;">
+                </a>
               </div>
             </form>
           </div>
@@ -111,15 +68,6 @@
     </div>
   </div>
 
-</div>
-
-<div class="fly-footer">
-  <p><a href="http://fly.layui.com/" target="_blank">Fly社区</a> 2017 &copy; <a href="http://www.layui.com/" target="_blank">layui.com 出品</a></p>
-  <p>
-    <a href="http://fly.layui.com/jie/3147/" target="_blank">付费计划</a>
-    <a href="http://www.layui.com/template/fly/" target="_blank">获取Fly社区模版</a>
-    <a href="http://fly.layui.com/jie/2461/" target="_blank">微信公众号</a>
-  </p>
 </div>
 
 <script src="../../res/layui/layui.js"></script>
@@ -140,5 +88,4 @@ layui.config({
 }).use('fly');
 </script>
 
-</body>
-</html>
+</@html>

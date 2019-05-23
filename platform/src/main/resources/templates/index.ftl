@@ -1,91 +1,30 @@
 <#include "layout/front/layout.ftl"/>
-<@html title_="life">
-
-<#--<div class="fly-header layui-bg-black">
-    <div class="layui-container">
-        <a class="fly-logo" href="/">
-            <img src="/res/images/logo.png" alt="layui">
-        </a>
-        <ul class="layui-nav fly-nav layui-hide-xs">
-            <li class="layui-nav-item layui-this">
-                <a href="/"><i class="iconfont icon-jiaoliu"></i>交流</a>
-            </li>
-            <li class="layui-nav-item">
-                <a href="case/case.html"><i class="iconfont icon-iconmingxinganli"></i>案例</a>
-            </li>
-            <li class="layui-nav-item">
-                <a href="http://www.layui.com/" target="_blank"><i class="iconfont icon-ui"></i>框架</a>
-            </li>
-        </ul>
-
-        <ul class="layui-nav fly-nav-user">
-
-            <!-- 登入后的状态 &ndash;&gt;
-            <#if login_user??>
-            <li class="layui-nav-item">
-              <a class="fly-nav-avatar" href="javascript:;">
-                <cite class="layui-hide-xs">${login_user.nickname!login_user.username}</cite>
-                <i class="iconfont icon-renzheng layui-hide-xs" title="${login_user.nickname!login_user.username}"></i>
-                <i class="layui-badge fly-badge-vip layui-hide-xs">VIP3</i>
-                <img src="${login_user.headimg}">
-              </a>
-              <dl class="layui-nav-child">
-                <dd><a href="/user/set.html"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
-                <dd><a href="/user/message.html"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
-                <dd><a href="/user/home.html"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
-                <hr style="margin: 5px 0;">
-                <dd><a href="/user/logout" style="text-align: center;">退出</a></dd>
-              </dl>
-            </li>
-            <#else >
-                <!-- 未登入的状态 &ndash;&gt;
-                <li class="layui-nav-item">
-                    <a class="iconfont icon-touxiang layui-hide-xs" href="/user/login"></a>
-                </li>
-                <li class="layui-nav-item">
-                    <a href="/user/login">登入</a>
-                </li>
-                <li class="layui-nav-item">
-                    <a href="/user/reg">注册</a>
-                </li>
-                <li class="layui-nav-item layui-hide-xs">
-                    <a href="/app/qq/" onclick="layer.msg('正在通过QQ登入', {icon:16, shade: 0.1, time:0})" title="QQ登入"
-                       class="iconfont icon-qq"></a>
-                </li>
-                <li class="layui-nav-item layui-hide-xs">
-                    <a href="/app/weibo/" onclick="layer.msg('正在通过微博登入', {icon:16, shade: 0.1, time:0})" title="微博登入"
-                       class="iconfont icon-weibo"></a>
-                </li>
-            </#if>
-        </ul>
-    </div>
-</div>-->
+<@html title_="oscer社区">
 
 <div class="fly-panel fly-column">
     <div class="layui-container">
         <ul class="layui-clear">
-            <li class="layui-hide-xs layui-this"><a href="/">首页</a></li>
-            <li><a href="jie/index.html">提问</a></li>
-            <li><a href="jie/index.html">分享<span class="layui-badge-dot"></span></a></li>
-            <li><a href="jie/index.html">讨论</a></li>
-            <li><a href="jie/index.html">建议</a></li>
-            <li><a href="jie/index.html">公告</a></li>
-            <li><a href="jie/index.html">动态</a></li>
+            <#if nodes??>
+                <#list nodes as node>
+                <li <#if current_node?? && current_node == node.url> class="layui-this"</#if>><a href="${node.url}">${node.name}</a></li>
+                </#list>
+            </#if>
+
             <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><span class="fly-mid"></span></li>
 
             <!-- 用户登入后显示 -->
-            <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="/user/index.html">我发表的贴</a></li>
+            <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="/user/index">我发表的贴</a></li>
             <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="/user/index.html#collection">我收藏的贴</a>
             </li>
         </ul>
 
         <div class="fly-column-right layui-hide-xs">
             <span class="fly-search"><i class="layui-icon"></i></span>
-            <a href="jie/add.html" class="layui-btn">发表新帖</a>
+            <a href="question/add.html" class="layui-btn">发表新帖</a>
         </div>
         <div class="layui-hide-sm layui-show-xs-block"
              style="margin-top: -10px; padding-bottom: 10px; text-align: center;">
-            <a href="jie/add.html" class="layui-btn">发表新帖</a>
+            <a href="question/add.html" class="layui-btn">发表新帖</a>
         </div>
     </div>
 </div>
@@ -94,30 +33,7 @@
     <div class="layui-row layui-col-space15">
         <div class="layui-col-md8">
             <div class="fly-panel layui-hide-xs">
-                <div class="layui-row fly-panel-main" style="padding: 15px;">
-                    <div class="layui-carousel fly-topline" id="FLY_topline" lay-anim="fade" lay-indicator="inside"
-                         lay-arrow="hover" style="width: 100%; height: 141px;">
-                        <div carousel-item="">
-                            <div><a
-                                        href="https://coding.net/?utm_source=layui" target="_blank" rel="nofollow"> <img
-                                            src="http://oscer.net/static/images/lifes/img_fjords_wide.jpg?imageslim"
-                                            alt="CODING"> </a></div>
-                            <div><a
-                                        href="https://uniapp.dcloud.io/?hmsr=layui&amp;hmpl=&amp;hmcu=&amp;hmkw=&amp;hmci="
-                                        target="_blank" rel="nofollow"> <img
-                                            src="http://oscer.net/static/images/lifes/img_nature_wide.jpg?imageslim"
-                                            alt="dcloud"> </a></div>
-                        </div>
-                       <#-- <div class="layui-carousel-ind">
-                            <ul>
-                                <li class="layui-this"></li>
-                                <li class=""></li>
-                            </ul>
-                        </div>-->
-                        <button class="layui-icon layui-carousel-arrow" lay-type="sub"></button>
-                        <button class="layui-icon layui-carousel-arrow" lay-type="add"></button>
-                    </div>
-                </div>
+                <#include 'carousel.ftl'/>
             </div>
             <div class="fly-panel">
                 <div class="fly-panel-title fly-filter">
@@ -133,7 +49,7 @@
                         </a>
                         <h2>
                             <a class="layui-badge">动态</a>
-                            <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+                            <a href="question/detail.html">基于 layui 的极简社区页面模版</a>
                         </h2>
                         <div class="fly-list-info">
                             <a href="/user/home.html" link>
@@ -163,7 +79,7 @@
                         </a>
                         <h2>
                             <a class="layui-badge">公告</a>
-                            <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+                            <a href="question/detail.html">基于 layui 的极简社区页面模版</a>
                         </h2>
                         <div class="fly-list-info">
                             <a href="/user/home.html" link>
@@ -195,7 +111,7 @@
                         </a>
                         <h2>
                             <a class="layui-badge">公告</a>
-                            <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+                            <a href="question/detail.html">基于 layui 的极简社区页面模版</a>
                         </h2>
                         <div class="fly-list-info">
                             <a href="/user/home.html" link>
@@ -227,7 +143,7 @@
                         </a>
                         <h2>
                             <a class="layui-badge">公告</a>
-                            <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+                            <a href="question/detail.html">基于 layui 的极简社区页面模版</a>
                         </h2>
                         <div class="fly-list-info">
                             <a href="/user/home.html" link>
@@ -280,7 +196,7 @@
                         </a>
                         <h2>
                             <a class="layui-badge">分享</a>
-                            <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+                            <a href="question/detail.html">基于 layui 的极简社区页面模版</a>
                         </h2>
                         <div class="fly-list-info">
                             <a href="/user/home.html" link>
@@ -309,7 +225,7 @@
                         </a>
                         <h2>
                             <a class="layui-badge">动态</a>
-                            <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+                            <a href="question/detail.html">基于 layui 的极简社区页面模版</a>
                         </h2>
                         <div class="fly-list-info">
                             <a href="/user/home.html" link>
@@ -336,7 +252,7 @@
                         </a>
                         <h2>
                             <a class="layui-badge">动态</a>
-                            <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+                            <a href="question/detail.html">基于 layui 的极简社区页面模版</a>
                         </h2>
                         <div class="fly-list-info">
                             <a href="/user/home.html" link>
@@ -365,7 +281,7 @@
                         </a>
                         <h2>
                             <a class="layui-badge">动态</a>
-                            <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+                            <a href="question/detail.html">基于 layui 的极简社区页面模版</a>
                         </h2>
                         <div class="fly-list-info">
                             <a href="/user/home.html" link>
@@ -394,7 +310,7 @@
                         </a>
                         <h2>
                             <a class="layui-badge">动态</a>
-                            <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+                            <a href="question/detail.html">基于 layui 的极简社区页面模版</a>
                         </h2>
                         <div class="fly-list-info">
                             <a href="/user/home.html" link>
@@ -423,7 +339,7 @@
                         </a>
                         <h2>
                             <a class="layui-badge">动态</a>
-                            <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+                            <a href="question/detail.html">基于 layui 的极简社区页面模版</a>
                         </h2>
                         <div class="fly-list-info">
                             <a href="/user/home.html" link>
@@ -452,7 +368,7 @@
                         </a>
                         <h2>
                             <a class="layui-badge">动态</a>
-                            <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+                            <a href="question/detail.html">基于 layui 的极简社区页面模版</a>
                         </h2>
                         <div class="fly-list-info">
                             <a href="/user/home.html" link>
@@ -481,7 +397,7 @@
                         </a>
                         <h2>
                             <a class="layui-badge">动态</a>
-                            <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+                            <a href="question/detail.html">基于 layui 的极简社区页面模版</a>
                         </h2>
                         <div class="fly-list-info">
                             <a href="/user/home.html" link>
@@ -510,7 +426,7 @@
                         </a>
                         <h2>
                             <a class="layui-badge">动态</a>
-                            <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+                            <a href="question/detail.html">基于 layui 的极简社区页面模版</a>
                         </h2>
                         <div class="fly-list-info">
                             <a href="/user/home.html" link>
@@ -539,7 +455,7 @@
                         </a>
                         <h2>
                             <a class="layui-badge">动态</a>
-                            <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+                            <a href="question/detail.html">基于 layui 的极简社区页面模版</a>
                         </h2>
                         <div class="fly-list-info">
                             <a href="/user/home.html" link>
@@ -568,7 +484,7 @@
                         </a>
                         <h2>
                             <a class="layui-badge">动态</a>
-                            <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+                            <a href="question/detail.html">基于 layui 的极简社区页面模版</a>
                         </h2>
                         <div class="fly-list-info">
                             <a href="/user/home.html" link>
@@ -597,7 +513,7 @@
                         </a>
                         <h2>
                             <a class="layui-badge">动态</a>
-                            <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+                            <a href="question/detail.html">基于 layui 的极简社区页面模版</a>
                         </h2>
                         <div class="fly-list-info">
                             <a href="/user/home.html" link>
@@ -622,7 +538,7 @@
                 </ul>
                 <div style="text-align: center">
                     <div class="laypage-main">
-                        <a href="jie/index.html" class="laypage-next">更多求解</a>
+                        <a href="question/index.html" class="laypage-next">更多求解</a>
                     </div>
                 </div>
 
@@ -750,43 +666,43 @@
             <dl class="fly-panel fly-list-one">
                 <dt class="fly-panel-title">本周热议</dt>
                 <dd>
-                    <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+                    <a href="question/detail.html">基于 layui 的极简社区页面模版</a>
                     <span><i class="iconfont icon-pinglun1"></i> 16</span>
                 </dd>
                 <dd>
-                    <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+                    <a href="question/detail.html">基于 layui 的极简社区页面模版</a>
                     <span><i class="iconfont icon-pinglun1"></i> 16</span>
                 </dd>
                 <dd>
-                    <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+                    <a href="question/detail.html">基于 layui 的极简社区页面模版</a>
                     <span><i class="iconfont icon-pinglun1"></i> 16</span>
                 </dd>
                 <dd>
-                    <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+                    <a href="question/detail.html">基于 layui 的极简社区页面模版</a>
                     <span><i class="iconfont icon-pinglun1"></i> 16</span>
                 </dd>
                 <dd>
-                    <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+                    <a href="question/detail.html">基于 layui 的极简社区页面模版</a>
                     <span><i class="iconfont icon-pinglun1"></i> 16</span>
                 </dd>
                 <dd>
-                    <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+                    <a href="question/detail.html">基于 layui 的极简社区页面模版</a>
                     <span><i class="iconfont icon-pinglun1"></i> 16</span>
                 </dd>
                 <dd>
-                    <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+                    <a href="question/detail.html">基于 layui 的极简社区页面模版</a>
                     <span><i class="iconfont icon-pinglun1"></i> 16</span>
                 </dd>
                 <dd>
-                    <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+                    <a href="question/detail.html">基于 layui 的极简社区页面模版</a>
                     <span><i class="iconfont icon-pinglun1"></i> 16</span>
                 </dd>
                 <dd>
-                    <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+                    <a href="question/detail.html">基于 layui 的极简社区页面模版</a>
                     <span><i class="iconfont icon-pinglun1"></i> 16</span>
                 </dd>
                 <dd>
-                    <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+                    <a href="question/detail.html">基于 layui 的极简社区页面模版</a>
                     <span><i class="iconfont icon-pinglun1"></i> 16</span>
                 </dd>
 
@@ -828,16 +744,6 @@
     </div>
 </div>
 
-<#--<div class="fly-footer">
-    <p><a href="http://fly.layui.com/" target="_blank">Fly社区</a> 2017 &copy; <a href="http://www.layui.com/"
-                                                                                target="_blank">layui.com 出品</a></p>
-    <p>
-        <a href="http://fly.layui.com/jie/3147/" target="_blank">付费计划</a>
-        <a href="http://www.layui.com/template/fly/" target="_blank">获取Fly社区模版</a>
-        <a href="http://fly.layui.com/jie/2461/" target="_blank">微信公众号</a>
-    </p>
-</div>-->
-
 <script src="/res/layui/layui.js"></script>
 <script>
     layui.cache.page = '';
@@ -857,12 +763,15 @@
 
     layui.use('carousel', function(){
         var carousel = layui.carousel;
+
         //建造实例
         carousel.render({
-            elem: '#test1'
+            elem: '#carousel-banners'
             ,width: '100%' //设置容器宽度
-            ,arrow: 'always' //始终显示箭头
-            //,anim: 'updown' //切换动画方式
+            ,height: '242px'
+            ,arrow: 'hover' //始终显示箭头
+            ,anim: 'fade' //切换动画方式
+            ,indicator: 'none'
         });
     });
 </script>

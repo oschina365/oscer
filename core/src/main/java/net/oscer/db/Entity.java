@@ -362,6 +362,8 @@ public abstract class Entity implements Serializable {
         return DbQuery.get(databaseName()).stat("SELECT COUNT(*) FROM " + rawTableName());
     }
 
+
+
     /**
      * 批量加载项目
      *
@@ -369,13 +371,13 @@ public abstract class Entity implements Serializable {
      * @return
      */
     @SuppressWarnings({"rawtypes"})
-    public List loadList(List<Long> p_pids) {
+    public List loadList(List<? extends Number> p_pids) {
         if (CollectionUtils.isEmpty(p_pids)) {
             return null;
         }
-
+        List<Long> pids_l = p_pids.stream().map(Number::longValue).collect(Collectors.toList());
         List<Long> pids = new LinkedList<>();
-        pids.addAll(p_pids);
+        pids.addAll(pids_l);
 
         List<Entity> prjs = new ArrayList<Entity>(pids.size()) {
             {
@@ -387,7 +389,7 @@ public abstract class Entity implements Serializable {
         List<Long> no_cache_ids = new ArrayList<>();
 
         if (!this.cachedByID()) {
-            no_cache_ids.addAll(p_pids);
+            no_cache_ids.addAll(pids_l);
         } else {
             String cache = this.cacheRegion();
             for (int i = 0; i < pids.size(); i++) {
