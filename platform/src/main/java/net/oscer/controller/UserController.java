@@ -1,5 +1,6 @@
 package net.oscer.controller;
 
+import net.oscer.beans.User;
 import net.oscer.common.ApiResult;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -20,7 +21,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/user/")
-public class UserController extends BaseController{
+public class UserController extends BaseController {
 
     public static final long TIME_OUT = 1000L * 60 * 60 * 24 * 365;
 

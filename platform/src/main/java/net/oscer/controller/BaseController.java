@@ -1,6 +1,7 @@
 package net.oscer.controller;
 
 import net.oscer.beans.User;
+import net.oscer.common.ApiResult;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
@@ -8,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -74,7 +77,7 @@ public class BaseController {
      */
     public User getLoginUser() {
         User login_user = (User) SecurityUtils.getSubject().getPrincipal();
-        return login_user == null ? null : login_user;
+        return login_user == null ? null : login_user.getId() <= 0 ? null : login_user;
     }
 
     public long getUserId() {
@@ -156,6 +159,25 @@ public class BaseController {
 
     protected void removeSession(HttpServletRequest request, String key) {
         request.getSession().removeAttribute(key);
+    }
+
+
+    /**
+     * 检查账号是否登录，且正常
+     *
+     * @return
+     */
+    @PostMapping("/user/has_login")
+    @ResponseBody
+    public ApiResult has_login() {
+        User login_user = getLoginUser();
+        if (login_user == null) {
+            return ApiResult.failWithMessage("请登录后重试");
+        }
+        if (login_user.getStatus() != User.STATUS_NORMAL) {
+            return ApiResult.failWithMessage("账号被屏蔽或不存在");
+        }
+        return ApiResult.successWithObject(login_user);
     }
 
 }

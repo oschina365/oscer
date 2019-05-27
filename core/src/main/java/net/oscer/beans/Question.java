@@ -1,8 +1,14 @@
 package net.oscer.beans;
 
+import net.oscer.dao.NodeDAO;
 import net.oscer.db.Entity;
+import net.oscer.framework.FormatTool;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -16,6 +22,25 @@ import java.util.Date;
 public class Question extends Entity {
 
     public final static Question ME = new Question();
+
+    /**
+     * 默认最小的悬赏积分
+     */
+    public static final int REWARD_POINT_DEFAULT = 10;
+
+    public final static List<Integer> reward_points = Arrays.asList(10, 20, 50, 100);
+
+    public static final int MAX_LENGTH_TITLE = 200;
+
+    /**
+     * 原创
+     */
+    public static final int ORIGINAL_0 = 0;
+
+    /**
+     * 转帖
+     */
+    public static final int ORIGINAL_1 = 1;
 
     /**
      * 用户ID
@@ -91,6 +116,45 @@ public class Question extends Entity {
      */
     private long reward_user;
 
+    /**
+     * 节点ID
+     */
+    private long node;
+
+    private String format_insert_date;
+
+    private String format_last_date;
+
+    /**
+     * 添加时间
+     */
+    public Date insert_date;
+    /**
+     * 更新时间
+     */
+    public Date last_date;
+
+    @Override
+    public Date getInsert_date() {
+        return insert_date;
+    }
+
+    @Override
+    public void setInsert_date(Date insert_date) {
+        this.insert_date = insert_date;
+        this.format_insert_date = format_insert_date();
+    }
+
+    @Override
+    public Date getLast_date() {
+        return last_date;
+    }
+
+    @Override
+    public void setLast_date(Date last_date) {
+        this.last_date = last_date;
+        this.format_last_date = format_last_date();
+    }
 
     public long getUser() {
         return user;
@@ -235,4 +299,62 @@ public class Question extends Entity {
     public void setReward_user(long reward_user) {
         this.reward_user = reward_user;
     }
+
+    public long getNode() {
+        return node;
+    }
+
+    public void setNode(long node) {
+        this.node = node;
+    }
+
+    public String getFormat_insert_date() {
+        return format_insert_date;
+    }
+
+    public void setFormat_insert_date(String format_insert_date) {
+        this.format_insert_date = format_insert_date;
+    }
+
+    public String getFormat_last_date() {
+        return format_last_date;
+    }
+
+    public void setFormat_last_date(String format_last_date) {
+        this.format_last_date = format_last_date;
+    }
+
+    public long NodeOrDefault(long node) {
+        List<Node> nodes = NodeDAO.ME.nodes(Node.STATUS_NORMAL, 0);
+        if (CollectionUtils.isNotEmpty(nodes)) {
+            if (nodes.stream().filter(n -> StringUtils.isNotBlank(n.getUrl())).anyMatch(n -> n.getId() == node)) {
+                return node;
+            }
+
+        }
+        return 0;
+    }
+
+    /**
+     * 获取悬赏积分
+     *
+     * @param choose_reward_point
+     * @return
+     */
+    public int RewardPointOrDefault(int choose_reward_point) {
+        if (reward_points.contains(choose_reward_point)) {
+            return choose_reward_point;
+        }
+        return REWARD_POINT_DEFAULT;
+    }
+
+    public String format_insert_date() {
+        return FormatTool.format_intell_time(this.insert_date);
+    }
+
+    public String format_last_date() {
+        return FormatTool.format_intell_time(this.last_date);
+    }
+
+
 }

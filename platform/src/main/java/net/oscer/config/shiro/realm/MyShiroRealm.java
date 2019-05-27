@@ -56,7 +56,7 @@ public class MyShiroRealm extends AuthorizingRealm {
             msg = "密码输错误5次，请一个小时后再尝试！";
             throw new DisabledAccountException(msg);
         }
-        if (!User.ME._GeneratePwdHashByIdent(password, name)) {
+        if (!User.ME._GeneratePwdHashCommonBoolean(password, name)) {
             if (CacheMgr.exists(LOGIN_COUNT, name)) {
                 login_count = (int) CacheMgr.get(LOGIN_COUNT, name);
             }
@@ -64,14 +64,11 @@ public class MyShiroRealm extends AuthorizingRealm {
             CacheMgr.set(LOGIN_COUNT, name, login_count);
             msg = "帐号或密码不正确！";
             throw new AccountException(msg);
-        } else {
-            u = UserDAO.ME.getByIdent(name);
-            if (!u.status_is_normal()) {
-                msg = "请联系管理员";
-                throw new DisabledAccountException(msg);
-            } else {
-                CacheMgr.set(LOGIN_COUNT, name, login_count);
-            }
+        }
+        u = User.ME._GeneratePwdHashCommon(name);
+        if (!u.status_is_normal()) {
+            msg = "账号被屏蔽,请联系管理员";
+            throw new AccountException(msg);
         }
         logger.info("身份认证成功，登录用户:{}", name);
 

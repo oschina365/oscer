@@ -336,7 +336,7 @@ public class User extends Entity {
      * @return
      */
     public boolean status_is_normal() {
-        if (this.getStatus() == Entity.STATUS_NORMAL) {
+        if (this != null && this.getStatus() == Entity.STATUS_NORMAL) {
             return true;
         } else {
             return false;
@@ -380,16 +380,29 @@ public class User extends Entity {
     }
 
     /**
+     * 通过个性域名,邮箱,手机号码查询用户信息，然后对比输入的密码
+     *
+     * @param ident
+     * @return
+     */
+    public User _GeneratePwdHashCommon(String ident) {
+        String sql = "select id from users where ident =? or email = ? or phone = ?";
+        Number n = DbQuery.get("mysql").read(Number.class, sql, ident, ident, ident);
+        if (n != null && n.longValue() > 0L) {
+            return User.ME.get(n.longValue());
+        }
+        return null;
+    }
+
+    /**
      * 通过个性域名
      *
      * @param ident
      * @return
      */
-    public boolean _GeneratePwdHashByIdent(String input_pwd, String ident) {
-        String sql = "select id from users where ident =?";
-        Number n = DbQuery.get("mysql").read(Number.class, sql, ident);
-        if (n != null && n.longValue() > 0L) {
-            User u = User.ME.get(n.longValue());
+    public boolean _GeneratePwdHashCommonBoolean(String input_pwd, String ident) {
+        User u = _GeneratePwdHashCommon(ident);
+        if (u != null) {
             return _ValidatePwd(input_pwd, u);
         }
         return false;

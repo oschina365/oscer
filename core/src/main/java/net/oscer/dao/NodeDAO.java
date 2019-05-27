@@ -24,6 +24,10 @@ public class NodeDAO extends CommonDao<Node> {
             return null;
         }
         String sql = "select * from nodes where status=? order by sort asc", cacheKey = "status#" + status;
+        if (parent == 0) {
+            sql = "select * from nodes where status=? and parent =0 order by sort asc";
+            cacheKey = "status#" + status + "#parent#" + parent;
+        }
         if (parent > 0) {
             Node father = Node.ME.get(parent);
             if (father == null || father.getStatus() == Node.STATUS_FORBID) {
