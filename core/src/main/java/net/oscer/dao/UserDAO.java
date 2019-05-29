@@ -2,8 +2,7 @@ package net.oscer.dao;
 
 import net.oscer.beans.User;
 import net.oscer.framework.LinkTool;
-import org.apache.commons.lang3.StringUtils;
-
+import net.oscer.framework.StringUtils;
 
 public class UserDAO extends CommonDao<User> {
 
@@ -110,7 +109,13 @@ public class UserDAO extends CommonDao<User> {
         if (root.length() > 0 && root.charAt(0) != '/') {
             sb.append('/');
         }
-        sb.append("u/" + id);
+        User u = User.ME.get(id);
+        if (StringUtils.isNotBlank(u.getIdent())) {
+            sb.append("u/" + u.getIdent());
+        } else {
+            sb.append("u/" + id);
+        }
+
         return sb.toString();
     }
 

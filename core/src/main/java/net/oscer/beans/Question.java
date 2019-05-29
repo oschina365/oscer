@@ -30,7 +30,10 @@ public class Question extends Entity {
 
     public final static List<Integer> reward_points = Arrays.asList(10, 20, 50, 100);
 
-    public static final int MAX_LENGTH_TITLE = 200;
+    /**
+     * 标题最大长度
+     */
+    public static final int MAX_LENGTH_TITLE = 150;
 
     /**
      * 原创
@@ -41,6 +44,11 @@ public class Question extends Entity {
      * 转帖
      */
     public static final int ORIGINAL_1 = 1;
+
+    /**
+     * 查询多少条置顶帖子
+     */
+    public static final int SYSTEM_LIMIT_TOP = 5;
 
     /**
      * 用户ID
@@ -59,7 +67,7 @@ public class Question extends Entity {
      */
     private Integer status;
     /**
-     * 是否置顶（1：置顶）
+     * 是否置顶（1：置顶），贴主自己置顶
      */
     private Integer top;
     /**
@@ -102,7 +110,7 @@ public class Question extends Entity {
     /**
      * 最后的回帖人
      */
-    private Integer last_comment_user;
+    private long last_comment_user;
     /**
      * 最后的回帖时间
      */
@@ -121,9 +129,9 @@ public class Question extends Entity {
      */
     private long node;
 
-    private String format_insert_date;
+    private String sdf_insert_date;
 
-    private String format_last_date;
+    private String sdf_last_date;
 
     /**
      * 添加时间
@@ -134,6 +142,11 @@ public class Question extends Entity {
      */
     public Date last_date;
 
+    /**
+     * 系统置顶
+     */
+    public int system_top;
+
     @Override
     public Date getInsert_date() {
         return insert_date;
@@ -142,7 +155,7 @@ public class Question extends Entity {
     @Override
     public void setInsert_date(Date insert_date) {
         this.insert_date = insert_date;
-        this.format_insert_date = format_insert_date();
+        this.sdf_insert_date = format_insert_date();
     }
 
     @Override
@@ -153,7 +166,7 @@ public class Question extends Entity {
     @Override
     public void setLast_date(Date last_date) {
         this.last_date = last_date;
-        this.format_last_date = format_last_date();
+        this.sdf_last_date = format_last_date();
     }
 
     public long getUser() {
@@ -268,11 +281,11 @@ public class Question extends Entity {
         this.original_url = original_url;
     }
 
-    public Integer getLast_comment_user() {
+    public long getLast_comment_user() {
         return last_comment_user;
     }
 
-    public void setLast_comment_user(Integer last_comment_user) {
+    public void setLast_comment_user(long last_comment_user) {
         this.last_comment_user = last_comment_user;
     }
 
@@ -308,20 +321,28 @@ public class Question extends Entity {
         this.node = node;
     }
 
-    public String getFormat_insert_date() {
-        return format_insert_date;
+    public String getSdf_insert_date() {
+        return sdf_insert_date;
     }
 
-    public void setFormat_insert_date(String format_insert_date) {
-        this.format_insert_date = format_insert_date;
+    public void setSdf_insert_date(String sdf_insert_date) {
+        this.sdf_insert_date = sdf_insert_date;
     }
 
-    public String getFormat_last_date() {
-        return format_last_date;
+    public String getSdf_last_date() {
+        return sdf_last_date;
     }
 
-    public void setFormat_last_date(String format_last_date) {
-        this.format_last_date = format_last_date;
+    public void setSdf_last_date(String sdf_last_date) {
+        this.sdf_last_date = sdf_last_date;
+    }
+
+    public int getSystem_top() {
+        return system_top;
+    }
+
+    public void setSystem_top(int system_top) {
+        this.system_top = system_top;
     }
 
     public long NodeOrDefault(long node) {

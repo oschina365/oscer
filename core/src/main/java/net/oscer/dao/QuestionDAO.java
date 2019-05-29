@@ -54,14 +54,45 @@ public class QuestionDAO extends CommonDao<Question> {
 
     }
 
-    public int count(int status) {
+    public int count(long node) {
         String sql = "select count(id) from questions where status=0 ";
-        return getDbQuery().stat_cache(getCache_region(), "count#0", sql);
+        if (node > 0L) {
+            sql = "select count(id) from questions where node=" + node + " and status=0 ";
+        }
+        return getDbQuery().stat_cache(getCache_region(), "count#0" + node, sql);
     }
 
-    public List<Question> all(int page, int size) {
-        String sql = "select id from questions where status=0 order by id desc";
-        List<Long> ids = getDbQuery().query_slice_cache(long.class, getCache_region(), "status#0", 100, sql, page, size);
+    public List<Question> tops(int limit) {
+        String sql = "select id from questions where status=0 and system_top > 0 order by recomm desc,system_top desc limit ?";
+        List<Long> ids = getDbQuery().query_cache(long.class, isCacheNullObject(), getCache_region(), "tops#" + limit, sql, limit);
         return Question.ME.loadList(ids);
     }
+
+    public List<Question> all(long node, int page, int size) {
+        String sql = "select id from questions where status=0 and system_top=0 order by id desc";
+        if (node > 0L) {
+            sql = "select id from questions where node=" + node + " and status=0 and system_top=0 order by id desc";
+        }
+        List<Long> ids = getDbQuery().query_slice_cache(long.class, getCache_region(), "status#0" + node, 100, sql, page, size);
+        return Question.ME.loadList(ids);
+    }
+
+    /**
+     * 根据节点查询对应的本周热议帖子
+     *
+     * @param node  为0时候，首页查询本周热帖，不区分节点
+     * @param limit
+     * @return
+     */
+    public List<Question> hots(long node, int limit) {
+        String sql = "select id from questions where status=0 and YEARWEEK(date_format(insert_date,'%Y-%m-%d'))= YEARWEEK(now())" +
+                " order by (collect_count*10+praise_count*5+comment_count*2+view_count) desc limit ?";
+        if (node > 0L) {
+            sql = "select id from questions where status=0 and node=" + node + " and YEARWEEK(date_format(insert_date,'%Y-%m-%d'))= YEARWEEK(now())" +
+                    " order by (collect_count*10+praise_count*5+comment_count*2+view_count) desc limit ?";
+        }
+        List<Long> ids = getDbQuery().query_cache(long.class, isCacheNullObject(), getCache_region(), "hots#" + node + "#" + limit, sql, limit);
+        return Question.ME.loadList(ids);
+    }
+
 }

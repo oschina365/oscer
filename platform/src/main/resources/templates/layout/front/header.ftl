@@ -10,7 +10,7 @@
                 <a href="/">首页</a>
             </li>
             <li class="layui-nav-item">
-                <a href="/nodes">节点</a>
+                <a href="/nodes">友链</a>
             </li>
 
         </ul>
