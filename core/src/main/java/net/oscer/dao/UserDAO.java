@@ -119,4 +119,14 @@ public class UserDAO extends CommonDao<User> {
         return sb.toString();
     }
 
+    /**
+     * 查询今天已签到的人数
+     *
+     * @return
+     */
+    public int count_signed_today() {
+        String sql = "select count(id) from users where score_today >0";
+        return getDbQuery().stat_cache(getCache_region(), "count_signed_today", sql);
+    }
+
 }

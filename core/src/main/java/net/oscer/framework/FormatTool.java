@@ -387,6 +387,24 @@ public class FormatTool {
         return formatter.format(date);
     }
 
+    /**
+     * 判断2个时间是否只间隔一天
+     *
+     * @param date1
+     * @param date2
+     * @param pattern
+     * @return
+     */
+    public static boolean intervalOneDay(Date date1, Date date2, String pattern) {
+        if (date1 == null || date2 == null) {
+            return false;
+        }
+        SimpleDateFormat formatter = new SimpleDateFormat(pattern);
+        String d1 = formatter.format(date1), d2 = formatter.format(date2);
+        Integer dd1 = Integer.valueOf(d1), dd2 = Integer.valueOf(d2);
+        return (dd1 - dd2 == 1) || (dd1 - dd2 == -1) ? true : false;
+    }
+
     private final static Pattern phonePatternSimple = Pattern.compile("^\\d{11}$");
 
     /**

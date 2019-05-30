@@ -110,18 +110,31 @@
                     <i class="fly-mid"></i>
                     <a href="javascript:;" class="fly-link" id="LAY_signinHelp">说明</a>
                     <i class="fly-mid"></i>
-                    <a href="javascript:;" class="fly-link" id="LAY_signinTop">活跃榜<span class="layui-badge-dot"></span></a>
-                    <span class="fly-signin-days">已连续签到<cite>16</cite>天</span>
+                    <#if login_user?? >
+                    <span class="fly-signin-days">已连续签到<cite id="series_count"><#if sign??>${sign.series_count!'0'}<#else >0</#if></cite>天</span>
+                    </#if>
                 </div>
                 <div class="fly-panel-main fly-signin-main">
-                    <button class="layui-btn layui-btn-danger" id="LAY_signin">今日签到</button>
-                    <span>可获得<cite>5</cite>飞吻</span>
+                    <#if login_user?? >
+                        <#if signed?? && signed >
+                            <!-- 已签到状态 -->
+                            <div id="LAY_signed">
+                            <button class="layui-btn layui-btn-disabled" >今日已签到</button>
+                            <span>获得了<cite>${sign_today_score!'5'}</cite>积分</span>
+                            </div>
+                            <#else >
+                            <div id="LAY_signing">
+                            <button class="layui-btn layui-btn-danger" >今日签到</button>
+                            <span><c>可获得</c><cite>${sign_today_score!'5'}</cite>积分</span>
+                            </div>
+                        </#if>
+                        <#else >
+                            <div id="LAY_sign">
+                            <button class="layui-btn layui-btn-danger" >签到</button>
+                            <span>已有${count_signed_today!'0'}人签到</span>
+                            </div>
+                    </#if>
 
-                    <!-- 已签到状态 -->
-                    <!--
-                    <button class="layui-btn layui-btn-disabled">今日已签到</button>
-                    <span>获得了<cite>20</cite>飞吻</span>
-                    -->
                 </div>
             </div>
 

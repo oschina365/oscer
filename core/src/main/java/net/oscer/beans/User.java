@@ -93,14 +93,7 @@ public class User extends Entity {
      * 登出时间(手动登出,系统登出即session超时时间)
      */
     private Date logout_time;
-    /**
-     * 创建时间
-     */
-    private Date insert_date;
-    /**
-     * 更新时间
-     */
-    private Date last_update;
+
     /**
      * 冻结：-1 正常:0 封号：1  手动注销：2  系统销毁：3
      */
@@ -119,14 +112,23 @@ public class User extends Entity {
     /**
      * 阅读数
      */
-    public int view_count;
+    private int view_count;
 
     /**
      * 用户是否在线
      * 登录状态（0:下线 1:上线）
      */
-    public int online;
+    private int online;
 
+    /**
+     * 积分
+     */
+    private int score;
+
+    /**
+     * 今天获得的积分
+     */
+    private int score_today;
 
     @Override
     public long getId() {
@@ -274,22 +276,6 @@ public class User extends Entity {
         this.logout_time = logout_time;
     }
 
-    public Date getInsert_date() {
-        return insert_date;
-    }
-
-    public void setInsert_date(Date insert_date) {
-        this.insert_date = insert_date;
-    }
-
-    public Date getLast_update() {
-        return last_update;
-    }
-
-    public void setLast_update(Date last_update) {
-        this.last_update = last_update;
-    }
-
     public Integer getStatus() {
         return status;
     }
@@ -328,6 +314,22 @@ public class User extends Entity {
 
     public void setOnline(int online) {
         this.online = online;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public int getScore_today() {
+        return score_today;
+    }
+
+    public void setScore_today(int score_today) {
+        this.score_today = score_today;
     }
 
     /**

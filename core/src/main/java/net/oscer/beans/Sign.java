@@ -18,9 +18,24 @@ public class Sign extends Entity {
     public static final Sign ME = new Sign();
 
     /**
+     * 签到的天数
+     */
+    public static final int SIGN_7 = 7;
+    public static final int SIGN_15 = 15;
+    public static final int SIGN_30 = 30;
+    public static final int SIGN_60 = 60;
+    public static final int SIGN_180 = 180;
+    public static final int SIGN_365 = 365;
+
+    /**
+     * 最小的积分奖励
+     */
+    public static final int MIN_SCORE = 5;
+
+    /**
      * 用户ID
      */
-    private Integer user;
+    private long user;
     /**
      * 签到的年数，比如今年是2019年，那这个值就是2019
      */
@@ -38,11 +53,11 @@ public class Sign extends Entity {
      */
     private Integer series_count;
 
-    public Integer getUser() {
+    public long getUser() {
         return user;
     }
 
-    public void setUser(Integer user) {
+    public void setUser(long user) {
         this.user = user;
     }
 
@@ -76,5 +91,33 @@ public class Sign extends Entity {
 
     public void setSeries_count(Integer series_count) {
         this.series_count = series_count;
+    }
+
+    /**
+     * 根据签到天数返回积分
+     *
+     * @param sign_count
+     * @return
+     */
+    public int sign_score(int sign_count) {
+        if (sign_count <= SIGN_7) {
+            return MIN_SCORE;
+        }
+        if (sign_count <= SIGN_15) {
+            return 10;
+        }
+        if (sign_count <= SIGN_30) {
+            return 15;
+        }
+        if (sign_count <= SIGN_60) {
+            return 20;
+        }
+        if (sign_count <= SIGN_180) {
+            return 25;
+        }
+        if (sign_count <= SIGN_365) {
+            return 30;
+        }
+        return MIN_SCORE;
     }
 }

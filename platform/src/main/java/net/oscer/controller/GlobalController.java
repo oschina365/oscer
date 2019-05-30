@@ -2,10 +2,10 @@ package net.oscer.controller;
 
 import net.oscer.beans.Node;
 import net.oscer.beans.Question;
-import net.oscer.dao.NodeDAO;
-import net.oscer.dao.QuestionDAO;
+import net.oscer.beans.Sign;
+import net.oscer.beans.User;
+import net.oscer.dao.*;
 import net.oscer.vo.QuestionVO;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +33,17 @@ public class GlobalController extends BaseController {
         //查询对应的本周热议帖子
         List<Question> weekHots = QuestionDAO.ME.hots(0L, 10);
         request.setAttribute("weekHots", weekHots);
+        //查询今日是否已经签到
+        User login_user = getLoginUser();
+        if (login_user != null && login_user.getId() > 0L) {
+            Sign s = SignDAO.ME.selectByUser(login_user.getId());
+            if (s != null && s.getId() > 0L) {
+                request.setAttribute("sign_today_score", Sign.ME.sign_score(s.getSeries_count()));
+            }
+            request.setAttribute("sign", SignDetailDAO.ME.todaySign(login_user.getId()));
+            request.setAttribute("signed", SignDetailDAO.ME.signedToday(login_user.getId()));
+        }
+        request.setAttribute("count_signed_today", UserDAO.ME.count_signed_today());
         return "index";
     }
 

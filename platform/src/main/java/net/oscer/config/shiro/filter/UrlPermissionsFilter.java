@@ -52,6 +52,10 @@ public class UrlPermissionsFilter extends PermissionsAuthorizationFilter {
             return true;
         }
 
+        if (StringUtils.startsWith(curUrl, "/sign")) {
+            return true;
+        }
+
         List<Node> nodes = NodeDAO.ME.nodes(Node.STATUS_NORMAL, 0);
 
         if (CollectionUtils.isNotEmpty(nodes)) {

@@ -14,6 +14,7 @@ import java.util.function.Function;
 
 /**
  * 数据库查询封装接口，支持多数据库
+ *
  * @author kz
  */
 public class DbQuery implements Closeable, AutoCloseable {
@@ -326,6 +327,57 @@ public class DbQuery implements Closeable, AutoCloseable {
             return result;
         } catch (SQLException e) {
             throw new DBException(e);
+        }
+    }
+
+    /**
+     * 将业务加入事务控制
+     *
+     * @param service
+     * @throws Exception
+     */
+    public void transaction(TransactionService service) throws Exception {
+        Integer level = TRANSACTION_LEVEL.get();
+        Boolean autoCommit = null;
+        if (level == null) {
+            autoCommit = conn.getAutoCommit();
+            level = 1;
+        } else {
+            level = level + 1;
+        }
+        TRANSACTION_LEVEL.set(level);
+        try {
+            if (conn.getAutoCommit()) {
+                conn.setAutoCommit(false);
+            }
+            service.execute();
+            level = level - 1;
+            TRANSACTION_LEVEL.set(level);
+            if (level == 0) {
+                conn.commit();
+                TRANSACTION_LEVEL.remove();
+            }
+        } catch (Exception e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                    /**
+                     * 数据回滚的时候，要清除此次操作中涉及到的缓存,
+                     * 只对使用了CacheUtils的Pojo有效，并且Pojo中的cacheUtils需要设置keepCacheOfThisThread为true
+                     */
+                } catch (SQLException e1) {
+                    throw new DBException(e);
+                }
+            }
+            if (e instanceof SQLException) {
+                throw new DBException(e);
+            } else {
+                throw e;
+            }
+        } finally {
+            if (autoCommit != null) {
+                conn.setAutoCommit(autoCommit);
+            }
         }
     }
 

@@ -18,17 +18,17 @@ public class SignDetail extends Entity {
     /**
      * 用户ID
      */
-    private Integer user;
+    private long user;
     /**
      * 签到时间（如：20190529）
      */
     private Integer sign_day;
 
-    public Integer getUser() {
+    public long getUser() {
         return user;
     }
 
-    public void setUser(Integer user) {
+    public void setUser(long user) {
         this.user = user;
     }
 
