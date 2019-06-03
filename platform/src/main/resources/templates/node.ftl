@@ -88,13 +88,13 @@
         <div class="fly-list-info">
             <a href="/user/{{item.q_user.id}}" link>
                 <cite>{{item.q_user.nickname||item.q_user.username}}</cite>
-                <#--<i class="iconfont icon-renzheng" title="认证信息：XXX"></i>
-                <i class="layui-badge fly-badge-vip">VIP3</i>-->
+                <#--<i class="iconfont icon-renzheng" title="认证信息：XXX"></i>-->
+                <i class="layui-badge fly-badge-vip">{{item.q_user.vip_text}}</i>
             </a>
             <span>{{item.q.sdf_insert_date}}</span>
 
             {{#  if(item.q.reward_point> 0){ }}
-            <span class="fly-list-kiss layui-hide-xs" title="悬赏积分"><i class="iconfont icon-kiss"></i> {{item.q.reward_point}}</span>
+            <span class="fly-list-kiss layui-hide-xs" title="悬赏积分"><i class="layui-icon  layui-icon-diamond"></i> {{item.q.reward_point}}</span>
             {{# }}}
             {{#  if(item.q.reward_user> 0){ }}
             <span class="layui-badge fly-badge-accept layui-hide-xs">已悬赏</span>

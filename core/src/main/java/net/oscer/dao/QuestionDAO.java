@@ -3,6 +3,7 @@ package net.oscer.dao;
 import net.oscer.beans.Question;
 import net.oscer.common.ApiResult;
 import net.oscer.common.PatternUtil;
+import net.oscer.db.CacheMgr;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -93,6 +94,13 @@ public class QuestionDAO extends CommonDao<Question> {
         }
         List<Long> ids = getDbQuery().query_cache(long.class, isCacheNullObject(), getCache_region(), "hots#" + node + "#" + limit, sql, limit);
         return Question.ME.loadList(ids);
+    }
+
+    public void evictNode(long node) {
+        CacheMgr.evict(getCache_region(), "status#0" + node);
+        CacheMgr.evict(getCache_region(), "count#0" + node);
+        CacheMgr.evict(getCache_region(), "status#0" + 0);
+        CacheMgr.evict(getCache_region(), "count#0" + 0);
     }
 
 }

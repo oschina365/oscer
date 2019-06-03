@@ -66,7 +66,11 @@ public class BaseController {
         this.pageSize = StringUtils.isEmpty(size) ? pageSize : Integer.parseInt(size);
         this.request = request;
         map.put("size", pageSize);
-        map.put("login_user", getLoginUser());
+        User login_user = getLoginUser();
+        if (null != login_user) {
+            map.put("login_user", getLoginUser());
+            map.put("vip_text", login_user.vip());
+        }
     }
 
 

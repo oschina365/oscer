@@ -13,18 +13,20 @@ import net.oscer.db.Entity;
 @Entity.Cache(region = "CommentQuestion")
 public class CommentQuestion extends Entity {
 
+    public static final CommentQuestion ME = new CommentQuestion();
+
     /**
      * 帖子ID
      */
-    private Integer question;
+    private long question;
     /**
      * 评论者ID
      */
-    private Integer user;
+    private long user;
     /**
      * 回复评论者ID
      */
-    private Integer reply_user;
+    private long reply_user;
     /**
      * 评论的内容
      */
@@ -38,27 +40,27 @@ public class CommentQuestion extends Entity {
      */
     private Integer praise_count;
 
-    public Integer getQuestion() {
+    public long getQuestion() {
         return question;
     }
 
-    public void setQuestion(Integer question) {
+    public void setQuestion(long question) {
         this.question = question;
     }
 
-    public Integer getUser() {
+    public long getUser() {
         return user;
     }
 
-    public void setUser(Integer user) {
+    public void setUser(long user) {
         this.user = user;
     }
 
-    public Integer getReply_user() {
+    public long getReply_user() {
         return reply_user;
     }
 
-    public void setReply_user(Integer reply_user) {
+    public void setReply_user(long reply_user) {
         this.reply_user = reply_user;
     }
 

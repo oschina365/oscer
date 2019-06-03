@@ -6,6 +6,7 @@ import net.oscer.db.Entity;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -14,7 +15,7 @@ import java.util.Date;
  * @author liudong
  */
 @Entity.Cache(region = "User")
-public class User extends Entity {
+public class User extends Entity implements Serializable {
 
     public final static User ME = new User();
 
@@ -22,8 +23,6 @@ public class User extends Entity {
      * 用户权限
      */
     public final static int ROLE_GENERAL = 1;
-
-    private long id;
 
     /**
      * 用户名(登录名,如jack)
@@ -130,15 +129,7 @@ public class User extends Entity {
      */
     private int score_today;
 
-    @Override
-    public long getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(long id) {
-        this.id = id;
-    }
+    private String vip_text;
 
     public String getUsername() {
         return username;
@@ -332,6 +323,14 @@ public class User extends Entity {
         this.score_today = score_today;
     }
 
+    public String getVip_text() {
+        return vip();
+    }
+
+    public void setVip_text(String vip_text) {
+        this.vip_text = vip();
+    }
+
     /**
      * 用户是否正常
      *
@@ -408,5 +407,33 @@ public class User extends Entity {
             return _ValidatePwd(input_pwd, u);
         }
         return false;
+    }
+
+    public String vip() {
+        if (this == null || this.getId() <= 0L) {
+            return null;
+        }
+        if (this.getScore() >= VIP7_SCORE) {
+            return VIP_MAP.get(VIP7_SCORE);
+        }
+        if (this.getScore() >= VIP6_SCORE) {
+            return VIP_MAP.get(VIP6_SCORE);
+        }
+        if (this.getScore() >= VIP5_SCORE) {
+            return VIP_MAP.get(VIP5_SCORE);
+        }
+        if (this.getScore() >= VIP4_SCORE) {
+            return VIP_MAP.get(VIP4_SCORE);
+        }
+        if (this.getScore() >= VIP3_SCORE) {
+            return VIP_MAP.get(VIP3_SCORE);
+        }
+        if (this.getScore() >= VIP2_SCORE) {
+            return VIP_MAP.get(VIP2_SCORE);
+        }
+        if (this.getScore() >= VIP1_SCORE) {
+            return VIP_MAP.get(VIP1_SCORE);
+        }
+        return "普通";
     }
 }

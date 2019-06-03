@@ -1,9 +1,6 @@
 package net.oscer.controller;
 
-import net.oscer.beans.Node;
-import net.oscer.beans.Question;
-import net.oscer.beans.Sign;
-import net.oscer.beans.User;
+import net.oscer.beans.*;
 import net.oscer.dao.*;
 import net.oscer.vo.QuestionVO;
 import org.springframework.stereotype.Controller;
@@ -30,12 +27,18 @@ public class GlobalController extends BaseController {
         //查询置顶的帖子
         List<Question> tops = QuestionDAO.ME.tops(Question.SYSTEM_LIMIT_TOP);
         request.setAttribute("tops", QuestionVO.list(tops));
+
+        //回帖周榜
+        List<CommentQuestion> weekHotComments = CommentQuestionDAO.ME.weekHots();
+        request.setAttribute("weekHotComments", weekHotComments);
+
         //查询对应的本周热议帖子
         List<Question> weekHots = QuestionDAO.ME.hots(0L, 10);
         request.setAttribute("weekHots", weekHots);
-        //查询今日是否已经签到
+
         User login_user = getLoginUser();
         if (login_user != null && login_user.getId() > 0L) {
+            //查询今日是否已经签到
             Sign s = SignDAO.ME.selectByUser(login_user.getId());
             if (s != null && s.getId() > 0L) {
                 request.setAttribute("sign_today_score", Sign.ME.sign_score(s.getSeries_count()));
@@ -43,7 +46,10 @@ public class GlobalController extends BaseController {
             request.setAttribute("sign", SignDetailDAO.ME.todaySign(login_user.getId()));
             request.setAttribute("signed", SignDetailDAO.ME.signedToday(login_user.getId()));
         }
+        //查询今天已签到的人数
         request.setAttribute("count_signed_today", UserDAO.ME.count_signed_today());
+
+
         return "index";
     }
 

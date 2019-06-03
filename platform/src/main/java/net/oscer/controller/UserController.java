@@ -9,8 +9,11 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import static net.oscer.db.Entity.OFFLINE;
 
 /**
  * 用户相关业务类
@@ -54,5 +57,24 @@ public class UserController extends BaseController {
         } catch (Exception e) {
             return ApiResult.failWithMessage(StringUtils.isNotBlank(e.getMessage()) ? e.getMessage() : "登录失败");
         }
+    }
+
+    /**
+     * 退出
+     *
+     * @return
+     */
+    @RequestMapping(value = "logout", method = RequestMethod.GET)
+    public String logout() {
+        try {
+            User login_user = getLoginUser();
+            login_user.setLogout_time(new Date());
+            login_user.setOnline(OFFLINE);
+            login_user.doUpdate();
+            SecurityUtils.getSubject().logout();
+        } catch (Exception e) {
+            logger.warn("登出系统异常");
+        }
+        return "redirect:/";
     }
 }

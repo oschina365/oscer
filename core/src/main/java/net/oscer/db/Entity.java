@@ -28,6 +28,85 @@ import java.util.stream.Collectors;
  */
 public abstract class Entity implements Serializable {
 
+    public static final Map<Integer, String> VIP_MAP = new HashMap<>();
+
+    static {
+        for (VIP_SCORE V : VIP_SCORE.values()) {
+            VIP_MAP.put(V.score, V.text);
+        }
+    }
+
+    /**
+     * 青铜
+     */
+    public static final int VIP1_SCORE = 500;
+
+    /**
+     * 白银
+     */
+    public static final int VIP2_SCORE = 1000;
+
+    /**
+     * 黄金
+     */
+    public static final int VIP3_SCORE = 2000;
+
+    /**
+     * 白金
+     */
+    public static final int VIP4_SCORE = 3000;
+
+    /**
+     * 钻石
+     */
+    public static final int VIP5_SCORE = 6000;
+
+    /**
+     * 超钻
+     */
+    public static final int VIP6_SCORE = 10000;
+
+    /**
+     * 王者
+     */
+    public static final int VIP7_SCORE = 15000;
+
+
+    public enum VIP_SCORE {
+        VIP1(VIP1_SCORE, "青铜"),
+        VIP2(VIP2_SCORE, "白银"),
+        VIP3(VIP3_SCORE, "黄金"),
+        VIP4(VIP4_SCORE, "白金"),
+        VIP5(VIP5_SCORE, "钻石"),
+        VIP6(VIP6_SCORE, "超钻"),
+        VIP7(VIP7_SCORE, "王者");
+
+        private int score;
+        private String text;
+
+        public int getScore() {
+            return score;
+        }
+
+        public void setScore(int score) {
+            this.score = score;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public void setText(String text) {
+            this.text = text;
+        }
+
+        VIP_SCORE(int score, String text) {
+            this.score = score;
+            this.text = text;
+        }
+    }
+
+
     public static final long ONE_HOUR = 1000 * 60 * 60L;
 
     public static final String ONE_HOUR_CACHE = "1h";
@@ -363,7 +442,6 @@ public abstract class Entity implements Serializable {
     }
 
 
-
     /**
      * 批量加载项目
      *
@@ -546,6 +624,15 @@ public abstract class Entity implements Serializable {
                     continue;
                 }
                 if (getId() == 0 && "id".equals(field.getName())) {
+                    continue;
+                }
+                if("vip_text".equalsIgnoreCase(field.getName())){
+                    continue;
+                }
+                if("sdf_insert_date".equalsIgnoreCase(field.getName())){
+                    continue;
+                }
+                if("sdf_last_date".equalsIgnoreCase(field.getName())){
                     continue;
                 }
                 Object fv = field.getReadMethod().invoke(this);

@@ -3,6 +3,7 @@ package net.oscer.dao;
 import net.oscer.beans.Sign;
 import net.oscer.beans.SignDetail;
 import net.oscer.beans.User;
+import net.oscer.db.CacheMgr;
 import net.oscer.db.DbQuery;
 import net.oscer.db.TransactionService;
 import net.oscer.framework.FormatTool;
@@ -48,7 +49,7 @@ public class SignDetailDAO extends CommonDao<SignDetail> {
      */
     public boolean signedToday(long user) {
         Sign s = todaySign(user);
-        return (s == null || s.getId() <= 0L) ? false : !FormatTool.intervalOneDay(new Date(), s.getLast_sign_day(), "yyyyMMdd");
+        return (s == null || s.getId() <= 0L) ? false : FormatTool.intervalSameDay(new Date(), s.getLast_sign_day(), "yyyyMMdd");
     }
 
     /**
@@ -76,15 +77,17 @@ public class SignDetailDAO extends CommonDao<SignDetail> {
                 s.setTotal_count(s.getId() > 0L ? (s.getTotal_count() + 1) : 1);
                 s.setSeries_count(s.getId() > 0L ? (FormatTool.intervalOneDay(new Date(), s.getLast_sign_day(), "yyyyMMdd") ? (s.getSeries_count() + 1) : 1) : 1);
                 s.setLast_sign_day(new Date());
-                if(s.getId()>0L){
+                if (s.getId() > 0L) {
                     s.doUpdate();
-                }else{
+                } else {
                     s.save();
                 }
 
                 u.setScore_today(Sign.ME.sign_score(s.getSeries_count()));
                 u.setScore(u.getScore() + u.getScore_today());
                 u.doUpdate();
+                CacheMgr.evict(Sign.ME.CacheRegion(), String.valueOf(user));
+                CacheMgr.evict(User.ME.CacheRegion(), "count_signed_today");
             }
         });
 

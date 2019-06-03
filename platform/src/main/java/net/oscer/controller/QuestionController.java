@@ -111,7 +111,9 @@ public class QuestionController extends BaseController {
             form.setReward_point(0);
         }
         form.save();
-        return ApiResult.success("发帖成功");
+        Node n = Node.ME.get(form.getNode());
+        QuestionDAO.ME.evictNode(form.getNode());
+        return ApiResult.successWithObject(n.getUrl());
     }
 
 }

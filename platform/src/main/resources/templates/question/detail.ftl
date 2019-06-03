@@ -58,7 +58,7 @@
           </div>
           <div class="detail-hits" id="LAY_jieAdmin" data-id="123">
             <#if q.reward_point gt 0><span style="padding-right: 10px; color: #FF7200">悬赏：${q.reward_point!'0'}积分</span></#if>
-            <#if login_user?? && login_user.id=q.user><span class="layui-btn layui-btn-xs jie-admin" type="edit"><a href="add.html">编辑此贴</a></span></#if>
+            <#if login_user?? && login_user.id=q.user><span class="layui-btn layui-btn-xs jie-admin" type="edit"><a href="/q/edit/${q.id}">编辑此贴</a></span></#if>
             <span class="layui-btn layui-btn-xs jie-admin layui-btn-normal" type="edit"><a href="add.html">关注</a></span>
             <span class="layui-btn layui-btn-xs jie-admin layui-btn-warm" type="edit"><a href="add.html">私信</a></span>
           </div>

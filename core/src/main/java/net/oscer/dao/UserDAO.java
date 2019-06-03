@@ -1,6 +1,7 @@
 package net.oscer.dao;
 
 import net.oscer.beans.User;
+import net.oscer.db.CacheMgr;
 import net.oscer.framework.LinkTool;
 import net.oscer.framework.StringUtils;
 
@@ -127,6 +128,19 @@ public class UserDAO extends CommonDao<User> {
     public int count_signed_today() {
         String sql = "select count(id) from users where score_today >0";
         return getDbQuery().stat_cache(getCache_region(), "count_signed_today", sql);
+    }
+
+    public void evict_count_signed_today() {
+        CacheMgr.evict(getCache_region(), "count_signed_today");
+    }
+
+    /**
+     * 重置今日获得积分字段
+     */
+    public void resetScoreToday() {
+        String sql = "update users set score_today=0";
+        getDbQuery().update(sql);
+        evict_count_signed_today();
     }
 
 }
