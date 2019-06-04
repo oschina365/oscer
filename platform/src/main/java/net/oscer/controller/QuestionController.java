@@ -116,4 +116,64 @@ public class QuestionController extends BaseController {
         return ApiResult.successWithObject(n.getUrl());
     }
 
+    /**
+     * 编辑帖子
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("/edit/{id}")
+    public String edit(@PathVariable("id") Long id) {
+        Question q = Question.ME.get(id);
+        if (null == q || q.getId() <= 0L) {
+            return "/error/404";
+        }
+        if (q.getStatus() != 0) {
+            return "403";
+        }
+        User u = User.ME.get(q.getUser());
+        if (null == u || u.getId() <= 0L || u.getStatus() != User.STATUS_NORMAL) {
+            return "403";
+        }
+        if (q.getUser() != u.getId() || u.getId() != 2) {
+            return "/error/404";
+        }
+        request.setAttribute("q", q);
+        request.setAttribute("u", u);
+        List<Node> nodes = NodeDAO.ME.nodes(Node.STATUS_NORMAL, 0);
+        request.setAttribute("nodes", nodes);
+        return "/question/edit";
+    }
+
+    /**
+     * 添加帖子方法
+     *
+     * @param form
+     * @return
+     */
+    @PostMapping("/edit")
+    @ResponseBody
+    public ApiResult edit(Question form) {
+        User login_user = getLoginUser();
+        if (login_user == null || !login_user.status_is_normal()) {
+            return ApiResult.failWithMessage("请登录后重试");
+        }
+        Long id = form.getId();
+        Question old = Question.ME.get(id);
+        if (form == null || old == null || login_user.getId() != old.getUser()) {
+            return ApiResult.failWithMessage("该帖子不存在");
+        }
+        form.setReward_point(old.getReward_point());
+        ApiResult result = QuestionDAO.ME.check(form, 0);
+        if (result == null || result.getCode() == ApiResult.fail) {
+            return result;
+        }
+
+        form.setUser(login_user.getId());
+        form.setTitle(StringUtils.abbreviate(form.getTitle(), MAX_LENGTH_TITLE));
+        form.doUpdate();
+        QuestionDAO.ME.evictNode(form.getNode());
+        return ApiResult.successWithObject(form.getId());
+    }
+
 }
