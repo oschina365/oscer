@@ -1,9 +1,18 @@
 package net.oscer.dao;
 
 import net.oscer.beans.User;
+import net.oscer.beans.UserBind;
+import net.oscer.common.ApiResult;
 import net.oscer.db.CacheMgr;
 import net.oscer.framework.LinkTool;
 import net.oscer.framework.StringUtils;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import static net.oscer.db.Entity.ONLINE;
 
 public class UserDAO extends CommonDao<User> {
 
@@ -141,6 +150,66 @@ public class UserDAO extends CommonDao<User> {
         String sql = "update users set score_today=0";
         getDbQuery().update(sql);
         evict_count_signed_today();
+    }
+
+    /**
+     * 登录
+     *
+     * @param username
+     * @param password
+     * @param ip
+     * @param openid     是否是第三方
+     * @param providerId
+     * @return
+     * @throws IOException
+     */
+    public ApiResult login(String username, String password, String ip, boolean openid, String providerId) throws IOException {
+        if (StringUtils.isEmpty(username)) {
+            return ApiResult.failWithMessage("请填写用户名~");
+        }
+        if (StringUtils.isEmpty(password)) {
+            return ApiResult.failWithMessage("请填写密码~");
+        }
+
+
+        User user = null;
+        if (openid) {
+            UserBind bind = opendLogin(providerId, password, username);
+            if (null == bind) {
+                System.out.println("绑定出错：username=" + username);
+                return ApiResult.failWithMessage("网络错误");
+            } else {
+                user = User.ME.get(bind.getUser());
+                password = user.getPassword();
+            }
+
+        } else {
+            user = getByUsername(username);
+        }
+        if (user == null) {
+            return ApiResult.failWithMessage("该用户不存在~");
+        }
+        if (user.getStatus() != 0) {
+            return ApiResult.failWithMessage("该账户已被封~");
+        }
+        if (user._ValidatePwd(password, user)) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("login_time", new Date());
+            map.put("login_ip", ip);
+            map.put("online", ONLINE);
+            user.updateFields(map);
+            return ApiResult.successWithObject(user, "登录成功");
+        } else {
+            return ApiResult.failWithMessage("密码错误~");
+        }
+    }
+
+    public UserBind opendLogin(String provider, String union_id, String name) {
+        UserBind bind = UserBindDAO.ME.bindByUnion_id(provider, union_id, name);
+        if (bind == null || bind.getId() <= 0L || bind.getUser() <= 0L) {
+            return null;
+        }
+        return bind;
     }
 
 }

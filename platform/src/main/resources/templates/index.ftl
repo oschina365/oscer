@@ -176,7 +176,7 @@
     {{#  layui.each(d.list, function(index, item){ }}
     <li>
         <a href="/user/{{item.q_user.id}}" class="fly-avatar">
-            <img src="{{item.q_user.headimg}}" alt="贤心">
+            <img src="{{item.q_user.headimg}}" alt="{{item.q_user.nickname||item.q_user.username}}">
         </a>
         <h2>
             <a class="layui-badge" href="{{item.n.url}}" target="_blank">{{item.n.name}}</a>

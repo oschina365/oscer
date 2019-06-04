@@ -72,6 +72,7 @@ public class UserController extends BaseController {
             login_user.setOnline(OFFLINE);
             login_user.doUpdate();
             SecurityUtils.getSubject().logout();
+            deleteUserInCookie();
         } catch (Exception e) {
             logger.warn("登出系统异常");
         }

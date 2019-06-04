@@ -58,6 +58,18 @@
             </exclusions>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.brickred/socialauth -->
+        <dependency>
+            <groupId>org.brickred</groupId>
+            <artifactId>socialauth</artifactId>
+            <version>4.15</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
     <build>
