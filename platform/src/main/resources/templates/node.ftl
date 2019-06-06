@@ -79,7 +79,7 @@
             {{#  if(item.q.reward_point> 0){ }}
             <span class="fly-list-kiss layui-hide-xs" title="悬赏积分"><i class="layui-icon  layui-icon-diamond"></i> {{item.q.reward_point}}</span>
             {{# }}}
-            {{#  if(item.q.reward_user> 0){ }}
+            {{#  if(item.q.reward_comment> 0){ }}
             <span class="layui-badge fly-badge-accept layui-hide-xs">已悬赏</span>
             {{# }}}
             <span class="fly-list-nums">

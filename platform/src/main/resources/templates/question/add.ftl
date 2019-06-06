@@ -120,11 +120,9 @@
 
     form.on("submit(questionAdd)",function(data){
 
-      var content = layedit.getContent(editIndex);
-      $("#content").val(content);
-
       var options = {
         dataType: "json",
+        data:data.field,
         success: function (d) {
           if(d && d.code==1){
             console.log(d);

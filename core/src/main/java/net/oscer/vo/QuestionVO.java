@@ -72,9 +72,6 @@ public class QuestionVO {
             if (q.getLast_comment_user() > 0L) {
                 all_users.add(q.getLast_comment_user());
             }
-            if (q.getReward_user() > 0L) {
-                all_users.add(q.getReward_user());
-            }
         });
 
         if (CollectionUtils.isEmpty(all_users)) {
@@ -92,9 +89,6 @@ public class QuestionVO {
             vo.setQ_user(User.ME.get(q.getUser()));
             if (q.getLast_comment_user() > 0L) {
                 vo.setQ_user(User.ME.get(q.getLast_comment_user()));
-            }
-            if (q.getReward_user() > 0L) {
-                vo.setQ_user(User.ME.get(q.getReward_user()));
             }
             list.add(vo);
         });

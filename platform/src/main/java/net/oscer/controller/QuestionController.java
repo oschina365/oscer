@@ -176,4 +176,55 @@ public class QuestionController extends BaseController {
         return ApiResult.successWithObject(form.getId());
     }
 
+    /**
+     * 推荐/取消推荐
+     *
+     * @param id
+     * @return
+     */
+    @PostMapping("/recomm")
+    @ResponseBody
+    public ApiResult recomm(@RequestParam("id") long id) {
+        Question q = Question.ME.get(id);
+        if (null == q) {
+            return ApiResult.failWithMessage("该帖子不存在");
+        }
+        if (q.getStatus() != 0) {
+            return ApiResult.failWithMessage("该帖子已删除");
+        }
+        if (q.getRecomm() == 0) {
+            q.setRecomm(1);
+        } else {
+            q.setRecomm(0);
+        }
+        q.doUpdate();
+        return ApiResult.success();
+    }
+
+    /**
+     * 系统置顶/取消置顶
+     *
+     * @param id
+     * @return
+     */
+    @PostMapping("/as_top")
+    @ResponseBody
+    public ApiResult as_top(@RequestParam("id") long id) {
+        Question q = Question.ME.get(id);
+        if (null == q) {
+            return ApiResult.failWithMessage("该帖子不存在");
+        }
+        if (q.getStatus() != 0) {
+            return ApiResult.failWithMessage("该帖子已删除");
+        }
+        if (q.getSystem_top() == 0) {
+            q.setSystem_top(1);
+        } else {
+            q.setSystem_top(0);
+        }
+        q.doUpdate();
+        QuestionDAO.ME.evictTops();
+        return ApiResult.success();
+    }
+
 }

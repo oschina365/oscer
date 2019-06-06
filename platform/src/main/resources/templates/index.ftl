@@ -38,7 +38,7 @@
 
                     <#if top.q.reward_point gt 0><span class="fly-list-kiss layui-hide-xs" title="悬赏飞吻"><i
                                 class="iconfont icon-kiss"></i> ${top.q.reward_point}</span></#if>
-                    <#if top.q.reward_user gt 0><span class="layui-badge fly-badge-accept layui-hide-xs">已结</span></#if>
+                    <#if top.q.reward_comment gt 0><span class="layui-badge fly-badge-accept layui-hide-xs">已结</span></#if>
                     <span class="fly-list-nums"><a href="/q/${top.q.id}" target="_blank"><i
                                 class="iconfont icon-pinglun1" title="回答"></i></a> ${top.q.comment_count}</span>
                     </div>
@@ -181,6 +181,7 @@
         <h2>
             <a class="layui-badge" href="{{item.n.url}}" target="_blank">{{item.n.name}}</a>
             <a href="/q/{{item.q.id}}" target="_blank">{{item.q.title}}</a>
+            {{# if(item.q.system_top> 0){ }}<a class="layui-badge layui-bg-blue">顶</a>{{# }}}
         </h2>
         <div class="fly-list-info">
             <a href="/user/{{item.q_user.id}}" link>
@@ -193,7 +194,7 @@
             {{# if(item.q.reward_point> 0){ }}
             <span class="fly-list-kiss layui-hide-xs" title="悬赏积分"><i class="layui-icon  layui-icon-diamond"></i> {{item.q.reward_point}}</span>
             {{# }}}
-            {{# if(item.q.reward_user> 0){ }}
+            {{# if(item.q.reward_comment> 0){ }}
             <span class="layui-badge fly-badge-accept layui-hide-xs">已悬赏</span>
             {{# }}}
             <span class="fly-list-nums">
@@ -208,9 +209,7 @@
     </li>
     {{#  }); }}
     {{#} else { }}
-    <tr>
-        <td colspan="9" style="text-align: center">无数据</td>
-    <tr/>
+    <div class="fly-none">没有相关帖子</div>
     {{# }}}
 
 </script>
@@ -258,14 +257,19 @@
                         var listData = {"list": data.result.questions};
                         var getTpl = questionListTpl.innerHTML, view = document.getElementById('questionBodys');
 
+
                         laytpl(getTpl).render(listData, function (html) {
                             view.innerHTML = html;
                         });
                         form.render();
-                        if (number === 1) {
-                            //分页标签
-                            pageBar(data.result.count, 10);
+
+                        if(data.result.count >0){
+                            if (number === 1) {
+                                //分页标签
+                                pageBar(data.result.count, 10);
+                            }
                         }
+
                     }
                 }
             });

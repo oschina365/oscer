@@ -636,7 +636,7 @@ public abstract class Entity implements Serializable {
                     continue;
                 }
                 Object fv = field.getReadMethod().invoke(this);
-                if (fv == null || ((fv instanceof Number) && ((Number) fv).intValue() == 0)) {
+                if (fv == null /*|| ((fv instanceof Number) && ((Number) fv).intValue() == 0)*/) {
                     continue;
                 }
                 props.put(field.getName(), fv);

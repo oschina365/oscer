@@ -120,9 +120,9 @@ public class Question extends Entity {
      */
     private Integer reward_point;
     /**
-     * 被悬赏者，即最佳回帖人
+     * 被悬赏的帖子评论id
      */
-    private long reward_user;
+    private long reward_comment;
 
     /**
      * 节点ID
@@ -305,12 +305,12 @@ public class Question extends Entity {
         this.reward_point = reward_point;
     }
 
-    public long getReward_user() {
-        return reward_user;
+    public long getReward_comment() {
+        return reward_comment;
     }
 
-    public void setReward_user(long reward_user) {
-        this.reward_user = reward_user;
+    public void setReward_comment(long reward_comment) {
+        this.reward_comment = reward_comment;
     }
 
     public long getNode() {

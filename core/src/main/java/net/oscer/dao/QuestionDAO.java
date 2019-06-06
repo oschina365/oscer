@@ -70,9 +70,9 @@ public class QuestionDAO extends CommonDao<Question> {
     }
 
     public List<Question> all(long node, int page, int size) {
-        String sql = "select id from questions where status=0 and system_top=0 order by id desc";
+        String sql = "select id from questions where status=0 order by system_top desc,recomm desc, id desc";
         if (node > 0L) {
-            sql = "select id from questions where node=" + node + " and status=0 and system_top=0 order by id desc";
+            sql = "select id from questions where node=" + node + " and status=0 order by system_top desc,recomm desc, id desc";
         }
         List<Long> ids = getDbQuery().query_slice_cache(long.class, getCache_region(), "status#0" + node, 100, sql, page, size);
         return Question.ME.loadList(ids);
@@ -103,4 +103,7 @@ public class QuestionDAO extends CommonDao<Question> {
         CacheMgr.evict(getCache_region(), "count#0" + 0);
     }
 
+    public void evictTops() {
+        CacheMgr.evict(getCache_region(), "tops#" + Question.SYSTEM_LIMIT_TOP);
+    }
 }
