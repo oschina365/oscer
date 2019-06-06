@@ -111,19 +111,6 @@
                 <div class="fly-none">没有相关数据</div>
                 -->
             </dl>
-
-            <#--<div class="fly-panel">
-                <div class="fly-panel-title">这里可作为广告区域</div>
-                <div class="fly-panel-main">
-                    <a href="http://layim.layui.com/?from=fly" target="_blank" class="fly-zanzhu" style="background-color: #5FB878;">LayIM 3.0 - layui 旗舰之作</a>
-                </div>
-            </div>
-
-            <div class="fly-panel" style="padding: 20px 0; text-align: center;">
-                <img src="../../res/images/weixin.jpg" style="max-width: 100%;" alt="layui">
-                <p style="position: relative; color: #666;">微信扫码关注 layui 公众号</p>
-            </div>-->
-
         </div>
     </div>
 </div>
