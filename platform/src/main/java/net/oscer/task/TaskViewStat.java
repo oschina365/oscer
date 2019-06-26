@@ -19,7 +19,7 @@ public class TaskViewStat {
      *
      * @throws Exception
      */
-    @Scheduled(cron = "*/1 * * * * ?")
+    @Scheduled(cron = "*/5 * * * * ?")
     public void timer() throws Exception {
         DbQuery.get("mysql").transaction(new TransactionService() {
             @Override

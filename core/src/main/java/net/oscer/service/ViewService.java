@@ -79,7 +79,7 @@ public class ViewService {
 
             if (type.equalsIgnoreCase(TYPE.QUESTION.getKey())) {
                 Question q = Question.ME.get(id);
-                q.setView_count(count);
+                q.setView_count(q.getView_count() + count);
                 q.doUpdate();
 
             } else if (type.equalsIgnoreCase(TYPE.BLOG.getKey())) {

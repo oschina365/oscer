@@ -44,8 +44,6 @@ public class UrlPermissionsFilter extends PermissionsAuthorizationFilter {
 
     public static final String CACHE_TOTAL = "Total";
 
-    public static final String CACHE_USER_VIEW = "UserView";
-
     @Override
     public boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws IOException {
         String curUrl = getRequestUrl(request);
@@ -91,18 +89,6 @@ public class UrlPermissionsFilter extends PermissionsAuthorizationFilter {
             }
 
         }
-
-        if (
-                StringUtils.endsWithAny(curUrl, ".js", ".css", ".html")
-                        || StringUtils.endsWithAny(curUrl, ".jpg", ".png", ".gif", ".jpeg", ".map", ".ico")
-                        || StringUtils.startsWith(curUrl, "/api/")
-                        || curUrl.contains("/tools/")
-                        || curUrl.contains(".js")
-                        || curUrl.contains(".css")
-                        || StringUtils.equals(curUrl, "/unauthor")) {
-            return true;
-        }
-
 
 
         /*SysUser user = ((SysUser) subject.getPrincipal());
