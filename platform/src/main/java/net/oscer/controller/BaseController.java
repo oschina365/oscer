@@ -112,7 +112,12 @@ public class BaseController {
      * @return
      */
     public User getLoginUser() {
-        User login_user = (User) SecurityUtils.getSubject().getPrincipal();
+        User login_user = null;
+        try {
+            login_user = (User) SecurityUtils.getSubject().getPrincipal();
+        } catch (Exception e) {
+            return null;
+        }
         return login_user == null ? (getUserFromCookie() == null ? null : getUserFromCookie()) : (login_user.getId() <= 0 ? null : login_user);
     }
 

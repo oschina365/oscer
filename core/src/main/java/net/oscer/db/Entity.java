@@ -36,6 +36,8 @@ public abstract class Entity implements Serializable {
         }
     }
 
+    public static final String CACHE_VIEW = "View";
+
     /**
      * 青铜
      */
@@ -626,13 +628,13 @@ public abstract class Entity implements Serializable {
                 if (getId() == 0 && "id".equals(field.getName())) {
                     continue;
                 }
-                if("vip_text".equalsIgnoreCase(field.getName())){
+                if ("vip_text".equalsIgnoreCase(field.getName())) {
                     continue;
                 }
-                if("sdf_insert_date".equalsIgnoreCase(field.getName())){
+                if ("sdf_insert_date".equalsIgnoreCase(field.getName())) {
                     continue;
                 }
-                if("sdf_last_date".equalsIgnoreCase(field.getName())){
+                if ("sdf_last_date".equalsIgnoreCase(field.getName())) {
                     continue;
                 }
                 Object fv = field.getReadMethod().invoke(this);

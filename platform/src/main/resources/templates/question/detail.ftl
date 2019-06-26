@@ -45,7 +45,7 @@
                     <span class="fly-list-nums">
                             <a href="#comment"><i class="iconfont" title="回答">&#xe60c;</i> ${q.comment_count!'0'}</a>
                             <i class="iconfont" title="人气">&#xe60b;</i> ${q.view_count!'0'}
-                            <i class="iconfont" title="人气">&#xe67b;</i> ${q.view_count!'0'}
+                            <i class="layui-icon" title="收藏">&#xe67b;</i> ${q.collect_count!'0'}
                     </span>
                 </div>
 

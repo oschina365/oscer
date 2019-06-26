@@ -21,6 +21,11 @@ import java.util.Map;
 @Controller
 public class GlobalController extends BaseController {
 
+    @RequestMapping("/error/{code}")
+    public String error(@PathVariable("code") String code) {
+        return "/error/" + code;
+    }
+
     @RequestMapping("/")
     public String index() {
         List<Node> nodes = NodeDAO.ME.nodes(Node.STATUS_NORMAL, 0);
@@ -30,7 +35,7 @@ public class GlobalController extends BaseController {
         request.setAttribute("tops", QuestionVO.list(tops));
 
         //回帖周榜
-        List<Map<User, Integer>>  weekUserCommentHots = CommentQuestionDAO.ME.weekUserCommentHots();
+        List<Map<User, Integer>> weekUserCommentHots = CommentQuestionDAO.ME.weekUserCommentHots();
         request.setAttribute("weekUserCommentHots", weekUserCommentHots);
 
         //查询对应的本周热议帖子

@@ -6,6 +6,9 @@ import net.oscer.beans.User;
 import net.oscer.common.ApiResult;
 import net.oscer.dao.NodeDAO;
 import net.oscer.dao.QuestionDAO;
+import net.oscer.db.CacheMgr;
+import net.oscer.enums.ViewEnum;
+import net.oscer.service.ViewService;
 import net.oscer.vo.QuestionVO;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -49,6 +52,7 @@ public class QuestionController extends BaseController {
         if (null == u || u.getId() <= 0L || u.getStatus() != User.STATUS_NORMAL) {
             return "403";
         }
+        ViewService.keyCache(q.getId(), ViewEnum.TYPE.QUESTION.getKey());
         request.setAttribute("q", q);
         request.setAttribute("u", u);
         return "/question/detail";

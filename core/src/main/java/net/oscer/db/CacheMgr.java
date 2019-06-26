@@ -26,48 +26,63 @@ public class CacheMgr {
 
     private final static CacheChannel cache = builder.getChannel();
 
-    public static Object get(String region, String key)  {
+    public static Object get(String region, String key) {
         return cache.get(region, key).getValue();
     }
 
-    public static Object get(String region, String key, Function<String, Object> loader, boolean...cacheNullObject) {
+    public static Object get(String region, String key, Function<String, Object> loader, boolean... cacheNullObject) {
         return cache.get(region, key, loader, cacheNullObject).getValue();
     }
 
-    public static Map<String, CacheObject> get(String region, Collection<String> keys)  {
+    public static Map<String, CacheObject> get(String region, Collection<String> keys) {
         return cache.get(region, keys);
     }
 
-    public static Map<String, CacheObject> get(String region, Collection<String> keys, Function<String, Object> loader, boolean...cacheNullObject)  {
+    public static Map<String, CacheObject> get(String region, Collection<String> keys, Function<String, Object> loader, boolean... cacheNullObject) {
         return cache.get(region, keys, loader, cacheNullObject);
     }
 
-    public static boolean exists(String region, String key)  {
+    public static boolean exists(String region, String key) {
         return cache.exists(region, key);
     }
 
-    public static void set(String region, String key, Object value)  {
+    public static void set(String region, String key, Object value) {
         cache.set(region, key, value);
     }
 
-    public static void set(String region, Map<String, Object> elements)  {
+    public static void set(String region, Map<String, Object> elements) {
         cache.set(region, elements);
     }
 
-    public static void evict(String region, String... keys)  {
+    public static void evict(String region, String... keys) {
         cache.evict(region, keys);
     }
 
-    public static void clear(String region)  {
+    public static void clear(String region) {
         cache.clear(region);
     }
 
-    public static Collection<String> keys(String region)  {
+    public static Collection<String> keys(String region) {
         return cache.keys(region);
     }
 
-    public static void close(){
+    public static void close() {
         cache.close();
+    }
+
+    /**
+     * 自增1
+     *
+     * @param region
+     * @param key
+     */
+    public static void incr(String region, String key) {
+        Object value = get(region, key);
+        if (value != null && value instanceof Integer) {
+            set(region, key, ((Integer) value) + 1);
+        } else {
+            set(region, key, 1);
+        }
     }
 
 }
