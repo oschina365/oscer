@@ -1,7 +1,7 @@
 <#include "../layout/front/layout.ftl"/>
 <@html title_="${q.title}-oscer社区">
 
-<div class="layui-container">
+<div class="layui-container" style="margin-top: 8px;">
     <div class="layui-row layui-col-space15">
         <div class="layui-col-md8 content detail">
             <div class="fly-panel detail-box">
@@ -80,8 +80,11 @@
                 </fieldset>
 
                 <ul class="jieda" id="jieda"><div id="commentBodys"></div></ul>
+                <hr>
                 <div id="page"></div>
+            </div>
 
+            <div class="fly-panel detail-box">
                 <div class="layui-form layui-form-pane">
                     <form action="/comment/q/${q.id}" method="post" id="commentFrom">
                         <input type="hidden" name="id" value="${q.id}"/>
@@ -93,7 +96,7 @@
                         </div>
                         <div class="layui-form-item">
                             <input type="hidden" name="jid" value="123">
-                            <button class="layui-btn" lay-filter="commentAdd" lay-submit>提交回复</button>
+                            <button class="layui-btn" lay-filter="commentAdd" lay-submit>发布评论</button>
                         </div>
                     </form>
                 </div>
@@ -118,9 +121,10 @@
 <script id="commentListTpl" type="text/html">
     {{#  if(d.list!=null&&d.list.length> 0){ }}
     {{#  layui.each(d.list, function(index, item){ }}
-    <li data-id="111" class="jieda-daan">
-        <a name="item-1111111111"></a>
+    <li class="jieda-daan">
+        <a></a>
         <div class="detail-about detail-about-reply">
+            <p>{{d.rankMap[item.cq.id]}}楼</p>
             <a class="fly-avatar" href="">
                 <img src="{{item.cu.headimg}}" alt=" ">
             </a>
@@ -151,19 +155,23 @@
             <p>{{item.cq.content}}</p>
         </div>
         <div class="jieda-reply">
-              <span class="jieda-zan zanok" type="zan">
+              <a onclick="praise({{item.cq.id}})">
+              <span class="jieda-zan {{# if(item.praise){ }}zanok{{# }}}" type="zan">
                 <i class="iconfont icon-zan"></i>
                 <em>{{item.cq.praise_count}}</em>
               </span>
+              </a>
             <span type="reply">
                 <i class="iconfont icon-svgmoban53"></i>
                 回复
               </span>
+            {{# if(item.bestComment){ }}
             <div class="jieda-admin">
                 <span type="edit">编辑</span>
                 <span type="del">删除</span>
                 <!-- <span class="jieda-accept" type="accept">采纳</span> -->
             </div>
+            {{# }}}
         </div>
     </li>
     {{#  }); }}
@@ -197,17 +205,16 @@
                 dataType: 'json',
                 data: {"id":${q.id}, "number": number},
                 success: function (data) {
-                    console.log(data);
                     if (data && data.code == 1) {
-                        var listData = {"list": data.result.comments};
+                        var listData = {"list": data.result.comments,"rankMap": data.result.rankMap};
                         var getTpl = commentListTpl.innerHTML, view = document.getElementById('commentBodys');
 
                         laytpl(getTpl).render(listData, function (html) {
                             view.innerHTML = html;
                         });
-                        if (number === 1) {
+                        if (number === 1 && data.result.count>0) {
                             //分页标签
-                            pageBar(data.result.count, 1);
+                            pageBar(data.result.count, 10);
                         }
                     }
                 }
@@ -247,7 +254,9 @@
                 data: data.field,
                 success: function (res) {
                     if (res.code == 1) {
-                        layer.closeAll('page');
+                        layer.msg('评论成功', {icon:6, shade: 0.1, time:500});
+                        location.reload();
+
                     } else {
                         layer.alert(res.message);
                     }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 全局访问类
@@ -29,8 +30,8 @@ public class GlobalController extends BaseController {
         request.setAttribute("tops", QuestionVO.list(tops));
 
         //回帖周榜
-        List<CommentQuestion> weekHotComments = CommentQuestionDAO.ME.weekHots();
-        request.setAttribute("weekHotComments", weekHotComments);
+        List<Map<User, Integer>>  weekUserCommentHots = CommentQuestionDAO.ME.weekUserCommentHots();
+        request.setAttribute("weekUserCommentHots", weekUserCommentHots);
 
         //查询对应的本周热议帖子
         List<Question> weekHots = QuestionDAO.ME.hots(0L, 10);

@@ -127,13 +127,15 @@
 
             <div class="fly-panel fly-rank fly-rank-reply" id="LAY_replyRank">
                 <h3 class="fly-panel-title">回贴周榜</h3>
-                <#if weekHotComments??>
+                <#if weekUserCommentHots??>
                     <dl>
-                    <#list weekHotComments as comment>
+                    <#list weekUserCommentHots as item>
                         <dd>
-                            <a href="/u/${comment.cu.id}">
-                                <img src=""><cite>贤心</cite><i>106次回答</i>
-                            </a>
+                            <#list item as key, value>
+                                <a href="/u/${key.id}">
+                                    <img src="${key.headimg}"><cite>${key.nickname!key.username}</cite><i>${value!'0'}次回答</i>
+                                </a>
+                            </#list>
                         </dd>
                     </#list>
                     </dl>
@@ -252,7 +254,6 @@
                 dataType: 'json',
                 data: {"number": number},
                 success: function (data) {
-                    console.log(data);
                     if (data && data.code == 1) {
                         var listData = {"list": data.result.questions};
                         var getTpl = questionListTpl.innerHTML, view = document.getElementById('questionBodys');
@@ -304,8 +305,5 @@
     }).use('fly');
 
 </script>
-<script type="text/javascript">
-    var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
-    document.write(unescape("%3Cspan id='cnzz_stat_icon_30088308'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "w.cnzz.com/c.php%3Fid%3D30088308' type='text/javascript'%3E%3C/script%3E"));
-</script>
+
 </@html>

@@ -5,10 +5,10 @@ import net.oscer.beans.Question;
 import net.oscer.beans.User;
 import net.oscer.common.ApiResult;
 import net.oscer.dao.CommentQuestionDAO;
-import net.oscer.dao.QuestionDAO;
+import net.oscer.db.CacheMgr;
 import net.oscer.framework.StringUtils;
 import net.oscer.vo.CommentQuestionVO;
-import net.oscer.vo.QuestionVO;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,7 +58,7 @@ public class CommentController extends BaseController {
         c.save();
         q.setComment_count(q.getComment_count() + 1);
         q.doUpdate();
-        CommentQuestionDAO.ME.evictCount(id);
+        CommentQuestionDAO.ME.evict(id);
         return ApiResult.success();
     }
 
@@ -74,9 +74,23 @@ public class CommentController extends BaseController {
     public ApiResult list(@RequestParam(value = "id", defaultValue = "0", required = false) Long id) {
         User login_user = getLoginUser();
         Map<String, Object> map = new HashMap<>(2);
-        //评论列表
-        List<CommentQuestion> comments = CommentQuestionDAO.ME.list(id, pageNumber, 1);
-        map.put("comments", CommentQuestionVO.list(id,login_user,comments));
+        //评论列表 --分页
+        List<CommentQuestion> comments = CommentQuestionDAO.ME.list(id, pageNumber, pageSize);
+        if (CacheMgr.exists(CommentQuestion.ME.CacheRegion(), "rankMap#" + id)) {
+            map.put("rankMap", CacheMgr.get(CommentQuestion.ME.CacheRegion(), "rankMap#" + id));
+        } else {
+            //全部评论
+            List<CommentQuestion> allComments = CommentQuestionDAO.ME.list(id);
+            if (CollectionUtils.isNotEmpty(allComments)) {
+                Map<Long, Integer> rankMap = new HashMap<>(allComments.size());
+                for (int i = 0; i < allComments.size(); i++) {
+                    rankMap.put(allComments.get(i).getId(), allComments.size() - i);
+                }
+                map.put("rankMap", rankMap);
+                CacheMgr.set(CommentQuestion.ME.CacheRegion(), "rankMap#" + id, rankMap);
+            }
+        }
+        map.put("comments", CommentQuestionVO.list(id, login_user, comments));
         //帖子总数
         int count = CommentQuestionDAO.ME.count(id);
         map.put("count", count);

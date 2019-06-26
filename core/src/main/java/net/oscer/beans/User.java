@@ -387,8 +387,8 @@ public class User extends Entity implements Serializable {
      * @return
      */
     public User _GeneratePwdHashCommon(String ident) {
-        String sql = "select id from users where ident =? or email = ? or phone = ?";
-        Number n = DbQuery.get("mysql").read(Number.class, sql, ident, ident, ident);
+        String sql = "select id from users where ident =? or email = ? or phone = ? or username=? ";
+        Number n = DbQuery.get("mysql").read(Number.class, sql, ident, ident, ident,ident);
         if (n != null && n.longValue() > 0L) {
             return User.ME.get(n.longValue());
         }

@@ -1,9 +1,16 @@
 package net.oscer.dao;
 
 import net.oscer.beans.CommentQuestion;
+import net.oscer.beans.User;
 import net.oscer.db.CacheMgr;
+import net.oscer.vo.CountVO;
+import org.apache.commons.collections.CollectionUtils;
 
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 帖子评论
@@ -20,13 +27,50 @@ public class CommentQuestionDAO extends CommonDao<CommentQuestion> {
         return "mysql";
     }
 
-    public List<CommentQuestion> weekHots() {
-        String sql = "";
-        return null;
+    /**
+     * 回帖周榜,获取回帖最多的用户
+     *
+     * @return
+     */
+    public List<Map<User, Integer>> weekUserCommentHots() {
+        String sql = "SELECT user as id,count(1) count FROM  comment_questions WHERE " +
+                "YEARWEEK( date_format(  insert_date,'%Y-%m-%d' ) ) = YEARWEEK( now()) GROUP BY user order by count desc limit 5";
+        List<CountVO> list = getDbQuery().query_cache(CountVO.class, false, CommentQuestion.ME.CacheRegion(), "weekUserCommentHots", sql);
+        if (CollectionUtils.isEmpty(list)) {
+            return null;
+        }
+        List<Map<User, Integer>> result = new LinkedList<>();
+
+        list.stream().filter(c -> (null != c && c.getId() > 0)).forEach(c -> {
+            Map<User, Integer> map = new HashMap<>();
+            User u = User.ME.get(c.getId());
+            map.put(u, c.getCount());
+            result.add(map);
+        });
+        return result;
     }
 
-    public void evictCount(long question) {
+    /**
+     * 回帖周榜,获取帖子
+     *
+     * @return
+     */
+    public List<CommentQuestion> weekCommentHots() {
+        String sql = "SELECT question as id,count(1) count FROM comment_questions WHERE " +
+                "YEARWEEK( date_format(  insert_date,'%Y-%m-%d' ) ) = YEARWEEK( now()) GROUP BY question order by count desc limit 5";
+        List<CountVO> list = getDbQuery().query_cache(CountVO.class, false, CommentQuestion.ME.CacheRegion(), "weekCommentHots", sql);
+        if (CollectionUtils.isEmpty(list)) {
+            return null;
+        }
+        List<Long> ids = list.stream().filter(c -> (null != c && c.getId() > 0)).map(CountVO::getId).collect(Collectors.toList());
+        return CommentQuestion.ME.loadList(ids);
+    }
+
+    public void evict(long question) {
         CacheMgr.evict(CommentQuestion.ME.CacheRegion(), "count#" + question);
+        CacheMgr.evict(CommentQuestion.ME.CacheRegion(), "question#all#" + question);
+        CacheMgr.evict(CommentQuestion.ME.CacheRegion(), "question#" + question);
+        CacheMgr.evict(CommentQuestion.ME.CacheRegion(), "rankMap#" + question);
     }
 
     public int count(long question) {
@@ -34,9 +78,15 @@ public class CommentQuestionDAO extends CommonDao<CommentQuestion> {
         return getDbQuery().stat_cache(CommentQuestion.ME.CacheRegion(), "count#" + question, sql, question);
     }
 
+    public List<CommentQuestion> list(long question) {
+        String sql = "select id from comment_questions where question=? order by id desc";
+        List<Long> ids = getDbQuery().query_cache(long.class, false, CommentQuestion.ME.CacheRegion(), "question#all#" + question, sql, question);
+        return CommentQuestion.ME.loadList(ids);
+    }
+
     public List<CommentQuestion> list(long question, int page, int size) {
-        String sql = "select id from comment_questions where question=? ";
-        List<Long> ids = getDbQuery().query_slice(long.class, sql, page, size, question);
+        String sql = "select id from comment_questions where question=? order by id desc";
+        List<Long> ids = getDbQuery().query_slice_cache(long.class, CommentQuestion.ME.CacheRegion(), "question#" + question, 100, sql, page, size, question);
         return CommentQuestion.ME.loadList(ids);
     }
 }

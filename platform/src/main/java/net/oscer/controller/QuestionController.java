@@ -135,7 +135,7 @@ public class QuestionController extends BaseController {
         if (null == u || u.getId() <= 0L || u.getStatus() != User.STATUS_NORMAL) {
             return "403";
         }
-        if (q.getUser() != u.getId() || u.getId() != 2) {
+        if (q.getUser() != u.getId() || u.getId() == 2) {
             return "/error/404";
         }
         request.setAttribute("q", q);
