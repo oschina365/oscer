@@ -18,6 +18,7 @@ public class UrlPassEnum {
     public static final String q = "/q/";
     public static final String oauth = "/oauth";
     public static final String comment = "/comment";
+    public static final String sign = "/sign";
 
-    public static final List<String> list = Arrays.asList(user, u, druid, res, q, oauth, comment);
+    public static final List<String> list = Arrays.asList(user, u, druid, res, q, oauth, comment,sign);
 }

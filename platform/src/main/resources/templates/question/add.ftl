@@ -119,6 +119,8 @@
     });
 
     form.on("submit(questionAdd)",function(data){
+      var content = layedit.getContent(editIndex);
+      $("#content").val(content);
 
       var options = {
         dataType: "json",
@@ -131,12 +133,12 @@
               window.location.href=d.result;
             },800)
           }else{
-            layer.msg(d.message?d.message:"创建失败~",{icon:5});
+            layer.msg(d.message?d.message:"发布失败~",{icon:5});
           }
 
         },
         error: function (d) {
-          layer.msg(d.message?d.message:"创建失败~",{icon:5});
+          layer.msg(d.message?d.message:"发布失败~",{icon:5});
         }
       };
       $("#listForm").ajaxSubmit(options);
