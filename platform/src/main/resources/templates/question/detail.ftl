@@ -124,31 +124,21 @@
     <li class="jieda-daan">
         <a></a>
         <div class="detail-about detail-about-reply">
-            <p>{{d.rankMap[item.cq.id]}}楼</p>
+            <p>{{d.rankMap[item.cq.id]}}楼<span>&nbsp;&nbsp;&nbsp;{{item.sdf_insert_date}}</span></p>
             <a class="fly-avatar" href="">
                 <img src="{{item.cu.headimg}}" alt=" ">
             </a>
-            <div class="fly-detail-user">
-                <a href="" class="fly-link">
+            <div class="fly-detail-user" style="margin-top: 10px;">
+                <a href="/u/{{item.cu.id}}" class="fly-link">
                     <cite>{{item.cu.nickname||item.cu.username}}</cite>
                     <#--<i class="iconfont icon-renzheng" title="认证信息：XXX"></i>-->
                     <i class="layui-badge fly-badge-vip">{{item.cu.vip_text}}</i>
                 </a>
 
                 {{# if(item.cu.id==2){ }}<span>(楼主)</span>{{# }}}
-                <!--
-                <span style="color:#5FB878">(管理员)</span>
-                <span style="color:#FF9E3F">（社区之光）</span>
-                <span style="color:#999">（该号已被封）</span>
-                -->
-            </div>
-
-            <div class="detail-hits">
-                <span>{{item.sdf_insert_date}}</span>
             </div>
 
             {{# if(item.bestComment){ }} <i class="iconfont icon-caina" title="最佳答案"></i>{{# }}}
-
 
         </div>
         <div class="detail-body jieda-body photos">

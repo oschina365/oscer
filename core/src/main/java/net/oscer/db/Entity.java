@@ -111,7 +111,9 @@ public abstract class Entity implements Serializable {
 
     public static final long ONE_HOUR = 1000 * 60 * 60L;
 
-    public static final String ONE_HOUR_CACHE = "1h";
+    public static final String CACHE_ONE_HOUR = "one_hour";
+    public static final String CACHE_ONE_MIN = "one_min";
+    public static final String CACHE_FIVE_MIN = "five_min";
 
     /**
      * 缓存页面

@@ -8,6 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
+import static net.oscer.db.Entity.CACHE_FIVE_MIN;
+
 /**
  * 帖子
  *
@@ -92,7 +94,7 @@ public class QuestionDAO extends CommonDao<Question> {
             sql = "select id from questions where status=0 and node=" + node + " and YEARWEEK(date_format(insert_date,'%Y-%m-%d'))= YEARWEEK(now())" +
                     " order by (collect_count*10+praise_count*5+comment_count*2+view_count) desc limit ?";
         }
-        List<Long> ids = getDbQuery().query_cache(long.class, isCacheNullObject(), getCache_region(), "hots#" + node + "#" + limit, sql, limit);
+        List<Long> ids = getDbQuery().query_cache(long.class, isCacheNullObject(), CACHE_FIVE_MIN, "hots#" + node + "#" + limit, sql, limit);
         return Question.ME.loadList(ids);
     }
 

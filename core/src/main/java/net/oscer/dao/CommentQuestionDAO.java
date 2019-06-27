@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static net.oscer.db.Entity.CACHE_ONE_MIN;
+
 /**
  * 帖子评论
  *
@@ -35,14 +37,14 @@ public class CommentQuestionDAO extends CommonDao<CommentQuestion> {
     public List<Map<User, Integer>> weekUserCommentHots() {
         String sql = "SELECT user as id,count(1) count FROM  comment_questions WHERE " +
                 "YEARWEEK( date_format(  insert_date,'%Y-%m-%d' ) ) = YEARWEEK( now()) GROUP BY user order by count desc limit 5";
-        List<CountVO> list = getDbQuery().query_cache(CountVO.class, false, CommentQuestion.ME.CacheRegion(), "weekUserCommentHots", sql);
+        List<CountVO> list = getDbQuery().query_cache(CountVO.class, false, CACHE_ONE_MIN, "weekUserCommentHots", sql);
         if (CollectionUtils.isEmpty(list)) {
             return null;
         }
         List<Map<User, Integer>> result = new LinkedList<>();
 
         list.stream().filter(c -> (null != c && c.getId() > 0)).forEach(c -> {
-            Map<User, Integer> map = new HashMap<>();
+            Map<User, Integer> map = new HashMap<>(1);
             User u = User.ME.get(c.getId());
             map.put(u, c.getCount());
             result.add(map);
