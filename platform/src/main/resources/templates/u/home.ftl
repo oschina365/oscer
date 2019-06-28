@@ -11,7 +11,7 @@
       <#elseif u.sex==2>
       <i class="iconfont icon-nv"></i>
     </#if>
-    <#if vip?length gt 0><i class="layui-badge fly-badge-vip">${vip}</i></#if>
+    <#if vip?? && vip?length gt 0><i class="layui-badge fly-badge-vip">${vip}</i></#if>
     <!--
     <span style="color:#c00;">（管理员）</span>
     <span style="color:#5FB878;">（社区之光）</span>

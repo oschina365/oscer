@@ -434,6 +434,6 @@ public class User extends Entity implements Serializable {
         if (this.getScore() >= VIP1_SCORE) {
             return VIP_MAP.get(VIP1_SCORE);
         }
-        return "";
+        return null;
     }
 }

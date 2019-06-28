@@ -12,45 +12,51 @@
             </div>
             <#if tops??>
                 <div class="fly-panel">
-                <div class="fly-panel-title fly-filter">
-                    <a>置顶</a>
-                    <a href="#signin" class="layui-hide-sm layui-show-xs-block fly-right" id="LAY_goSignin"
-                       style="color: #FF5722;">去签到</a>
-                </div>
-                <ul class="fly-list">
-                <#list tops as top>
-                    <li>
-                    <a href="/u/${top.q_user.id}" class="fly-avatar">
-                <img src="${top.q_user.headimg}"alt="${top.q_user.nickname!top.q_user.username}">
-                    </a>
-                    <h2>
-                <a class="layui-badge" href="${top.n.url}" target="_blank">${top.n.name}</a>
-                    <#if top.q.recomm gt 0><a class="layui-badge" style="color: red;border: 1px solid red">荐</a></#if>
-                <a href="/q/${top.q.id}">${top.q.title!''}</a>
-                    </h2>
-                    <div class="fly-list-info">
-                <a href="/u/${top.q_user.id}" link>
-                    <cite>${top.q_user.nickname!top.q_user.username}</cite>
-                <#--<i class="iconfont icon-renzheng" title="认证信息：XXX"></i>-->
-                <i class="layui-badge fly-badge-vip">VIP3</i>
-                    </a>
-                    <span>${top.q.sdf_insert_date!''}</span>
+                    <div class="fly-panel-title fly-filter">
+                        <a>置顶</a>
+                        <a href="#signin" class="layui-hide-sm layui-show-xs-block fly-right" id="LAY_goSignin"
+                           style="color: #FF5722;">去签到</a>
+                    </div>
+                    <ul class="fly-list">
+                        <#list tops as top>
+                            <li>
+                                <a href="/u/${top.q_user.id}" class="fly-avatar">
+                                    <img src="${top.q_user.headimg}"alt="${top.q_user.nickname!top.q_user.username}">
+                                </a>
+                                <h2>
+                                    <a class="layui-badge" href="${top.n.url}" target="_blank">${top.n.name}</a>
+                                        <#if top.q.recomm gt 0><a class="layui-badge" style="color: red;border: 1px solid red">荐</a></#if>
+                                    <a href="/q/${top.q.id}">${top.q.title!''}</a>
+                                </h2>
+                                <div class="fly-list-info">
+                                    <a href="/u/${top.q_user.id}" link>
+                                    <cite>${top.q_user.nickname!top.q_user.username}</cite>
+                                    <#--<i class="iconfont icon-renzheng" title="认证信息：XXX"></i>-->
+                                    <#if top.q_user.vip_text?? && top.q_user.vip_text?length gt 0><i class="layui-badge fly-badge-vip">${top.q_user.vip_text}</i></#if>
+                                    </a>
+                                    <span>${top.q.sdf_insert_date!''}</span>
 
-                    <#if top.q.reward_point gt 0><span class="fly-list-kiss layui-hide-xs" title="悬赏飞吻"><i
-                                class="iconfont icon-kiss"></i> ${top.q.reward_point}</span></#if>
-                    <#if top.q.reward_comment gt 0><span class="layui-badge fly-badge-accept layui-hide-xs">已结</span></#if>
-                    <span class="fly-list-nums"><a href="/q/${top.q.id}" target="_blank"><i
-                                class="iconfont icon-pinglun1" title="回答"></i></a> ${top.q.comment_count}</span>
-                    </div>
-                    <div class="fly-list-badge">
-                        <!--
-                        <span class="layui-badge layui-bg-black">置顶</span>
-                        <span class="layui-badge layui-bg-red">精帖</span>
-                        -->
-                    </div>
-                    </li>
-                </#list>
-                </ul>
+                                    <#if top.q.reward_point gt 0>
+                                        <span class="fly-list-kiss layui-hide-xs" title="悬赏积分">
+                                            <i class="iconfont icon-kiss"></i> ${top.q.reward_point}
+                                        </span>
+                                    </#if>
+                                    <#if top.q.reward_comment gt 0>
+                                        <span class="layui-badge fly-badge-accept layui-hide-xs">已结</span>
+                                    </#if>
+                                    <span class="fly-list-nums"><a href="/q/${top.q.id}" target="_blank">
+                                        <i class="iconfont icon-pinglun1" title="回答"></i></a> ${top.q.comment_count}
+                                    </span>
+                                </div>
+                                <div class="fly-list-badge">
+                                <!--
+                                <span class="layui-badge layui-bg-black">置顶</span>
+                                <span class="layui-badge layui-bg-red">精帖</span>
+                                -->
+                                </div>
+                            </li>
+                        </#list>
+                    </ul>
                 </div>
             </#if>
 
@@ -189,7 +195,7 @@
             <a href="/u/{{item.q_user.id}}" link>
                 <cite>{{item.q_user.nickname||item.q_user.username}}</cite>
                 <#--<i class="iconfont icon-renzheng" title="认证信息：XXX"></i>-->
-                <i class="layui-badge fly-badge-vip">{{item.q_user.vip_text}}</i>
+                {{# if(item.q_user.vip_text){ }} <i class="layui-badge fly-badge-vip">{{item.q_user.vip_text}}</i>  {{# }}}
             </a>
             <span>{{item.q.sdf_insert_date}}</span>
 
