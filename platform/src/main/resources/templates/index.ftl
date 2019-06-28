@@ -154,10 +154,13 @@
                 <dt class="fly-panel-title">本周热议</dt>
                 <#if weekHots??>
                     <#list weekHots as hot>
-                        <dd>
-                        <a href="/q/${hot.id}">${hot.title}</a>
-                        <span><i class="iconfont icon-pinglun1"></i> ${hot.comment_count}</span>
-                        </dd>
+                        <#if hot?? && hot.id gt 0>
+                            <dd>
+                            <a href="/q/${hot.id}">${hot.title}</a>
+                            <span><i class="iconfont icon-pinglun1"></i> ${hot.comment_count}</span>
+                            </dd>
+                        </#if>
+
                     </#list>
                 <#else >
                     <div class="fly-none" style="min-height: 10px;padding-top: 10px;padding-bottom: 14px;">没有相关数据</div>

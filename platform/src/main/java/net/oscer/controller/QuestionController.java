@@ -140,7 +140,7 @@ public class QuestionController extends BaseController {
         if (null == u || u.getId() <= 0L || u.getStatus() != User.STATUS_NORMAL) {
             return "403";
         }
-        if (q.getUser() != u.getId() || u.getId() == 2) {
+        if (q.getUser() != u.getId()) {
             return "/error/404";
         }
         request.setAttribute("q", q);
@@ -179,6 +179,29 @@ public class QuestionController extends BaseController {
         form.doUpdate();
         QuestionDAO.ME.evictNode(form.getNode());
         return ApiResult.successWithObject(form.getId());
+    }
+
+    /**
+     * 删除帖子方法
+     *
+     * @return
+     */
+    @PostMapping("/delete")
+    @ResponseBody
+    public ApiResult delete(@RequestParam(value = "id", required = true, defaultValue = "0") long id) {
+        User login_user = getLoginUser();
+        if (login_user == null || !login_user.status_is_normal()) {
+            return ApiResult.failWithMessage("请登录后重试");
+        }
+        if (id <= 0L) {
+            return ApiResult.failWithMessage("不存在此帖子");
+        }
+        Question q = Question.ME.get(id);
+        if (login_user.getId() != q.getUser()) {
+            return ApiResult.failWithMessage("无权限删除此贴");
+        }
+        q.delete();
+        return ApiResult.success();
     }
 
     /**

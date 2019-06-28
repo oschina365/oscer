@@ -25,7 +25,7 @@
 
                     <div class="fly-admin-box" data-id="123">
                         <#if login_user?? && login_user.id=q.user>
-                            <span class="layui-btn layui-btn-xs jie-admin layui-btn-danger">删除</span>
+                        <a onclick="del()"><span class="layui-btn layui-btn-xs jie-admin layui-btn-danger">删除</span></a>
                         </#if>
 
                         <#if login_user?? && login_user.id=2>
@@ -255,14 +255,33 @@
             return false;
         });
 
-        window.recomm = function (value) {
+        window.del = function () {
+            $.ajax({
+                url: '/q/delete',
+                method: 'post',
+                dataType: 'json',
+                data: {"id":${q.id}},
+                success: function (data) {
+                    if (data && data.code == 1) {
+                        layer.msg("删除成功", {icon: 6});
+                        setTimeout(function () {
+                            location.href="/";
+                        },800)
+
+                    } else {
+                        layer.msg(data.message?data.message:"删除失败~",{icon:5});
+                    }
+                }
+            });
+        }
+
+        window.recomm = function () {
             $.ajax({
                 url: '/q/recomm',
                 method: 'post',
                 dataType: 'json',
                 data: {"id":${q.id}},
                 success: function (data) {
-                    console.log(data);
                     if (data && data.code == 1) {
                         layer.msg("操作成功", {icon: 6});
                         window.location.reload();
@@ -273,14 +292,13 @@
             });
         }
 
-        window.as_top = function (value) {
+        window.as_top = function () {
             $.ajax({
                 url: '/q/as_top',
                 method: 'post',
                 dataType: 'json',
                 data: {"id":${q.id}},
                 success: function (data) {
-                    console.log(data);
                     if (data && data.code == 1) {
                         layer.msg("操作成功", {icon: 6});
                         window.location.reload();
