@@ -8,6 +8,8 @@ import net.oscer.framework.RequestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.alibaba.druid.util.DruidWebUtils.getRemoteAddr;
+import static net.oscer.db.Entity.OFFLINE;
 
 /**
  * @author kz
@@ -43,6 +46,8 @@ public class BaseController {
 
     @Autowired(required = false)
     protected HttpServletResponse response;
+
+    public static final long TIME_OUT = 1000L * 60 * 60 * 24 * 365;
 
     public Integer pageSize = 10;
 
@@ -83,18 +88,18 @@ public class BaseController {
 
 
     @ModelAttribute
-    protected void setRequest(HttpServletRequest request, ModelMap map) {
+    protected void setRequest(HttpServletRequest request) {
         //第几页
         String number = request.getParameter("number");
         String size = request.getParameter("size");
         this.pageNumber = StringUtils.isEmpty(number) ? 1 : Integer.parseInt(number);
         this.pageSize = StringUtils.isEmpty(size) ? pageSize : Integer.parseInt(size);
         this.request = request;
-        map.put("size", pageSize);
+        request.setAttribute("size", pageSize);
         User login_user = getLoginUser();
         if (null != login_user) {
-            map.put("login_user", getLoginUser());
-            map.put("vip_text", login_user.vip());
+            request.setAttribute("login_user", getLoginUser());
+            request.setAttribute("vip_text", login_user.vip());
         }
         if (request.getCookies() != null) {
             cookies = new HashMap<>();
@@ -138,6 +143,9 @@ public class BaseController {
                     Long id = NumberUtils.toLong(items[0], -1L);
                     String pwd = items[1];
                     User foundUser = User.ME.get(id);
+                    if(foundUser.getOnline()==OFFLINE){
+                        return null;
+                    }
                     if (foundUser != null && StringUtils.equalsIgnoreCase(foundUser.getSalt(), pwd) && foundUser.status_is_normal()) {
                         //TODO: post login
                         return foundUser;
@@ -353,6 +361,13 @@ public class BaseController {
         cookie(COOKIE_LOGIN, new_value, MAX_AGE, true);
     }
 
+    public static void loginUser(String name,String pwd){
+        UsernamePasswordToken token = new UsernamePasswordToken(name, pwd, false);
+        Subject subject = SecurityUtils.getSubject();
+        subject.login(token);
+        subject.getSession().setTimeout(TIME_OUT);
+    }
+
     /**
      * 生成用户登录标识字符串
      * 修改这里的拼接规则时，请注意同步修改 userFromUUID 这个方法中的解密规则
@@ -438,6 +453,9 @@ public class BaseController {
      * 删除 Cookie 中的登录信息
      */
     public void deleteUserInCookie() {
+        request.removeAttribute("login_user");
+        request.removeAttribute("vip_text");
         deleteCookie(COOKIE_LOGIN, true);
     }
+
 }

@@ -303,6 +303,7 @@ public class OauthController extends BaseController {
             String html = "<p>Redirecting...</p><script type='text/javascript'>   location.href='" + LinkTool.root() + "';</script>";
             print(html);
         } else {
+            loginUser(loginUser.getEmail(),loginUser.getSalt());
             saveUserInCookie((User) result.getResult());
             redirect(LinkTool.root());
             return;

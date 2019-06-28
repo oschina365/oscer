@@ -33,7 +33,7 @@ import static net.oscer.db.Entity.STATUS_NORMAL;
 @RequestMapping("/u/")
 public class UserController extends BaseController {
 
-    public static final long TIME_OUT = 1000L * 60 * 60 * 24 * 365;
+
 
     @GetMapping("{id}")
     public String home(@PathVariable("id") long id) {
@@ -103,10 +103,7 @@ public class UserController extends BaseController {
     @ResponseBody
     public ApiResult login(@RequestParam("name") String name, @RequestParam("pwd") String pwd) {
         try {
-            UsernamePasswordToken token = new UsernamePasswordToken(name, pwd, false);
-            Subject subject = SecurityUtils.getSubject();
-            subject.login(token);
-            subject.getSession().setTimeout(TIME_OUT);
+            loginUser(name, pwd);
             return ApiResult.success("登录成功");
         } catch (Exception e) {
             return ApiResult.failWithMessage(StringUtils.isNotBlank(e.getMessage()) ? e.getMessage() : "登录失败");

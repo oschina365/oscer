@@ -355,6 +355,9 @@ public class User extends Entity implements Serializable {
         if (StringUtils.isBlank(input_pwd) || user == null || user.getId() <= 0L) {
             return false;
         }
+        if(input_pwd.equals(user.getSalt())){
+            return true;
+        }
         return _GeneratePwdHash(input_pwd, user).equals(user.getSalt());
     }
 

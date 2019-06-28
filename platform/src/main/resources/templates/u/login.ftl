@@ -24,7 +24,7 @@
                 </div>
               </div>
               <div class="layui-form-item">
-                <button class="layui-btn" lay-filter="*" onclick="login_check()">立即登录</button>
+                <button class="layui-btn" onclick="login_check()">立即登录</button>
                 <span style="padding-left:20px;">
                   <a href="forget.html">忘记密码？</a>
                 </span>
