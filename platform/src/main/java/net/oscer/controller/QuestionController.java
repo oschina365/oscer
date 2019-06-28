@@ -117,6 +117,7 @@ public class QuestionController extends BaseController {
         form.save();
         Node n = Node.ME.get(form.getNode());
         QuestionDAO.ME.evictNode(form.getNode());
+        QuestionDAO.ME.evict(login_user.getId());
         return ApiResult.successWithObject(n.getUrl());
     }
 

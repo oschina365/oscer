@@ -108,4 +108,28 @@ public class QuestionDAO extends CommonDao<Question> {
     public void evictTops() {
         CacheMgr.evict(getCache_region(), "tops#" + Question.SYSTEM_LIMIT_TOP);
     }
+
+    public void evict(long user) {
+        CacheMgr.evict(Question.ME.CacheRegion(), "allByUser#" + user + "#" + 0);
+        CacheMgr.evict(Question.ME.CacheRegion(), "allByUser#" + user + "#" + 1);
+    }
+
+    /**
+     * 查询用户所有的帖子
+     *
+     * @param user
+     * @param status
+     * @return
+     */
+    public List<Question> allByUser(long user, int status) {
+        if (user <= 0L) {
+            return null;
+        }
+        String sql = "select id from questions where user =? and status=? order by top desc,id desc";
+        if (status == 1) {
+            sql = "select id from questions where user =? and 1=? order by top desc,id desc";
+        }
+        List<Long> ids = getDbQuery().query_cache(long.class, false, Question.ME.CacheRegion(), "allByUser#" + user + "#" + status, sql, user, status);
+        return Question.ME.loadList(ids);
+    }
 }

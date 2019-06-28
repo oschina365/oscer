@@ -32,7 +32,7 @@ public class CommentQuestion extends Entity {
      */
     private String content;
     /**
-     * 状态（0：系统冻结 1：正常显示）
+     * 状态（1：系统冻结 0：正常显示）
      */
     private Integer status;
     /**

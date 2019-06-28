@@ -68,11 +68,13 @@ public class CommentQuestionDAO extends CommonDao<CommentQuestion> {
         return CommentQuestion.ME.loadList(ids);
     }
 
-    public void evict(long question) {
+    public void evict(long question, long user) {
         CacheMgr.evict(CommentQuestion.ME.CacheRegion(), "count#" + question);
         CacheMgr.evict(CommentQuestion.ME.CacheRegion(), "question#all#" + question);
         CacheMgr.evict(CommentQuestion.ME.CacheRegion(), "question#" + question);
         CacheMgr.evict(CommentQuestion.ME.CacheRegion(), "rankMap#" + question);
+        CacheMgr.evict(CommentQuestion.ME.CacheRegion(), "allByUser#" + user + "#" + 0);
+        CacheMgr.evict(CommentQuestion.ME.CacheRegion(), "allByUser#" + user + "#" + 1);
     }
 
     public int count(long question) {
@@ -89,6 +91,24 @@ public class CommentQuestionDAO extends CommonDao<CommentQuestion> {
     public List<CommentQuestion> list(long question, int page, int size) {
         String sql = "select id from comment_questions where question=? order by id desc";
         List<Long> ids = getDbQuery().query_slice_cache(long.class, CommentQuestion.ME.CacheRegion(), "question#" + question, 100, sql, page, size, question);
+        return CommentQuestion.ME.loadList(ids);
+    }
+
+    /**
+     * 查询用户对帖子的评论
+     *
+     * @param user
+     * @param status
+     */
+    public List<CommentQuestion> allByUser(long user, long status) {
+        if (user <= 0L) {
+            return null;
+        }
+        String sql = "select max(id) from comment_questions where user=? and status =? GROUP BY question order by id desc";
+        if (status > 0) {
+            sql = "select max(id) from comment_questions where user=? and 1=? GROUP BY question order by id desc";
+        }
+        List<Long> ids = getDbQuery().query_cache(long.class, false, CommentQuestion.ME.CacheRegion(), "allByUser#" + user + "#" + status, sql, user, status);
         return CommentQuestion.ME.loadList(ids);
     }
 }

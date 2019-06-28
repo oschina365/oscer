@@ -61,7 +61,7 @@
     {{#  if(d.list!=null&&d.list.length> 0){ }}
     {{#  layui.each(d.list, function(index, item){ }}
     <li>
-        <a href="/user/{{item.q_user.id}}" class="fly-avatar">
+        <a href="/u/{{item.q_user.id}}" class="fly-avatar">
             <img src="{{item.q_user.headimg}}"alt="{{item.q_user.nickname||item.q_user.username}}">
         </a>
         <h2>
@@ -69,7 +69,7 @@
             <a href="/q/{{item.q.id}}" target="_blank">{{item.q.title}}</a>
         </h2>
         <div class="fly-list-info">
-            <a href="/user/{{item.q_user.id}}" link>
+            <a href="/u/{{item.q_user.id}}" link>
                 <cite>{{item.q_user.nickname||item.q_user.username}}</cite>
                 <#--<i class="iconfont icon-renzheng" title="认证信息：XXX"></i>-->
                 <i class="layui-badge fly-badge-vip">{{item.q_user.vip_text}}</i>

@@ -196,7 +196,7 @@ function login_check() {
             return false;
         } else {
             $.ajax({
-                url: '/user/login',
+                url: '/u/login',
                 type: 'post',
                 data: {'name': name, 'pwd': pwd},
                 dataType: 'json',

@@ -10,8 +10,8 @@
             <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><span class="fly-mid"></span></li>
 
             <#if login_user??>
-            <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="/user/index">我发表的贴</a></li>
-            <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="/user/index.html#collection">我收藏的贴</a>
+            <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="/u/index">我发表的贴</a></li>
+            <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="/u/index.html#collection">我收藏的贴</a>
             </#if>
             </li>
         </ul>

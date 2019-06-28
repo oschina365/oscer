@@ -58,7 +58,7 @@ public class CommentController extends BaseController {
         c.save();
         q.setComment_count(q.getComment_count() + 1);
         q.doUpdate();
-        CommentQuestionDAO.ME.evict(id);
+        CommentQuestionDAO.ME.evict(id, login_user.getId());
         return ApiResult.success();
     }
 

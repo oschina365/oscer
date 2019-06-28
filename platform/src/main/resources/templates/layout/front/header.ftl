@@ -21,26 +21,26 @@
             <img src="${login_user.headimg}">
                 </a>
                 <dl class="layui-nav-child">
-                    <dd><a href="/user/set"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
-                    <dd><a href="/user/message"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a>
+                    <dd><a href="/u/set"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
+                    <dd><a href="/u/message"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a>
                     </dd>
-                    <dd><a href="/user/home"><i class="layui-icon"
+                    <dd><a href="/u/home"><i class="layui-icon"
                                                 style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a>
                     </dd>
                     <hr style="margin: 5px 0;">
-                    <dd><a href="/user/logout" style="text-align: center;">退出</a></dd>
+                    <dd><a href="/u/logout" style="text-align: center;">退出</a></dd>
                 </dl>
                 </li>
             <#else >
                 <!-- 未登入的状态 -->
                 <li class="layui-nav-item">
-                    <a class="iconfont icon-touxiang layui-hide-xs" href="/user/login"></a>
+                    <a class="iconfont icon-touxiang layui-hide-xs" href="/u/login"></a>
                 </li>
                 <li class="layui-nav-item">
-                    <a href="/user/login">登入</a>
+                    <a href="/u/login">登入</a>
                 </li>
                 <li class="layui-nav-item">
-                    <a href="/user/reg">注册</a>
+                    <a href="/u/reg">注册</a>
                 </li>
                 <li class="layui-nav-item layui-hide-xs">
                     <a href="/oauth/before_bind?rp=gitee"
