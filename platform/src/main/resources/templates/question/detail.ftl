@@ -45,7 +45,7 @@
                     <span class="fly-list-nums">
                             <a href="#comment"><i class="iconfont" title="回答">&#xe60c;</i> ${q.comment_count!'0'}</a>
                             <i class="iconfont" title="人气">&#xe60b;</i> ${q.view_count!'0'}
-                            <i class="layui-icon" title="收藏">&#xe67b;</i> ${q.collect_count!'0'}
+                            <a onclick="collect()"><i class="layui-icon" title="收藏">&#xe67b;</i> ${q.collect_count!'0'}</a>
                     </span>
                 </div>
 
@@ -290,7 +290,7 @@
                     }
                 }
             });
-        }
+        };
 
         window.as_top = function () {
             $.ajax({
@@ -307,7 +307,23 @@
                     }
                 }
             });
-        }
+        };
+
+        window.collect = function () {
+            $.ajax({
+                url: '/q/collect',
+                method: 'post',
+                dataType: 'json',
+                data: {"id":${q.id}},
+                success: function (d) {
+                    if (d && d.code == 1) {
+                        layer.msg(d.message ? d.message : "操作成功", {icon: 6});
+                    } else {
+                        layer.msg(d.message ? d.message : "网络问题，请重试", {icon: 5});
+                    }
+                }
+            });
+        };
     });
 
 </script>

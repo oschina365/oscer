@@ -111,4 +111,14 @@ public class CommentQuestionDAO extends CommonDao<CommentQuestion> {
         List<Long> ids = getDbQuery().query_cache(long.class, false, CommentQuestion.ME.CacheRegion(), "allByUser#" + user + "#" + status, sql, user, status);
         return CommentQuestion.ME.loadList(ids);
     }
+
+    /**
+     * 删除改帖子的所有评论
+     *
+     * @param question
+     */
+    public void delete(long question) {
+        String sql = "delete from comment_questions where question=?";
+        getDbQuery().update(sql, question);
+    }
 }

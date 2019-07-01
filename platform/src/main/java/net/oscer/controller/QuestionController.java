@@ -1,12 +1,14 @@
 package net.oscer.controller;
 
-import net.oscer.beans.Node;
-import net.oscer.beans.Question;
-import net.oscer.beans.User;
+import net.oscer.beans.*;
 import net.oscer.common.ApiResult;
+import net.oscer.dao.CollectQuestionDAO;
+import net.oscer.dao.CommentQuestionDAO;
 import net.oscer.dao.NodeDAO;
 import net.oscer.dao.QuestionDAO;
 import net.oscer.db.CacheMgr;
+import net.oscer.db.DbQuery;
+import net.oscer.db.TransactionService;
 import net.oscer.enums.ViewEnum;
 import net.oscer.service.ViewService;
 import net.oscer.vo.QuestionVO;
@@ -22,6 +24,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static net.oscer.beans.Question.MAX_LENGTH_TITLE;
+import static net.oscer.db.Entity.STATUS_NORMAL;
 
 /**
  * 帖子类
@@ -188,7 +191,7 @@ public class QuestionController extends BaseController {
      */
     @PostMapping("/delete")
     @ResponseBody
-    public ApiResult delete(@RequestParam(value = "id", required = true, defaultValue = "0") long id) {
+    public ApiResult delete(@RequestParam(value = "id", required = true, defaultValue = "0") long id) throws Exception {
         User login_user = getLoginUser();
         if (login_user == null || !login_user.status_is_normal()) {
             return ApiResult.failWithMessage("请登录后重试");
@@ -200,7 +203,14 @@ public class QuestionController extends BaseController {
         if (login_user.getId() != q.getUser()) {
             return ApiResult.failWithMessage("无权限删除此贴");
         }
-        q.delete();
+
+        DbQuery.get("mysql").transaction(new TransactionService() {
+            @Override
+            public void execute() throws Exception {
+                q.delete();
+                CommentQuestionDAO.ME.delete(id);
+            }
+        });
         return ApiResult.success();
     }
 
@@ -253,6 +263,62 @@ public class QuestionController extends BaseController {
         q.doUpdate();
         QuestionDAO.ME.evictTops();
         return ApiResult.success();
+    }
+
+    /**
+     * 收藏/取消收藏
+     *
+     * @param id
+     * @return
+     */
+    @PostMapping("/collect")
+    @ResponseBody
+    public ApiResult collect(@RequestParam("id") long id) throws Exception {
+        User loginUser = getLoginUser();
+        if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
+            return ApiResult.failWithMessage("请重新登录");
+        }
+        Question q = Question.ME.get(id);
+        if (null == q) {
+            return ApiResult.failWithMessage("该帖子不存在");
+        }
+        if (q.getStatus() != 0) {
+            return ApiResult.failWithMessage("该帖子已删除");
+        }
+        if (q.getUser() == loginUser.getId()) {
+            return ApiResult.failWithMessage("自己的帖子不能被收藏");
+        }
+        final String[] message = {"收藏成功"};
+        DbQuery.get("mysql").transaction(new TransactionService() {
+            @Override
+            public void execute() throws Exception {
+                CollectQuestion collectQuestion = CollectQuestionDAO.ME.getByUser(loginUser.getId());
+                if (null == collectQuestion) {
+                    collectQuestion = new CollectQuestion();
+                    collectQuestion.setUser(loginUser.getId());
+                    collectQuestion.setQuestion(id);
+                    collectQuestion.save();
+                    q.setCollect_count(q.getCollect_count() + 1);
+                    q.doUpdate();
+                } else {
+
+                    int count = 1;
+                    if (collectQuestion.getStatus() == CollectQuestion.STATUS_SHOW) {
+                        collectQuestion.setStatus(CollectQuestion.STATUS_HIDE);
+                        count = -1;
+                        message[0] = "取消收藏成功";
+                    }else{
+                        collectQuestion.setStatus(CollectQuestion.STATUS_SHOW);
+                    }
+                    q.setCollect_count(q.getCollect_count() + count);
+                    q.doUpdate();
+                    collectQuestion.doUpdate();
+                }
+            }
+
+        });
+        CollectQuestionDAO.ME.evict(loginUser.getId());
+        return ApiResult.success(message[0]);
     }
 
 }

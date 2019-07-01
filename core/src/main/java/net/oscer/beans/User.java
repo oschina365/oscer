@@ -129,6 +129,11 @@ public class User extends Entity implements Serializable {
      */
     private int score_today;
 
+    /**
+     * 城市
+     */
+    private String city;
+
     private String vip_text;
 
     public String getUsername() {
@@ -323,6 +328,14 @@ public class User extends Entity implements Serializable {
         this.score_today = score_today;
     }
 
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
     public String getVip_text() {
         return vip();
     }
@@ -355,7 +368,7 @@ public class User extends Entity implements Serializable {
         if (StringUtils.isBlank(input_pwd) || user == null || user.getId() <= 0L) {
             return false;
         }
-        if(input_pwd.equals(user.getSalt())){
+        if (input_pwd.equals(user.getSalt())) {
             return true;
         }
         return _GeneratePwdHash(input_pwd, user).equals(user.getSalt());
@@ -391,7 +404,7 @@ public class User extends Entity implements Serializable {
      */
     public User _GeneratePwdHashCommon(String ident) {
         String sql = "select id from users where ident =? or email = ? or phone = ? or username=? ";
-        Number n = DbQuery.get("mysql").read(Number.class, sql, ident, ident, ident,ident);
+        Number n = DbQuery.get("mysql").read(Number.class, sql, ident, ident, ident, ident);
         if (n != null && n.longValue() > 0L) {
             return User.ME.get(n.longValue());
         }

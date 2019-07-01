@@ -49,7 +49,7 @@
                                                placeholder="请输入邮箱收到的验证码" autocomplete="off" class="layui-input">
                                     </div>
                                     <div class="layui-form-mid" style="padding: 0!important;">
-                                        <button type="button" class="layui-btn layui-btn-normal" id="FLY-getvercode">
+                                        <button type="button" class="layui-btn layui-btn-normal" onclick="sendEmail()">
                                             获取验证码
                                         </button>
                                     </div>
@@ -110,7 +110,7 @@
                 return false;
             });
 
-            window.recomm = function (value) {
+            window.sendEmail = function () {
                 $.ajax({
                     url: '/q/recomm',
                     method: 'post',

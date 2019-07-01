@@ -3,6 +3,7 @@ package net.oscer.dao;
 import net.oscer.beans.Node;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 节点
@@ -36,8 +37,8 @@ public class NodeDAO extends CommonDao<Node> {
             sql = "select * from nodes where status=? and parent = " + parent + " order by sort asc";
             cacheKey = "status#" + status + "#parent#" + parent;
         }
-        List<Number> ids = getDbQuery().query_cache(Number.class, false, Node.ME.CacheRegion(), cacheKey, sql, status);
-
+        List<Number> numbers = getDbQuery().query_cache(Number.class, false, Node.ME.CacheRegion(), cacheKey, sql, status);
+        List<Long> ids = numbers.stream().map(Number::longValue).collect(Collectors.toList());
         return Node.ME.loadList(ids);
 
     }
