@@ -27,10 +27,10 @@ public class OauthEnum {
     }
 
     public enum FROM {
-        WECHAT("wechat", "微信"),
-        QQ("qq", "QQ"),
+        //WECHAT("wechat", "微信"),
+        //QQ("qq", "QQ"),
         GITEE("gitee", "码云"),
-        OSC("osc", "开源中国社区"),
+        //OSC("osc", "开源中国社区"),
         GITHUB("github", "github");
 
         FROM(String form, String text) {

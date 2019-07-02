@@ -153,10 +153,10 @@ public class OauthController extends BaseController {
                 doBindGitee();
                 return;
             }
-            if (StringUtils.equalsIgnoreCase(rp, OauthEnum.FROM.OSC.getForm())) {
+            /*if (StringUtils.equalsIgnoreCase(rp, OauthEnum.FROM.OSC.getForm())) {
                 doBindOsc();
                 return;
-            }
+            }*/
             try {
                 String after_bind_url = AFTER_BIND_URL;
                 _saveManagerAndGo(rp, after_bind_url);
@@ -241,7 +241,7 @@ public class OauthController extends BaseController {
         String state_secret = (String) CacheMgr.get(SOCIAL_AUTH_CACHE, "OSC#" + state);
         Profile p = OscOpenAuth.getProfile(code, state, state_secret, redirect_url);
         if (p != null) {
-            p.setProviderId(OauthEnum.FROM.OSC.getForm());
+            //p.setProviderId(OauthEnum.FROM.OSC.getForm());
         }
         doBind(new AuthProfile(p));
     }
@@ -303,7 +303,8 @@ public class OauthController extends BaseController {
             String html = "<p>Redirecting...</p><script type='text/javascript'>   location.href='" + LinkTool.root() + "';</script>";
             print(html);
         } else {
-            loginUser(loginUser.getEmail(),loginUser.getSalt());
+            UserBindDAO.ME.evict(loginUser.getId());
+            loginUser(loginUser.getEmail(), loginUser.getSalt());
             saveUserInCookie((User) result.getResult());
             redirect(LinkTool.root());
             return;

@@ -1,14 +1,12 @@
 package net.oscer.controller;
 
-import net.oscer.beans.CollectQuestion;
-import net.oscer.beans.CommentQuestion;
-import net.oscer.beans.Question;
-import net.oscer.beans.User;
+import net.oscer.beans.*;
 import net.oscer.common.ApiResult;
+import net.oscer.config.provider.OauthEnum;
 import net.oscer.dao.CollectQuestionDAO;
 import net.oscer.dao.CommentQuestionDAO;
 import net.oscer.dao.QuestionDAO;
-import net.oscer.dao.UserDAO;
+import net.oscer.dao.UserBindDAO;
 import net.oscer.framework.FormatTool;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -69,6 +67,12 @@ public class UserController extends BaseController {
         User loginUser = getLoginUser();
         if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
             return "/error/404";
+        }
+        List<UserBind> binds = UserBindDAO.ME.listByUser(loginUser.getId());
+        request.setAttribute("froms", OauthEnum.fromList);
+        if (CollectionUtils.isNotEmpty(binds)) {
+            Map<String, UserBind> bindMap = binds.stream().collect(Collectors.toMap(UserBind::getProvider, u -> u));
+            request.setAttribute("bindMap", bindMap);
         }
         return "/u/set";
     }

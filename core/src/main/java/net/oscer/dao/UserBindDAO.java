@@ -1,6 +1,7 @@
 package net.oscer.dao;
 
 import net.oscer.beans.UserBind;
+import net.oscer.db.CacheMgr;
 import net.oscer.framework.StringUtils;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -60,5 +61,9 @@ public class UserBindDAO extends CommonDao<UserBind> {
         }
         List<Long> s = ids.stream().map(Number::longValue).collect(Collectors.toList());
         return UserBind.ME.loadList(s);
+    }
+
+    public void evict(long user) {
+        CacheMgr.evict(UserBind.ME.CacheRegion(), "user#" + user);
     }
 }

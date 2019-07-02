@@ -89,22 +89,22 @@
           
           <div class="layui-form layui-form-pane layui-tab-item">
             <ul class="app-bind">
-              <li class="fly-msg app-havebind">
-                <i class="iconfont icon-qq"></i>
-                <span>已成功绑定，您可以使用QQ帐号直接登录Fly社区，当然，您也可以</span>
-                <a href="javascript:;" class="acc-unbind" type="qq_id">解除绑定</a>
-                
-                <!-- <a href="" onclick="layer.msg('正在绑定微博QQ', {icon:16, shade: 0.1, time:0})" class="acc-bind" type="qq_id">立即绑定</a>
-                <span>，即可使用QQ帐号登录Fly社区</span> -->
-              </li>
-              <li class="fly-msg">
-                <i class="iconfont icon-weibo"></i>
-                <!-- <span>已成功绑定，您可以使用微博直接登录Fly社区，当然，您也可以</span>
-                <a href="javascript:;" class="acc-unbind" type="weibo_id">解除绑定</a> -->
-                
-                <a href="" class="acc-weibo" type="weibo_id"  onclick="layer.msg('正在绑定微博', {icon:16, shade: 0.1, time:0})" >立即绑定</a>
-                <span>，即可使用微博帐号登录Fly社区</span>
-              </li>
+              <#list froms as form>
+                <li class="fly-msg app-havebind">
+                  <i class="iconfont icon-qq"></i>
+                  <#--<#list bindMap?keys as key>
+                      ${bindMap[key]}
+                  </#list>-->
+                 <#if bindMap[form]??>
+                   <span>已成功绑定<b>${form}</b>，您可以使用${form}帐号直接登录,</span>
+                   <a href="javascript:;" class="acc-unbind" type="qq_id">解除绑定</a>
+                   <#else >
+                   <a href="/oauth/before_bind?rp=${form}" onclick="layer.msg('正在绑定${form}', {icon:16, shade: 0.1, time:0})" class="acc-bind" type="qq_id">立即绑定</a>
+                   <span>，即可使用${form}帐号登录</span>
+                 </#if>
+                </li>
+              </#list>
+
             </ul>
           </div>
         </div>
