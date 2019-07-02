@@ -98,7 +98,7 @@
     //创建一个编辑器
     layedit.set({
       uploadImage: {
-        url: '/up/lay' //接口url
+        url: '/api/upload' //接口url
         , type: 'post' //默认post
       }
     });

@@ -1,5 +1,6 @@
 package net.oscer.controller;
 
+import net.oscer.api.vo.UploadResultVO;
 import net.oscer.beans.User;
 import net.oscer.common.ApiResult;
 import net.oscer.framework.LinkTool;
@@ -45,14 +46,14 @@ public class ApiController extends BaseController {
      */
     @PostMapping("upload")
     @ResponseBody
-    public ApiResult upload(@RequestParam("file") MultipartFile multipartFile) throws IOException {
+    public UploadResultVO upload(@RequestParam("file") MultipartFile multipartFile) throws IOException {
         if (multipartFile.isEmpty()) {
-            return ApiResult.failWithMessage("请选择图片");
+            return UploadResultVO.failWith("请选择图片");
         }
 
         User loginUser = getLoginUser();
         if (loginUser == null || loginUser.getId() <= 0) {
-            return null;
+            return UploadResultVO.failWith("请登录重试");
         }
 
         String fileName = multipartFile.getOriginalFilename();
@@ -66,6 +67,7 @@ public class ApiController extends BaseController {
         File desFile = new File(LinkTool.getHost("static") + File.separator + newFileName);
         File thumbFile = new File(LinkTool.getHost("static") + File.separator + thumbFileName);
         UploadUtils.uploadImage(UploadUtils.IMAGE_TYPE_BLOG, loginUser.getId(), copyFile, desFile, thumbFile);
-        return ApiResult.successWithObject(LinkTool.getHost("static") + File.separator + thumbFileName);
+        UploadResultVO vo = UploadResultVO.success("", "上传成功", desFile.getName(), desFile.length(), desFile.getName(), null, thumbFileName);
+        return vo;
     }
 }
