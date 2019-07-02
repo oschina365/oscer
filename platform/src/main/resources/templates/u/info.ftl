@@ -24,7 +24,9 @@
   <p class="fly-home-info">
     <i class="layui-icon  layui-icon-diamond" title="积分"></i><span style="color: #FF7200;">${u.score!'0'}</span>
     <i class="iconfont icon-shijian"></i><span>${u.insert_date} 加入</span>
-    <#--<i class="iconfont icon-chengshi"></i><span>来自杭州</span>-->
+    <#if u.city??>
+        <i class="iconfont icon-chengshi"></i><span>来自${u.city!'中国'}</span>
+    </#if>
   </p>
 
   <p class="fly-home-sign">（${u.self_info!'这个人很懒~~~'}）</p>
@@ -91,14 +93,6 @@
 
 <script src="../../res/layui/layui.js"></script>
 <script>
-layui.cache.page = 'user';
-layui.cache.user = {
-  username: '游客'
-  ,uid: -1
-  ,avatar: '../../res/images/avatar/00.jpg'
-  ,experience: 83
-  ,sex: '男'
-};
 layui.config({
   version: "3.0.0"
   ,base: '../../res/mods/'

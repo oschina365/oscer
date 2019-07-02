@@ -24,6 +24,10 @@ public class User extends Entity implements Serializable {
      */
     public final static int ROLE_GENERAL = 1;
 
+    public static final int SEX_UNKONW = 0;
+    public static final int SEX_BOY = 1;
+    public static final int SEX_GIRL = 2;
+
     /**
      * 用户名(登录名,如jack)
      */

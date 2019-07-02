@@ -8,6 +8,8 @@ import net.oscer.common.ApiResult;
 import net.oscer.dao.CollectQuestionDAO;
 import net.oscer.dao.CommentQuestionDAO;
 import net.oscer.dao.QuestionDAO;
+import net.oscer.dao.UserDAO;
+import net.oscer.framework.FormatTool;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -20,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static net.oscer.beans.User.SEX_GIRL;
+import static net.oscer.beans.User.SEX_UNKONW;
 import static net.oscer.db.Entity.OFFLINE;
 import static net.oscer.db.Entity.STATUS_NORMAL;
 
@@ -177,8 +181,59 @@ public class UserController extends BaseController {
      */
     @PostMapping("set_info")
     @ResponseBody
-    public ApiResult set_info() {
+    public ApiResult set_info(User form) {
+        User loginUser = getLoginUser();
+        if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
+            return ApiResult.failWithMessage("请重新登录后再试");
+        }
+        if (StringUtils.isBlank(form.getEmail())) {
+            return ApiResult.failWithMessage("请填写邮箱");
+        }
+        if (!FormatTool.is_email(form.getEmail())) {
+            return ApiResult.failWithMessage("请填写正确的邮箱");
+        }
+        if (StringUtils.isBlank(form.getNickname())) {
+            return ApiResult.failWithMessage("请填写昵称");
+        }
+        if (form.getSex() > SEX_GIRL || form.getSex() < SEX_UNKONW) {
+            return ApiResult.failWithMessage("请选择性别");
+        }
 
-        return ApiResult.success();
+        loginUser.setEmail(form.getEmail());
+        loginUser.setNickname(form.getNickname());
+        loginUser.setSex(form.getSex());
+        loginUser.setSalt(loginUser._GeneratePwdHash(loginUser.getPassword(), loginUser.getEmail()));
+        loginUser.setCity(form.getCity());
+        loginUser.doUpdate();
+        return ApiResult.success("修改成功");
+    }
+
+    /**
+     * 修改密码
+     *
+     * @return
+     */
+    @PostMapping("set_pwd")
+    @ResponseBody
+    public ApiResult set_pwd() {
+        User loginUser = getLoginUser();
+        if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
+            return ApiResult.failWithMessage("请重新登录后再试");
+        }
+        String L_pass = request.getParameter("L_pass");
+        String L_repass = request.getParameter("L_repass");
+        if (StringUtils.isBlank(L_pass)) {
+            return ApiResult.failWithMessage("请输入新密码");
+        }
+        if (L_pass.trim().length() < 6 || L_pass.trim().length() > 16) {
+            return ApiResult.failWithMessage("密码长度在6~16位");
+        }
+        if (!StringUtils.equals(L_pass, L_repass)) {
+            return ApiResult.failWithMessage("两次密码不相同");
+        }
+        loginUser.setPassword(L_pass);
+        loginUser.setSalt(loginUser._GeneratePwdHash(L_pass, loginUser.getEmail()));
+        loginUser.doUpdate();
+        return ApiResult.success("修改成功");
     }
 }

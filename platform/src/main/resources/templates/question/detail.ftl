@@ -5,7 +5,7 @@
     <div class="layui-row layui-col-space15">
         <div class="layui-col-md8 content detail">
             <div class="fly-panel detail-box">
-                <h1>${q.title}</h1>
+                <h2>${q.title}</h2>
                 <div class="fly-detail-info">
                     <#if q.status==2>
                         <span class="layui-badge">审核中</span>
@@ -23,24 +23,26 @@
 
                     <#if q.recomm ==1><span class="layui-badge layui-bg-red">推荐</span></#if>
 
-                    <div class="fly-admin-box" data-id="123">
-                        <#if login_user?? && login_user.id=q.user>
-                        <a onclick="del()"><span class="layui-btn layui-btn-xs jie-admin layui-btn-danger">删除</span></a>
-                        </#if>
+                    <#if login_user??>
+                        <div class="fly-admin-box">
+                            <#if login_user.id=q.user>
+                            <a onclick="del()"><span class="layui-btn layui-btn-xs jie-admin layui-btn-danger">删除</span></a>
+                            </#if>
 
-                        <#if login_user?? && login_user.id=2>
-                            <#if q.recomm ==1>
-                                <a onclick="recomm()"><span class="layui-btn layui-btn-xs"style="background-color:#ccc;">取消推荐</span></a>
-                            <#else >
-                                <a onclick="recomm()"><span class="layui-btn layui-btn-xs " >推荐</span></a>
+                            <#if login_user.id=2>
+                                <#if q.recomm ==1>
+                                    <a onclick="recomm()"><span class="layui-btn layui-btn-xs"style="background-color:#ccc;">取消推荐</span></a>
+                                <#else >
+                                    <a onclick="recomm()"><span class="layui-btn layui-btn-xs " >推荐</span></a>
+                                </#if>
+                                <#if q.system_top ==1>
+                                    <a onclick="as_top()"><span class="layui-btn layui-btn-xs" style="background-color:#ccc;">取消置顶</span></a>
+                                <#else >
+                                    <a onclick="as_top()"><span class="layui-btn layui-btn-xs">置顶</span></a>
+                                </#if>
                             </#if>
-                            <#if q.system_top ==1>
-                                <a onclick="as_top()"><span class="layui-btn layui-btn-xs" style="background-color:#ccc;">取消置顶</span></a>
-                            <#else >
-                                <a onclick="as_top()"><span class="layui-btn layui-btn-xs">置顶</span></a>
-                            </#if>
-                        </#if>
-                    </div>
+                        </div>
+                    </#if>
 
                     <span class="fly-list-nums">
                             <a href="#comment"><i class="iconfont" title="回答">&#xe60c;</i> ${q.comment_count!'0'}</a>
@@ -49,6 +51,7 @@
                     </span>
                 </div>
 
+                <br>
                 <div class="detail-about">
                     <a class="fly-avatar" href="/u/${u.id}"><img src="${u.headimg}" alt="${u.nickname!u.username!u.name}"></a>
                     <div class="fly-detail-user">
@@ -59,7 +62,7 @@
                         </a>
                         <span>${q.insert_date}</span>
                     </div>
-                    <div class="detail-hits" id="LAY_jieAdmin" data-id="123">
+                    <div class="detail-hits" id="LAY_jieAdmin">
                         <#if q.reward_point gt 0>
                             <span style="padding-right: 10px; color: #FF7200">悬赏：${q.reward_point!'0'}积分</span>
                         </#if>

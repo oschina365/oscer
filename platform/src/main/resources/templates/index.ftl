@@ -12,11 +12,7 @@
             </div>
             <#if tops??>
                 <div class="fly-panel">
-                    <div class="fly-panel-title fly-filter">
-                        <a>置顶</a>
-                        <a href="#signin" class="layui-hide-sm layui-show-xs-block fly-right" id="LAY_goSignin"
-                           style="color: #FF5722;">去签到</a>
-                    </div>
+                    <div class="fly-panel-title fly-filter">&nbsp;置顶</div>
                     <ul class="fly-list">
                         <#list tops as top>
                             <li>
