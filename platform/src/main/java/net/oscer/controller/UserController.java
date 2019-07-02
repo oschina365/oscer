@@ -240,4 +240,25 @@ public class UserController extends BaseController {
         loginUser.doUpdate();
         return ApiResult.success("修改成功");
     }
+
+    /**
+     * 设置头像
+     *
+     * @return
+     */
+    @PostMapping("set_headimg")
+    @ResponseBody
+    public ApiResult set_headimg() {
+        User loginUser = getLoginUser();
+        if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
+            return ApiResult.failWithMessage("请重新登录后再试");
+        }
+        String headimg = request.getParameter("headimg");
+        if (StringUtils.isBlank(headimg)) {
+            return ApiResult.failWithMessage("请上传图片");
+        }
+        loginUser.setHeadimg(headimg);
+        loginUser.doUpdate();
+        return ApiResult.success("上传成功");
+    }
 }

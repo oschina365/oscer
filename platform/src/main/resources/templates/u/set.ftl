@@ -53,11 +53,12 @@
 
           <div class="layui-form layui-form-pane layui-tab-item">
             <div class="layui-form-item">
+              <input type="hidden" id="headimg"/>
               <div class="avatar-add">
-                <button type="button" class="layui-btn upload-img">
+                <button type="button" class="layui-btn upload-img" onclick="upload()">
                   <i class="layui-icon">&#xe67c;</i>上传头像
                 </button>
-                <img src="${login_user.headimg}">
+                <img src="${login_user.headimg}" class="thumbBox">
                 <span class="loading"></span>
               </div>
             </div>
@@ -108,7 +109,6 @@
             </ul>
           </div>
         </div>
-
       </div>
     </div>
   </div>
@@ -123,7 +123,20 @@ layui.config({
 }).extend({
   fly: 'index'
 }).use(['fly', 'face', 'jquery'], function () {
-  var form = layui.form, $ = layui.jquery, layer = layui.layer;
+  var form = layui.form, $ = layui.jquery, layer = layui.layer, upload = layui.upload;
+
+  //上传缩略图
+  upload.render({
+    elem: '.thumbBox',
+    url: '/api/upload',
+    done: function(res, index, upload){
+      console.log(res);
+      var src = res.result;
+      $("#headimg").val(src);
+
+      $('.thumbBox').attr('src',src);
+    }
+  });
 
   /**
    * 修改基本信息
@@ -178,6 +191,23 @@ layui.config({
     return false;
   });
 
+  window.upload = function () {
+    var headimg = $("#headimg").val();
+    $.ajax({
+      url: '/u/set_headimg',
+      method: 'post',
+      dataType: 'json',
+      data: {"headimg":headimg},
+      success: function (data) {
+        if (data && data.code == 1) {
+          layer.msg("修改成功", {icon: 6});
+          window.location.reload();
+        } else {
+          layer.msg("操作失败", {icon: 6});
+        }
+      }
+    });
+  }
 });
 </script>
 

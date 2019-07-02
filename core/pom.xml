@@ -148,7 +148,13 @@
             <version>2.6</version>
         </dependency>
 
-
+        <!-- https://mvnrepository.com/artifact/net.coobird/thumbnailator -->
+        <!--java 压缩图片-->
+        <dependency>
+            <groupId>net.coobird</groupId>
+            <artifactId>thumbnailator</artifactId>
+            <version>0.4.8</version>
+        </dependency>
     </dependencies>
 
     <build>

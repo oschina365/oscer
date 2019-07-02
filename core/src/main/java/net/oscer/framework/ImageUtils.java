@@ -1,5 +1,7 @@
 package net.oscer.framework;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -39,7 +41,7 @@ public class ImageUtils {
     }
 
     public static String getSuffix(String name) {
-        Pattern pat = Pattern.compile("[\\w]+[\\.](" + SUFFIXES + ")");// 正则判断
+        /*Pattern pat = Pattern.compile("[\\w]+[\\.](" + SUFFIXES + ")");// 正则判断
         Matcher mc = pat.matcher(name.toLowerCase());// 条件匹配
         String fileName = null;
         while (mc.find()) {
@@ -47,6 +49,9 @@ public class ImageUtils {
         }
         if (fileName != null) {
             return fileName.substring(fileName.lastIndexOf(".") + 1);
+        }*/
+        if( StringUtils.endsWithAny(name, ".jpg", ".png", ".gif", ".jpeg", ".map",".bmp",".webp")){
+            return name.substring(name.lastIndexOf(".") + 1);
         }
         return null;
     }
