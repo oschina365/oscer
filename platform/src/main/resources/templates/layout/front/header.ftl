@@ -23,10 +23,9 @@
                 <dl class="layui-nav-child">
                     <dd><a href="/u/${login_user.id}"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
                     <dd><a href="/u/home"><i class="layui-icon">&#xe62a;</i>我的发帖</a></dd>
-                    <dd><a href="/u/message"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
+                    <dd><a href="/u/msg"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
                     <hr style="margin: 5px 0;">
-                    <dd><a href="/u/logout" style="text-align: center;">退出</a></dd>
-                </dl>
+                    <dd><a href="/u/logout" style="text-align: center;">退出</a></dd>                </dl>
                 </li>
             <#else >
                 <!-- 未登入的状态 -->

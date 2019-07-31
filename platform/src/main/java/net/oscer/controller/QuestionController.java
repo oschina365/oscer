@@ -116,6 +116,10 @@ public class QuestionController extends BaseController {
         form.setTitle(StringUtils.abbreviate(form.getTitle(), MAX_LENGTH_TITLE));
         if (is_reward == 0) {
             form.setReward_point(0);
+        }else{
+            if(form.getReward_point() > login_user.getScore()){
+                return ApiResult.failWithMessage("积分不够哦~");
+            }
         }
         form.save();
         Node n = Node.ME.get(form.getNode());
@@ -209,6 +213,7 @@ public class QuestionController extends BaseController {
             public void execute() throws Exception {
                 q.delete();
                 CommentQuestionDAO.ME.delete(id);
+                QuestionDAO.ME.evictNode(q.getNode());
             }
         });
         return ApiResult.success();

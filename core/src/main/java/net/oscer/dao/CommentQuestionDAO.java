@@ -104,9 +104,9 @@ public class CommentQuestionDAO extends CommonDao<CommentQuestion> {
         if (user <= 0L) {
             return null;
         }
-        String sql = "select ANY_VALUE(`id`),max(id) from comment_questions where user=? and status =? GROUP BY question order by id desc";
+        String sql = "select ANY_VALUE(`id`) AS `id1`,MAX(`id`) as id from comment_questions where user=? and status =? GROUP BY question order by id desc";
         if (status > 0) {
-            sql = "select ANY_VALUE(`id`) ,max(id) from comment_questions where user=? and 1=? GROUP BY question order by id desc";
+            sql = "select ANY_VALUE(`id`) AS `id1`,MAX(`id`) as id from comment_questions where user=? and 1=? GROUP BY question order by id desc";
         }
         List<Long> ids = getDbQuery().query_cache(long.class, false, CommentQuestion.ME.CacheRegion(), "allByUser#" + user + "#" + status, sql, user, status);
         return CommentQuestion.ME.loadList(ids);

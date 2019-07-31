@@ -107,6 +107,7 @@ public class BaseController {
                 cookies.put(cookie.getName(), cookie);
             }
         }
+        request.setAttribute("currentUrl", request.getRequestURI());
 
     }
 
@@ -143,7 +144,7 @@ public class BaseController {
                     Long id = NumberUtils.toLong(items[0], -1L);
                     String pwd = items[1];
                     User foundUser = User.ME.get(id);
-                    if(foundUser.getOnline()==OFFLINE){
+                    if (foundUser.getOnline() == OFFLINE) {
                         return null;
                     }
                     if (foundUser != null && StringUtils.equalsIgnoreCase(foundUser.getSalt(), pwd) && foundUser.status_is_normal()) {
@@ -361,7 +362,7 @@ public class BaseController {
         cookie(COOKIE_LOGIN, new_value, MAX_AGE, true);
     }
 
-    public static void loginUser(String name,String pwd){
+    public static void loginUser(String name, String pwd) {
         UsernamePasswordToken token = new UsernamePasswordToken(name, pwd, false);
         Subject subject = SecurityUtils.getSubject();
         subject.login(token);

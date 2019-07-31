@@ -77,6 +77,11 @@ public class UserController extends BaseController {
         return "/u/set";
     }
 
+    @GetMapping("msg")
+    public String msg(){
+        return "/u/msg";
+    }
+
     /**
      * 用户信息主页
      *

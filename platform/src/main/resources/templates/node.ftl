@@ -9,18 +9,13 @@
             <div class="fly-panel" style="margin-bottom: 0;">
 
                 <div class="fly-panel-title fly-filter">
-                    <a href="" class="layui-this">综合</a>
+                    <a href="" class="layui-this">最新发帖</a>
                     <span class="fly-mid"></span>
-                    <a href="">未结</a>
-                    <span class="fly-mid"></span>
-                    <a href="">已结</a>
-                    <span class="fly-mid"></span>
-                    <a href="">精华</a>
+                    <a href="">最新回帖</a>
+
                     <span class="fly-filter-right layui-hide-xs">
-                    <a href="" class="layui-this">按最新</a>
-            <span class="fly-mid"></span>
-            <a href="">按热议</a>
-          </span>
+                        <a href="">只看悬赏</a>
+                    </span>
                 </div>
 
                 <ul class="fly-list"><div id="questionBodys"></div></ul>
@@ -83,6 +78,7 @@
             <span class="layui-badge fly-badge-accept layui-hide-xs">已悬赏</span>
             {{# }}}
             <span class="fly-list-nums">
+                <i class="iconfont" title="人气">&#xe60b;</i> {{item.q.view_count||0}}
                 <a href="/q/{{item.q.id}}" target="_blank"><i class="iconfont icon-pinglun1" title="回答"></i> </a>{{item.q.comment_count||0}}
             </span>
         </div>

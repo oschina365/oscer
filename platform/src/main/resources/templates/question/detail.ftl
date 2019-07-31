@@ -13,9 +13,9 @@
 
                     <#if q.reward_point gt 0>
                         <#if q.reward_comment == 0>
-                            <span class="layui-badge" style="background-color: #999;">未结</span>
+                            <span class="layui-badge" style="background-color: #999;">待悬赏</span>
                         <#else >
-                            <span class="layui-badge" style="background-color: #5FB878;">已结</span>
+                            <span class="layui-badge" style="background-color: #5FB878;">已悬赏</span>
                         </#if>
                     </#if>
 
@@ -94,7 +94,7 @@
                         <div class="layui-form-item layui-form-text">
                             <a name="comment"></a>
                             <div class="layui-input-block">
-                                <textarea name="content" placeholder="请输入内容" class="layui-textarea fly-editor" style="height: 150px;"></textarea>
+                                <textarea name="content" placeholder="<#if login_user??>请输入内容<#else >请先登录再评论</#if>" class="layui-textarea fly-editor" style="height: 150px;"></textarea>
                             </div>
                         </div>
                         <div class="layui-form-item">
