@@ -7,6 +7,9 @@
         </a>
         <ul class="layui-nav fly-nav layui-hide-xs">
             <li class="layui-nav-item layui-this"><a href="/">首页</a></li>
+            <li class="layui-nav-item">
+                <a href="/tw">体温</a>
+            </li>
         </ul>
 
         <ul class="layui-nav fly-nav-user">

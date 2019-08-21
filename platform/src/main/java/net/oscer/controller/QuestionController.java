@@ -36,6 +36,8 @@ import static net.oscer.db.Entity.STATUS_NORMAL;
 @Controller
 public class QuestionController extends BaseController {
 
+
+
     /**
      * 帖子详情
      *
@@ -61,25 +63,7 @@ public class QuestionController extends BaseController {
         return "/question/detail";
     }
 
-    /**
-     * 帖子列表
-     * 首页帖子列表，节点帖子列表
-     *
-     * @param id
-     * @return
-     */
-    @PostMapping("/list")
-    @ResponseBody
-    public ApiResult list(@RequestParam(value = "id", defaultValue = "0", required = false) Long id) {
-        Map<String, Object> map = new HashMap<>();
-        //帖子列表
-        List<Question> questions = QuestionDAO.ME.all(id, pageNumber, pageSize);
-        map.put("questions", QuestionVO.list(questions));
-        //帖子总数
-        int count = QuestionDAO.ME.count(id);
-        map.put("count", count);
-        return ApiResult.successWithObject(map);
-    }
+
 
     /**
      * 添加帖子页面
@@ -270,60 +254,6 @@ public class QuestionController extends BaseController {
         return ApiResult.success();
     }
 
-    /**
-     * 收藏/取消收藏
-     *
-     * @param id
-     * @return
-     */
-    @PostMapping("/collect")
-    @ResponseBody
-    public ApiResult collect(@RequestParam("id") long id) throws Exception {
-        User loginUser = getLoginUser();
-        if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
-            return ApiResult.failWithMessage("请重新登录");
-        }
-        Question q = Question.ME.get(id);
-        if (null == q) {
-            return ApiResult.failWithMessage("该帖子不存在");
-        }
-        if (q.getStatus() != 0) {
-            return ApiResult.failWithMessage("该帖子已删除");
-        }
-        if (q.getUser() == loginUser.getId()) {
-            return ApiResult.failWithMessage("自己的帖子不能被收藏");
-        }
-        final String[] message = {"收藏成功"};
-        DbQuery.get("mysql").transaction(new TransactionService() {
-            @Override
-            public void execute() throws Exception {
-                CollectQuestion collectQuestion = CollectQuestionDAO.ME.getByUser(loginUser.getId());
-                if (null == collectQuestion) {
-                    collectQuestion = new CollectQuestion();
-                    collectQuestion.setUser(loginUser.getId());
-                    collectQuestion.setQuestion(id);
-                    collectQuestion.save();
-                    q.setCollect_count(q.getCollect_count() + 1);
-                    q.doUpdate();
-                } else {
 
-                    int count = 1;
-                    if (collectQuestion.getStatus() == CollectQuestion.STATUS_SHOW) {
-                        collectQuestion.setStatus(CollectQuestion.STATUS_HIDE);
-                        count = -1;
-                        message[0] = "取消收藏成功";
-                    }else{
-                        collectQuestion.setStatus(CollectQuestion.STATUS_SHOW);
-                    }
-                    q.setCollect_count(q.getCollect_count() + count);
-                    q.doUpdate();
-                    collectQuestion.doUpdate();
-                }
-            }
-
-        });
-        CollectQuestionDAO.ME.evict(loginUser.getId());
-        return ApiResult.success(message[0]);
-    }
 
 }

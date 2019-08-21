@@ -50,13 +50,14 @@ public class CollectQuestionDAO extends CommonDao<CollectQuestion> {
      * 根据帖子查询
      *
      * @param user
+     * @param question
      * @return
      */
-    public CollectQuestion getByUser(long user) {
+    public CollectQuestion getByUser(long user,long question) {
         if (user <= 0L) {
             return null;
         }
-        return getDbQuery().read(CollectQuestion.class, "select * from collect_questions where user=?", user);
+        return getDbQuery().read(CollectQuestion.class, "select * from collect_questions where user=? and question=?", user,question);
     }
 
 }

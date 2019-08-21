@@ -135,7 +135,9 @@
                 <a href="/u/{{item.cu.id}}" class="fly-link">
                     <cite>{{item.cu.nickname||item.cu.username}}</cite>
                     <#--<i class="iconfont icon-renzheng" title="认证信息：XXX"></i>-->
+                    {{# if(item.cu.vip_text){ }}
                     <i class="layui-badge fly-badge-vip">{{item.cu.vip_text}}</i>
+                    {{# }}}
                 </a>
 
                 {{# if(item.cu.id==2){ }}<span>(楼主)</span>{{# }}}
@@ -193,7 +195,7 @@
          */
         function dataList(number) {
             $.ajax({
-                url: '/comment/question',
+                url: '/uni/q/comments',
                 method: 'post',
                 dataType: 'json',
                 data: {"id":${q.id}, "number": number},
@@ -314,7 +316,7 @@
 
         window.collect = function () {
             $.ajax({
-                url: '/q/collect',
+                url: '/uni/q/collect',
                 method: 'post',
                 dataType: 'json',
                 data: {"id":${q.id}},

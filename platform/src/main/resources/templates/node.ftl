@@ -128,7 +128,7 @@
          */
         function dataList(number) {
             $.ajax({
-                url: '/q/list',
+                url: '/uni/q/list',
                 method: 'post',
                 dataType: 'json',
                 data: {"number": number,"id":${current_node.id}},

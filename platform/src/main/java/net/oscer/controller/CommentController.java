@@ -56,44 +56,12 @@ public class CommentController extends BaseController {
         c.setQuestion(id);
         c.setContent(content);
         c.save();
+        q.setLast_comment_user(login_user.getId());
         q.setComment_count(q.getComment_count() + 1);
         q.doUpdate();
         CommentQuestionDAO.ME.evict(id, login_user.getId());
         return ApiResult.success();
     }
 
-    /**
-     * 帖子列表
-     * 首页帖子列表，节点帖子列表
-     *
-     * @param id
-     * @return
-     */
-    @PostMapping("/question")
-    @ResponseBody
-    public ApiResult list(@RequestParam(value = "id", defaultValue = "0", required = false) Long id) {
-        User login_user = getLoginUser();
-        Map<String, Object> map = new HashMap<>(2);
-        //评论列表 --分页
-        List<CommentQuestion> comments = CommentQuestionDAO.ME.list(id, pageNumber, pageSize);
-        if (CacheMgr.exists(CommentQuestion.ME.CacheRegion(), "rankMap#" + id)) {
-            map.put("rankMap", CacheMgr.get(CommentQuestion.ME.CacheRegion(), "rankMap#" + id));
-        } else {
-            //全部评论
-            List<CommentQuestion> allComments = CommentQuestionDAO.ME.list(id);
-            if (CollectionUtils.isNotEmpty(allComments)) {
-                Map<Long, Integer> rankMap = new HashMap<>(allComments.size());
-                for (int i = 0; i < allComments.size(); i++) {
-                    rankMap.put(allComments.get(i).getId(), allComments.size() - i);
-                }
-                map.put("rankMap", rankMap);
-                CacheMgr.set(CommentQuestion.ME.CacheRegion(), "rankMap#" + id, rankMap);
-            }
-        }
-        map.put("comments", CommentQuestionVO.list(id, login_user, comments));
-        //帖子总数
-        int count = CommentQuestionDAO.ME.count(id);
-        map.put("count", count);
-        return ApiResult.successWithObject(map);
-    }
+
 }

@@ -20,6 +20,10 @@ public class UrlPassEnum {
     public static final String comment = "/comment";
     public static final String sign = "/sign";
     public static final String api = "/api/";
+    public static final String tw = "/tw";
+    public static final String uni = "/uni/";
+    public static final String error_500 = "/500";
+    public static final String error_400 = "/400";
 
-    public static final List<String> list = Arrays.asList(user, u, druid, res, q, oauth, comment,sign,api);
+    public static final List<String> list = Arrays.asList(user, u, druid, res, q, oauth, comment,sign,api,tw,uni,error_500,error_400);
 }

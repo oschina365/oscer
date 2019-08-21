@@ -139,7 +139,7 @@ public class UrlPermissionsFilter extends PermissionsAuthorizationFilter {
      * @return
      */
     public boolean canView(String ip, long user, String url) {
-        if (ip.equalsIgnoreCase(IpPassEnum.local) || ip.equalsIgnoreCase(IpPassEnum.remote_local)) {
+        if (ip.equalsIgnoreCase(IpPassEnum.local) || ip.equalsIgnoreCase(IpPassEnum.local) || ip.equalsIgnoreCase(IpPassEnum.remote_local)) {
             return true;
         }
         //单个ip所有访问链接次数

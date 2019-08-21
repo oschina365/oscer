@@ -7,6 +7,7 @@ import net.oscer.dao.CollectQuestionDAO;
 import net.oscer.dao.CommentQuestionDAO;
 import net.oscer.dao.QuestionDAO;
 import net.oscer.dao.UserBindDAO;
+import net.oscer.db.Entity;
 import net.oscer.framework.FormatTool;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -78,7 +79,7 @@ public class UserController extends BaseController {
     }
 
     @GetMapping("msg")
-    public String msg(){
+    public String msg() {
         return "/u/msg";
     }
 
@@ -157,7 +158,13 @@ public class UserController extends BaseController {
     public ApiResult login(@RequestParam("name") String name, @RequestParam("pwd") String pwd) {
         try {
             loginUser(name, pwd);
-            return ApiResult.success("登录成功");
+            User login_user = getLoginUser();
+            if (login_user != null && login_user.getStatus() == STATUS_NORMAL) {
+                return ApiResult.successWithObject(login_user);
+            } else {
+                return ApiResult.failWithMessage("登录失败");
+            }
+
         } catch (Exception e) {
             return ApiResult.failWithMessage(StringUtils.isNotBlank(e.getMessage()) ? e.getMessage() : "登录失败");
         }

@@ -9,5 +9,6 @@ import net.oscer.framework.LinkTool;
 public class IpPassEnum {
 
     public static final String local = "127.0.0.1";
+    public static final String local1 = "0:0:0:0:0:0:0:1";
     public static final String remote_local = LinkTool.getHost("local");
 }
