@@ -53,11 +53,19 @@ public class CollectQuestionDAO extends CommonDao<CollectQuestion> {
      * @param question
      * @return
      */
-    public CollectQuestion getByUser(long user,long question) {
+    public CollectQuestion getByUser(long user, long question) {
         if (user <= 0L) {
             return null;
         }
-        return getDbQuery().read(CollectQuestion.class, "select * from collect_questions where user=? and question=?", user,question);
+        return getDbQuery().read(CollectQuestion.class, "select * from collect_questions where user=? and question=?", user, question);
+    }
+
+    public void deleteByQuestion(long question) {
+        try {
+            getDbQuery().update("delete from collect_questions where question=?", question);
+        } catch (Exception e) {
+
+        }
     }
 
 }

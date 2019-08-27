@@ -199,4 +199,19 @@ public class HtmlUtils {
         return res;
     }
 
+    public static String removeHtml(String html) {
+        if (StringUtils.isBlank(html)) {
+            return null;
+        }
+        Document doc = Jsoup.parse(html);
+        try {
+
+            doc.select("embed").remove();
+            doc.select("iframe").remove();
+        } catch (Exception e) {
+
+        }
+
+        return doc.body().html();
+    }
 }

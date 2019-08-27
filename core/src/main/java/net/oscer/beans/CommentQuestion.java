@@ -24,9 +24,9 @@ public class CommentQuestion extends Entity {
      */
     private long user;
     /**
-     * 回复评论者ID
+     * 回复D
      */
-    private long reply_user;
+    private long parent;
     /**
      * 评论的内容
      */
@@ -56,12 +56,12 @@ public class CommentQuestion extends Entity {
         this.user = user;
     }
 
-    public long getReply_user() {
-        return reply_user;
+    public long getParent() {
+        return parent;
     }
 
-    public void setReply_user(long reply_user) {
-        this.reply_user = reply_user;
+    public void setParent(long parent) {
+        this.parent = parent;
     }
 
     public String getContent() {

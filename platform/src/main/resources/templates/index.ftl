@@ -63,9 +63,6 @@
                     <span class="fly-mid"></span>
                     <a href="">最新回帖</a>
 
-                    <span class="fly-filter-right layui-hide-xs">
-                        <a href="">只看悬赏</a>
-                    </span>
                 </div>
 
                 <ul class="fly-list">

@@ -10,6 +10,7 @@ import net.oscer.db.CacheMgr;
 import net.oscer.db.DbQuery;
 import net.oscer.db.TransactionService;
 import net.oscer.enums.ViewEnum;
+import net.oscer.framework.FormatTool;
 import net.oscer.service.ViewService;
 import net.oscer.vo.QuestionVO;
 import org.apache.commons.collections.CollectionUtils;
@@ -37,7 +38,6 @@ import static net.oscer.db.Entity.STATUS_NORMAL;
 public class QuestionController extends BaseController {
 
 
-
     /**
      * 帖子详情
      *
@@ -57,12 +57,17 @@ public class QuestionController extends BaseController {
         if (null == u || u.getId() <= 0L || u.getStatus() != User.STATUS_NORMAL) {
             return "403";
         }
+        User loginUser = getLoginUser();
+        if (loginUser != null) {
+            CollectQuestion collectQuestion = CollectQuestionDAO.ME.getByUser(loginUser.getId(), q.getId());
+            request.setAttribute("collected", collectQuestion != null && collectQuestion.getStatus() == CollectQuestion.STATUS_SHOW ? true : false);
+        }
         ViewService.keyCache(q.getId(), ViewEnum.TYPE.QUESTION.getKey());
+        request.setAttribute("author", q.getUser());
         request.setAttribute("q", q);
         request.setAttribute("u", u);
         return "/question/detail";
     }
-
 
 
     /**
@@ -97,14 +102,15 @@ public class QuestionController extends BaseController {
         }
 
         form.setUser(login_user.getId());
-        form.setTitle(StringUtils.abbreviate(form.getTitle(), MAX_LENGTH_TITLE));
+        form.setTitle(net.oscer.framework.StringUtils.abbreviate(FormatTool.text(form.getTitle()), MAX_LENGTH_TITLE));
         if (is_reward == 0) {
             form.setReward_point(0);
-        }else{
-            if(form.getReward_point() > login_user.getScore()){
+        } else {
+            if (form.getReward_point() > login_user.getScore()) {
                 return ApiResult.failWithMessage("积分不够哦~");
             }
         }
+        form.setContent(net.oscer.framework.StringUtils.abbreviate(FormatTool.cleanBody(form.getContent(),false), MAX_LENGTH_TITLE));
         form.save();
         Node n = Node.ME.get(form.getNode());
         QuestionDAO.ME.evictNode(form.getNode());
@@ -173,37 +179,6 @@ public class QuestionController extends BaseController {
     }
 
     /**
-     * 删除帖子方法
-     *
-     * @return
-     */
-    @PostMapping("/delete")
-    @ResponseBody
-    public ApiResult delete(@RequestParam(value = "id", required = true, defaultValue = "0") long id) throws Exception {
-        User login_user = getLoginUser();
-        if (login_user == null || !login_user.status_is_normal()) {
-            return ApiResult.failWithMessage("请登录后重试");
-        }
-        if (id <= 0L) {
-            return ApiResult.failWithMessage("不存在此帖子");
-        }
-        Question q = Question.ME.get(id);
-        if (login_user.getId() != q.getUser()) {
-            return ApiResult.failWithMessage("无权限删除此贴");
-        }
-
-        DbQuery.get("mysql").transaction(new TransactionService() {
-            @Override
-            public void execute() throws Exception {
-                q.delete();
-                CommentQuestionDAO.ME.delete(id);
-                QuestionDAO.ME.evictNode(q.getNode());
-            }
-        });
-        return ApiResult.success();
-    }
-
-    /**
      * 推荐/取消推荐
      *
      * @param id
@@ -253,7 +228,6 @@ public class QuestionController extends BaseController {
         QuestionDAO.ME.evictTops();
         return ApiResult.success();
     }
-
 
 
 }

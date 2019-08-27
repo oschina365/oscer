@@ -96,6 +96,7 @@ public class DBManager {
 
     public static PoolStatus getPoolStatus(String dataSourceName) {
         DataSource dataSource = dataSources.get(dataSourceName);
+
         if (dataSource == null) {
             return null;
         }

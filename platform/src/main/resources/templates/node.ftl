@@ -13,9 +13,7 @@
                     <span class="fly-mid"></span>
                     <a href="">最新回帖</a>
 
-                    <span class="fly-filter-right layui-hide-xs">
-                        <a href="">只看悬赏</a>
-                    </span>
+
                 </div>
 
                 <ul class="fly-list"><div id="questionBodys"></div></ul>
@@ -28,10 +26,12 @@
                 <dt class="fly-panel-title">本周热议</dt>
                 <#if weekHots??>
                     <#list weekHots as hot>
-                        <dd>
-                        <a href="/q/${hot.id}">${hot.title}</a>
-                        <span><i class="iconfont icon-pinglun1"></i> ${hot.comment_count}</span>
-                        </dd>
+                        <#if hot?? && hot.id gt 0>
+                            <dd>
+                            <a href="/q/${hot.id}">${hot.title}</a>
+                            <span><i class="iconfont icon-pinglun1"></i> ${hot.comment_count}</span>
+                            </dd>
+                        </#if>
                     </#list>
                 <#else >
                     <div class="fly-none">没有相关数据</div>

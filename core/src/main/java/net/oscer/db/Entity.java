@@ -653,6 +653,20 @@ public abstract class Entity implements Serializable {
         }
     }
 
+    public long user() {
+        try {
+            PropertyDescriptor[] fields = Introspector.getBeanInfo(getClass()).getPropertyDescriptors();
+            for (PropertyDescriptor field : fields) {
+                if ("user".equalsIgnoreCase(field.getName())) {
+                    Object fv = field.getReadMethod().invoke(this);
+                    return ((long) fv);
+                }
+            }
+        } catch (Exception e) {
+        }
+        return 0L;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {

@@ -147,6 +147,11 @@ public class Question extends Entity {
      */
     public int system_top;
 
+    /**
+     * 完整节点，如 /1/2/3，最多三级节点
+     */
+    private String whole_node;
+
     @Override
     public Date getInsert_date() {
         return insert_date;

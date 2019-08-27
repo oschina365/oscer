@@ -18,6 +18,10 @@ spring:
     expose-spring-macro-helpers: true
     suffix: .ftl
     request-context-attribute: request
+    settings:
+      number_format: '0.##'   #数字格式化，无小数点
+
+
   mail:
     host: smtp.163.com
     username: forever7776@163.com

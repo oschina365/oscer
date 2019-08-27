@@ -57,6 +57,11 @@ public class QuestionVO {
      */
     private String banner;
 
+    /**
+     * 帖子多张图片
+     */
+    private List<String> banners;
+
     private boolean hasBanner;
 
     public Question getQ() {
@@ -131,6 +136,14 @@ public class QuestionVO {
         this.banner = banner;
     }
 
+    public List<String> getBanners() {
+        return banners;
+    }
+
+    public void setBanners(List<String> banners) {
+        this.banners = banners;
+    }
+
     public boolean isHasBanner() {
         return hasBanner;
     }
@@ -190,6 +203,7 @@ public class QuestionVO {
                 vo.setCollected(CollectionUtils.isNotEmpty(finalCollect_ids) ? finalCollect_ids.contains(q.getId()) : false);
             }
             vo.setBanner(StringUtils.getFirstImageUrl(q.getContent()));
+            vo.setBanners(StringUtils.getMoreImageUrl(q.getContent(),3));
             vo.setHasBanner(false);
             if (StringUtils.isNotBlank(vo.getBanner())) {
                 vo.setHasBanner(true);

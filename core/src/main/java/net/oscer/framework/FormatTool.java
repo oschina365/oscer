@@ -4,7 +4,9 @@ import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.safety.Whitelist;
+import org.jsoup.select.Elements;
 
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
@@ -22,6 +24,84 @@ import static net.oscer.common.PatternUtil.*;
  * @author kz
  */
 public class FormatTool {
+
+    private final static Whitelist qa_filter = Whitelist.basicWithImages();
+    private final static Whitelist rpl_filter = Whitelist.basicWithImages();
+
+    static {
+        qa_filter.addTags("embed", "object", "param", "span", "pre", "code", "div", "h1", "h2", "h3", "h4", "h5", "h6", "table", "tbody", "tr", "th", "td", "s", "script", "hr", "emoji");
+        qa_filter.addAttributes("script", "src");
+        qa_filter.addAttributes("span", "style");
+        qa_filter.addAttributes("pre", "class");
+        qa_filter.addAttributes("code", "class");
+        qa_filter.addAttributes("div", "class");
+        qa_filter.addAttributes("a", "target", "name");
+        qa_filter.addAttributes("table", "style", "border", "bordercolor", "cellpadding", "cellspacing");
+        qa_filter.addAttributes("th", "style");
+        qa_filter.addAttributes("td", "style");
+        qa_filter.addAttributes("object", "width", "height", "classid", "codebase", "type");
+        qa_filter.addAttributes("param", "name", "value");
+        qa_filter.addAttributes("embed", "src", "quality", "width", "height", "allowfullscreen", "allowscriptaccess", "flashvars", "name", "type", "pluginspage", "align");
+        qa_filter.addAttributes("p", "style");
+        qa_filter.addAttributes("emoji", "class", "data-name", "data-emoji", "align");
+        qa_filter.addAttributes("video", "controls", "id", "height", "poster", "width", "autoplay");
+        qa_filter.addAttributes("source", "src", "type");
+
+        rpl_filter.addTags("span", "pre", "div", "h1", "h2", "h3", "h4", "h5", "table", "tbody", "tr", "th", "td", "script", "hr", "emoji");
+        rpl_filter.addAttributes("script", "src");
+        rpl_filter.addAttributes("span", "style");
+        rpl_filter.addAttributes("pre", "class");
+        rpl_filter.addAttributes("div", "class");
+        rpl_filter.addAttributes("a", "target", "name");
+        rpl_filter.addAttributes("table", "border", "cellpadding", "cellspacing");
+        rpl_filter.addAttributes("emoji", "class", "data-name", "data-emoji", "align");
+    }
+    /**
+     * 对用户输入的问题和答案进行过滤
+     *
+     * @param body
+     * @return
+     */
+    public final static String cleanBody(String body, boolean is_reply) {
+        if (StringUtils.isBlank(body)) {
+            return "";
+        }
+        //防止清理\n \r
+        Document document = Jsoup.parse(body);
+        document.outputSettings(new Document.OutputSettings().prettyPrint(false));//makes html() preserve linebreaks and spacing
+        //简书图片链接的处理
+        Elements imgs = document.select("img");
+        for(Element e:imgs){
+            String originalSrc = e.attr("data-original-src");
+            if(StringUtils.isNotEmpty(originalSrc)){//data-original-src有值的时候，再替换img的url
+                e.attr("src",originalSrc);
+            }
+        }
+        String context = document.html();
+        body = Jsoup.clean(context, "", is_reply ? rpl_filter : qa_filter, new Document.OutputSettings().prettyPrint(false));
+        //System.out.println("2 ----> " + body);
+        Document doc = Jsoup.parseBodyFragment(body);
+        doc.outputSettings(new Document.OutputSettings().prettyPrint(false));//makes html() preserve linebreaks and spacing
+        Elements scripts = doc.select("script");
+        for (Element script : scripts) {
+            String src = script.attr("src");
+            if (!StringUtils.startsWithIgnoreCase(src, "http://runjs.cn/gist/"))
+                script.remove();
+            if (script.hasText())
+                script.remove();
+        }
+        Elements elems = doc.getElementsByAttribute("style");
+        for (Element elem : elems) {
+            String style = elem.attr("style");
+            if (StringUtils.contains(style, "javascript:") || StringUtils.contains(style, "http:"))
+                elem.removeAttr("style");
+            if (StringUtils.containsIgnoreCase(style, "position"))
+                elem.removeAttr("style");
+        }
+        String res = HtmlUtils.filterEmbedSrc(doc.body().html());
+        res = HtmlUtils.removeHtml(res);
+        return res;
+    }
 
     public static long rlong(String str) {
         if (StringUtils.isBlank(str) || !StringUtils.isNumeric(str)) {

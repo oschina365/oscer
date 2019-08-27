@@ -2,17 +2,18 @@ package net.oscer.controller;
 
 import net.oscer.beans.*;
 import net.oscer.common.ApiResult;
-import net.oscer.dao.CollectQuestionDAO;
-import net.oscer.dao.CommentQuestionDAO;
-import net.oscer.dao.NodeDAO;
-import net.oscer.dao.QuestionDAO;
+import net.oscer.dao.*;
 import net.oscer.db.CacheMgr;
 import net.oscer.db.DbQuery;
 import net.oscer.db.TransactionService;
 import net.oscer.enums.ViewEnum;
+import net.oscer.framework.FormatTool;
+import net.oscer.framework.StringUtils;
 import net.oscer.service.ViewService;
 import net.oscer.vo.CommentQuestionVO;
 import net.oscer.vo.QuestionVO;
+import net.oscer.vo.ReadVO;
+import net.oscer.vo.UserCommentVO;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static net.oscer.beans.Question.MAX_LENGTH_TITLE;
 import static net.oscer.db.Entity.STATUS_NORMAL;
 
 /**
@@ -36,14 +38,28 @@ import static net.oscer.db.Entity.STATUS_NORMAL;
 public class UniController extends BaseController {
 
     /**
+     * 获取所有顶级节点名称
+     *
+     * @return
+     */
+    @PostMapping("first_nodes")
+    @ResponseBody
+    public ApiResult nodes() {
+        List<Node> nodes = NodeDAO.ME.nodes(Node.STATUS_NORMAL, 0);
+        Map<String, Object> map = new HashMap<>();
+        map.put("nodes", nodes);
+        return ApiResult.successWithObject(map);
+    }
+
+    /**
      * 获取所有节点名称
      *
      * @return
      */
-    @PostMapping("nodes")
+    @PostMapping("all_nodes")
     @ResponseBody
-    public ApiResult nodes() {
-        List<Node> nodes = NodeDAO.ME.nodes(Node.STATUS_NORMAL, 0);
+    public ApiResult all_nodes() {
+        List<Node> nodes = NodeDAO.ME.nodes(Node.STATUS_NORMAL, -1);
         Map<String, Object> map = new HashMap<>();
         map.put("nodes", nodes);
         return ApiResult.successWithObject(map);
@@ -77,7 +93,7 @@ public class UniController extends BaseController {
      */
     @PostMapping("q/{id}")
     @ResponseBody
-    public ApiResult question_detail(@PathVariable("id") Long id) {
+    public ApiResult question_detail(@PathVariable("id") Long id, @RequestParam(value = "user", required = false) Long user) {
         Question q = Question.ME.get(id);
         if (null == q || q.getId() <= 0L) {
             return ApiResult.failWithMessage("帖子不存在");
@@ -89,12 +105,21 @@ public class UniController extends BaseController {
         if (null == u || u.getId() <= 0L || u.getStatus() != User.STATUS_NORMAL) {
             return ApiResult.failWithMessage("用户被屏蔽");
         }
+        User loginUser = null;
+        if (user != null && user > 0L) {
+            loginUser = User.ME.get(user);
+        } else {
+            loginUser = getLoginUser();
+        }
         ViewService.keyCache(q.getId(), ViewEnum.TYPE.QUESTION.getKey());
+        if (loginUser != null && loginUser.status_is_normal() && loginUser.getId() != q.getUser()) {
+            VisitDAO.ME.save(loginUser.getId(), q.getId(), Visit.QUESTION);
+        }
         List<Question> list = Arrays.asList(q);
         Map<String, Object> map = new HashMap<>();
         map.put("q", q);
         map.put("u", u);
-        map.put("detail", QuestionVO.list(list, getLoginUser()));
+        map.put("detail", QuestionVO.list(list, loginUser));
         return ApiResult.successWithObject(map);
     }
 
@@ -139,27 +164,79 @@ public class UniController extends BaseController {
      */
     @PostMapping("/q/delete/{id}")
     @ResponseBody
-    public ApiResult delete(@PathVariable("id") Long id, @RequestParam(value = "user", required = true) Long user) throws Exception {
-        User login_user = User.ME.get(user);
-        if (login_user == null || !login_user.status_is_normal()) {
-            return ApiResult.failWithMessage("请登录后重试");
+    public ApiResult delete(@PathVariable("id") Long id, @RequestParam(value = "user", required = false) Long user) throws Exception {
+        User loginUser = null;
+        if (user != null && user > 0L) {
+            loginUser = User.ME.get(user);
+        } else {
+            loginUser = getLoginUser();
+        }
+        if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
+            return ApiResult.failWithMessage("请重新登录");
         }
         if (id <= 0L) {
             return ApiResult.failWithMessage("不存在此帖子");
         }
         Question q = Question.ME.get(id);
-        if (login_user.getId() != q.getUser()) {
+        if (loginUser.getId() != q.getUser()) {
             return ApiResult.failWithMessage("无权限删除此贴");
         }
 
+        long user_id = loginUser.getId();
         DbQuery.get("mysql").transaction(new TransactionService() {
             @Override
             public void execute() throws Exception {
                 q.delete();
+                CollectQuestionDAO.ME.deleteByQuestion(id);
+                VisitDAO.ME.deleteByObjIdObjType(id, Visit.QUESTION);
                 CommentQuestionDAO.ME.delete(id);
                 QuestionDAO.ME.evictNode(q.getNode());
+                QuestionDAO.ME.evict(user_id);
             }
         });
+        return ApiResult.success();
+    }
+
+    /**
+     * 回答帖子
+     *
+     * @param id
+     * @return
+     */
+    @PostMapping("/user_pub_q_comment")
+    @ResponseBody
+    public ApiResult question(@RequestParam("id") long id, @RequestParam(value = "user", required = false) Long user) {
+        User loginUser = null;
+        if (user != null && user > 0L) {
+            loginUser = User.ME.get(user);
+        } else {
+            loginUser = getLoginUser();
+        }
+        if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
+            return ApiResult.failWithMessage("请重新登录");
+        }
+        if (id <= 0L) {
+            return ApiResult.failWithMessage("该帖子不存在");
+        }
+        String content = param("content");
+        long parent = param("parent", 0L);
+        if (StringUtils.isBlank(content)) {
+            return ApiResult.failWithMessage("请输入内容");
+        }
+        Question q = Question.ME.get(id);
+        if (null == q || q.getId() <= 0L) {
+            return ApiResult.failWithMessage("该帖子不存在");
+        }
+        CommentQuestion c = new CommentQuestion();
+        c.setUser(loginUser.getId());
+        c.setQuestion(id);
+        c.setContent(FormatTool.fixContent(false, null, 0L, 0, 0, content));
+        c.setParent(parent);
+        c.save();
+        q.setLast_comment_user(loginUser.getId());
+        q.setComment_count(q.getComment_count() + 1);
+        q.doUpdate();
+        CommentQuestionDAO.ME.evict(id, loginUser.getId());
         return ApiResult.success();
     }
 
@@ -173,7 +250,7 @@ public class UniController extends BaseController {
     @ResponseBody
     public ApiResult collect(@RequestParam("id") long id, @RequestParam(value = "user", required = false) Long user) throws Exception {
         User loginUser = null;
-        if (user > 0L) {
+        if (user != null && user > 0L) {
             loginUser = User.ME.get(user);
         } else {
             loginUser = getLoginUser();
@@ -269,4 +346,93 @@ public class UniController extends BaseController {
         map.put("collects", QuestionVO.list(list, loginUser));
         return ApiResult.successWithObject(map);
     }
+
+    /**
+     * 用户的帖子访问记录
+     *
+     * @param user
+     * @return
+     */
+    @PostMapping("user_visits/{user}")
+    @ResponseBody
+    public ApiResult user_visits(@PathVariable("user") Long user, @RequestParam(value = "obj_type", required = false) Integer obj_type) {
+        User loginUser = null;
+        if (user != null && user > 0L) {
+            loginUser = User.ME.get(user);
+        } else {
+            loginUser = getLoginUser();
+        }
+        if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
+            return ApiResult.failWithMessage("请重新登录");
+        }
+        if (obj_type == null || obj_type <= 0) {
+            obj_type = Visit.QUESTION;
+        }
+        List<ReadVO> readVOS = ReadVO.listByUserObjType(loginUser.getId(), obj_type);
+        if (CollectionUtils.isEmpty(readVOS)) {
+            return ApiResult.failWithMessage("暂无阅读记录");
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("reads", readVOS);
+        return ApiResult.successWithObject(map);
+    }
+
+    /**
+     * 用户的帖子评论记录
+     * 每个帖子取最后一条评论
+     *
+     * @param user
+     * @return
+     */
+    @PostMapping("user_comments_q/{user}")
+    @ResponseBody
+    public ApiResult user_comments_q(@PathVariable("user") Long user) {
+        User loginUser = null;
+        if (user != null && user > 0L) {
+            loginUser = User.ME.get(user);
+        } else {
+            loginUser = getLoginUser();
+        }
+        if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
+            return ApiResult.failWithMessage("请重新登录");
+        }
+        List<CommentQuestion> comments = CommentQuestionDAO.ME.allByUser(loginUser.getId(), 0);
+        Map<String, Object> map = new HashMap<>();
+        map.put("comments", UserCommentVO.listUserComments(comments));
+        return ApiResult.successWithObject(map);
+    }
+
+    /**
+     * 添加帖子方法
+     *
+     * @param form
+     * @return
+     */
+    @PostMapping("/q/add")
+    @ResponseBody
+    public ApiResult add(Question form, @RequestParam("user") Long user) {
+        User loginUser = null;
+        if (user != null && user > 0L) {
+            loginUser = User.ME.get(user);
+        } else {
+            loginUser = getLoginUser();
+        }
+        if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
+            return ApiResult.failWithMessage("请重新登录");
+        }
+        ApiResult result = QuestionDAO.ME.check(form, 1);
+        if (result == null || result.getCode() == ApiResult.fail) {
+            return result;
+        }
+
+        form.setUser(loginUser.getId());
+        form.setTitle(StringUtils.abbreviate(FormatTool.text(form.getTitle()), MAX_LENGTH_TITLE));
+        form.setContent(net.oscer.framework.StringUtils.abbreviate(FormatTool.cleanBody(form.getContent(),false), MAX_LENGTH_TITLE));
+        form.save();
+        Node n = Node.ME.get(form.getNode());
+        QuestionDAO.ME.evictNode(form.getNode());
+        QuestionDAO.ME.evict(loginUser.getId());
+        return ApiResult.successWithObject(n.getUrl());
+    }
+
 }

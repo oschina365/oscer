@@ -25,6 +25,8 @@ public class HttpTools {
     public static String get(String uri) throws IOException {
         HttpClient client = new HttpClient();
         GetMethod method = new GetMethod(uri);
+        method.setRequestHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) " +
+                "Chrome/58.0.3029.110 Safari/537.36");
         client.executeMethod(method);
         byte[] bytes = method.getResponseBody();
         return new String(bytes, method.getResponseCharSet());
@@ -34,6 +36,8 @@ public class HttpTools {
             throws IOException {
         HttpClient client = new HttpClient();
         PostMethod method = new PostMethod(uri);
+        method.setRequestHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) " +
+                "Chrome/58.0.3029.110 Safari/537.36");
         NameValuePair[] pairs = new NameValuePair[params.size()];
         Set<String> keys = params.keySet();
 

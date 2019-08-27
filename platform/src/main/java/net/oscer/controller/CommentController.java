@@ -27,41 +27,7 @@ import java.util.Map;
 public class CommentController extends BaseController {
 
 
-    /**
-     * 回答帖子
-     *
-     * @param id
-     * @return
-     */
-    @PostMapping("/q/{id}")
-    @ResponseBody
-    public ApiResult question(@PathVariable("id") Long id) {
-        User login_user = getLoginUser();
-        if (login_user == null) {
-            return ApiResult.failWithMessage("请登录后再试");
-        }
-        if (null == id || id <= 0L) {
-            return ApiResult.failWithMessage("该帖子不存在");
-        }
-        String content = param("content");
-        if (StringUtils.isBlank(content)) {
-            return ApiResult.failWithMessage("请输入内容");
-        }
-        Question q = Question.ME.get(id);
-        if (null == q || q.getId() <= 0L) {
-            return ApiResult.failWithMessage("该帖子不存在");
-        }
-        CommentQuestion c = new CommentQuestion();
-        c.setUser(login_user.getId());
-        c.setQuestion(id);
-        c.setContent(content);
-        c.save();
-        q.setLast_comment_user(login_user.getId());
-        q.setComment_count(q.getComment_count() + 1);
-        q.doUpdate();
-        CommentQuestionDAO.ME.evict(id, login_user.getId());
-        return ApiResult.success();
-    }
+
 
 
 }

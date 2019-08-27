@@ -25,7 +25,7 @@
 
                     <#if login_user??>
                         <div class="fly-admin-box">
-                            <#if login_user.id=q.user>
+                            <#if login_user.id=author || login_user.id=2>
                             <a onclick="del()"><span class="layui-btn layui-btn-xs jie-admin layui-btn-danger">删除</span></a>
                             </#if>
 
@@ -47,7 +47,13 @@
                     <span class="fly-list-nums">
                             <a href="#comment"><i class="iconfont" title="回答">&#xe60c;</i> ${q.comment_count!'0'}</a>
                             <i class="iconfont" title="人气">&#xe60b;</i> ${q.view_count!'0'}
-                            <a onclick="collect()"><i class="layui-icon" title="收藏">&#xe67b;</i> ${q.collect_count!'0'}</a>
+                            <a onclick="collect()">
+                                <#if collected?? && collected>
+                                        <i class="layui-icon" title="收藏" style="color: red" >&#xe67a;</i> ${q.collect_count!'0'}</a>
+                                    <#else >
+                                        <i class="layui-icon" title="收藏">&#xe67b;</i> ${q.collect_count!'0'}</a>
+                                </#if>
+
                     </span>
                 </div>
 
@@ -66,7 +72,7 @@
                         <#if q.reward_point gt 0>
                             <span style="padding-right: 10px; color: #FF7200">悬赏：${q.reward_point!'0'}积分</span>
                         </#if>
-                        <#if login_user?? && login_user.id=q.user>
+                        <#if login_user?? && login_user.id=author>
                             <span class="layui-btn layui-btn-xs jie-admin"><a href="/q/edit/${q.id}">编辑此贴</a></span>
                         </#if>
                         <span class="layui-btn layui-btn-xs jie-admin layui-btn-normal"><a href="add.html">关注</a></span>
@@ -89,7 +95,7 @@
 
             <div class="fly-panel detail-box">
                 <div class="layui-form layui-form-pane">
-                    <form action="/comment/q/${q.id}" method="post" id="commentFrom">
+                    <form action="/uni/user_pub_q_comment" method="post" id="commentFrom">
                         <input type="hidden" name="id" value="${q.id}"/>
                         <div class="layui-form-item layui-form-text">
                             <a name="comment"></a>
@@ -98,7 +104,6 @@
                             </div>
                         </div>
                         <div class="layui-form-item">
-                            <input type="hidden" name="jid" value="123">
                             <button class="layui-btn" lay-filter="commentAdd" lay-submit>发布评论</button>
                         </div>
                     </form>
@@ -243,7 +248,7 @@
 
         form.on("submit(commentAdd)", function (data) {
             $.ajax({
-                url: '/comment/q/${q.id}',
+                url: '/uni/user_pub_q_comment',
                 method: 'post',
                 dataType: 'json',
                 data: data.field,
@@ -262,10 +267,9 @@
 
         window.del = function () {
             $.ajax({
-                url: '/q/delete',
+                url: '/uni/q/delete/'+${q.id},
                 method: 'post',
                 dataType: 'json',
-                data: {"id":${q.id}},
                 success: function (data) {
                     if (data && data.code == 1) {
                         layer.msg("删除成功", {icon: 6});

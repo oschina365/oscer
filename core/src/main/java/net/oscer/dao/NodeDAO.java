@@ -24,9 +24,9 @@ public class NodeDAO extends CommonDao<Node> {
         if (!Node.statusList.contains(status)) {
             return null;
         }
-        String sql = "select * from nodes where status=? order by sort asc", cacheKey = "status#" + status;
+        String sql = "select id from nodes where status=? order by sort asc", cacheKey = "status#" + status;
         if (parent == 0) {
-            sql = "select * from nodes where status=? and parent =0 order by sort asc";
+            sql = "select id from nodes where status=? and parent =0 order by sort asc";
             cacheKey = "status#" + status + "#parent#" + parent;
         }
         if (parent > 0) {
@@ -34,7 +34,11 @@ public class NodeDAO extends CommonDao<Node> {
             if (father == null || father.getStatus() == Node.STATUS_FORBID) {
                 return null;
             }
-            sql = "select * from nodes where status=? and parent = " + parent + " order by sort asc";
+            sql = "select id from nodes where status=? and parent = " + parent + " order by sort asc";
+            cacheKey = "status#" + status + "#parent#" + parent;
+        }
+        if (parent < 0) {
+            sql = "select id from nodes where status=? order by parent asc,sort asc";
             cacheKey = "status#" + status + "#parent#" + parent;
         }
         List<Number> numbers = getDbQuery().query_cache(Number.class, false, Node.ME.CacheRegion(), cacheKey, sql, status);

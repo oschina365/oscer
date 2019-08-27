@@ -19,6 +19,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.BreakIterator;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static net.oscer.common.PatternUtil.*;
@@ -61,6 +62,23 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
             }
         }
         return "";
+    }
+
+    public static List<String> getMoreImageUrl(String htmlContent,int size) {
+        if (StringUtils.isNotBlank(htmlContent)) {
+            Document document = Jsoup.parse(htmlContent);
+            Elements elements = document.select("img[src~=(?i)\\.(gif|png|bmp|svg|jpe?g)]");
+            if (null != elements && elements.size() > 0) {
+                List<String> images = new LinkedList<>();
+                size = elements.size()<size?elements.size():size;
+                for (int i=0;i<size;i++) {
+                    images.add(elements.get(i).attr("src"));
+                }
+                return images;
+
+            }
+        }
+        return null;
     }
 
     public static String[] splitWords(String txt, boolean use_blank) {

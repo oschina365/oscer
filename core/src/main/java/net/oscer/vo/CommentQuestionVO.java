@@ -99,9 +99,6 @@ public class CommentQuestionVO {
         List<Long> all_users = new ArrayList<>();
         commentQuestions.stream().filter(c -> c != null && c.getId() > 0L).forEach(c -> {
             all_users.add(c.getUser());
-            if (c.getReply_user() > 0L) {
-                all_users.add(c.getReply_user());
-            }
         });
         if (CollectionUtils.isEmpty(all_users)) {
             return null;
