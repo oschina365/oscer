@@ -6,9 +6,11 @@ import net.oscer.dao.*;
 import net.oscer.db.CacheMgr;
 import net.oscer.db.DbQuery;
 import net.oscer.db.TransactionService;
+import net.oscer.enums.TextCheckEnum;
 import net.oscer.enums.ViewEnum;
 import net.oscer.framework.FormatTool;
 import net.oscer.framework.StringUtils;
+import net.oscer.service.UserService;
 import net.oscer.service.ViewService;
 import net.oscer.vo.CommentQuestionVO;
 import net.oscer.vo.QuestionVO;
@@ -74,11 +76,12 @@ public class UniController extends BaseController {
      */
     @PostMapping("q/list")
     @ResponseBody
-    public ApiResult list(@RequestParam(value = "id", defaultValue = "0", required = false) Long id) {
+    public ApiResult list(@RequestParam(value = "id", defaultValue = "0", required = false) Long id,
+                          @RequestParam(value = "rhtml", defaultValue = "0", required = false) String rhtml) {
         Map<String, Object> map = new HashMap<>();
         //帖子列表
         List<Question> questions = QuestionDAO.ME.all(id, pageNumber, 10);
-        map.put("questions", QuestionVO.list(questions, getLoginUser()));
+        map.put("questions", QuestionVO.list(questions, getLoginUser(), rhtml));
         //帖子总数
         int count = QuestionDAO.ME.count(id);
         map.put("count", count);
@@ -93,7 +96,8 @@ public class UniController extends BaseController {
      */
     @PostMapping("q/{id}")
     @ResponseBody
-    public ApiResult question_detail(@PathVariable("id") Long id, @RequestParam(value = "user", required = false) Long user) {
+    public ApiResult question_detail(@PathVariable("id") Long id, @RequestParam(value = "user", required = false) Long user,
+                                     @RequestParam(value = "rhtml", defaultValue = "0", required = false) String rhtml) {
         Question q = Question.ME.get(id);
         if (null == q || q.getId() <= 0L) {
             return ApiResult.failWithMessage("帖子不存在");
@@ -119,7 +123,7 @@ public class UniController extends BaseController {
         Map<String, Object> map = new HashMap<>();
         map.put("q", q);
         map.put("u", u);
-        map.put("detail", QuestionVO.list(list, loginUser));
+        map.put("detail", QuestionVO.list(list, loginUser, rhtml));
         return ApiResult.successWithObject(map);
     }
 
@@ -131,11 +135,14 @@ public class UniController extends BaseController {
      */
     @PostMapping("q/comments")
     @ResponseBody
-    public ApiResult question_comments(@RequestParam(value = "id", defaultValue = "0", required = false) Long id) {
+    public ApiResult question_comments(@RequestParam(value = "id", defaultValue = "0", required = false) Long id,
+                                       @RequestParam(value = "rhtml", defaultValue = "0", required = false) String rhtml) {
         User login_user = getLoginUser();
         Map<String, Object> map = new HashMap<>(2);
         //评论列表 --分页
-        List<CommentQuestion> comments = CommentQuestionDAO.ME.list(id, pageNumber, pageSize);
+        String size = request.getParameter("size");
+        int s = StringUtils.isEmpty(size) ? 10 : Integer.parseInt(size);
+        List<CommentQuestion> comments = CommentQuestionDAO.ME.list(id, pageNumber, s);
         if (CacheMgr.exists(CommentQuestion.ME.CacheRegion(), "rankMap#" + id)) {
             map.put("rankMap", CacheMgr.get(CommentQuestion.ME.CacheRegion(), "rankMap#" + id));
         } else {
@@ -150,7 +157,7 @@ public class UniController extends BaseController {
                 CacheMgr.set(CommentQuestion.ME.CacheRegion(), "rankMap#" + id, rankMap);
             }
         }
-        map.put("comments", CommentQuestionVO.list(id, login_user, comments));
+        map.put("comments", CommentQuestionVO.list(id, login_user, comments, rhtml));
         //帖子总数
         int count = CommentQuestionDAO.ME.count(id);
         map.put("count", count);
@@ -205,7 +212,7 @@ public class UniController extends BaseController {
      */
     @PostMapping("/user_pub_q_comment")
     @ResponseBody
-    public ApiResult question(@RequestParam("id") long id, @RequestParam(value = "user", required = false) Long user) {
+    public ApiResult user_pub_q_comment(@RequestParam("id") long id, @RequestParam(value = "user", required = false) Long user) {
         User loginUser = null;
         if (user != null && user > 0L) {
             loginUser = User.ME.get(user);
@@ -230,6 +237,7 @@ public class UniController extends BaseController {
         CommentQuestion c = new CommentQuestion();
         c.setUser(loginUser.getId());
         c.setQuestion(id);
+        content = FormatTool.text(content);
         c.setContent(FormatTool.fixContent(false, null, 0L, 0, 0, content));
         c.setParent(parent);
         c.save();
@@ -322,7 +330,7 @@ public class UniController extends BaseController {
         List<Question> articles = QuestionDAO.ME.allByUser(user, 1);
         Map<String, Object> map = new HashMap<>(1);
         User loginUser = User.ME.get(user);
-        map.put("articles", QuestionVO.list(articles, loginUser));
+        map.put("articles", QuestionVO.list(articles, loginUser, "1"));
         return ApiResult.successWithObject(map);
     }
 
@@ -343,7 +351,7 @@ public class UniController extends BaseController {
         List<Question> list = Question.ME.loadList(ids);
         Map<String, Object> map = new HashMap<>(1);
         User loginUser = User.ME.get(user);
-        map.put("collects", QuestionVO.list(list, loginUser));
+        map.put("collects", QuestionVO.list(list, loginUser, "1"));
         return ApiResult.successWithObject(map);
     }
 
@@ -424,10 +432,21 @@ public class UniController extends BaseController {
         if (result == null || result.getCode() == ApiResult.fail) {
             return result;
         }
-
+        if (form.getReward_point() > loginUser.getScore()) {
+            return ApiResult.failWithMessage("积分不够哦~");
+        }
+        if (loginUser.getId() > 2 && QuestionDAO.ME.canPub(loginUser.getId())) {
+            return ApiResult.failWithMessage("发帖太快啦");
+        }
         form.setUser(loginUser.getId());
         form.setTitle(StringUtils.abbreviate(FormatTool.text(form.getTitle()), MAX_LENGTH_TITLE));
-        form.setContent(net.oscer.framework.StringUtils.abbreviate(FormatTool.cleanBody(form.getContent(),false), MAX_LENGTH_TITLE));
+        form.setContent(net.oscer.framework.StringUtils.abbreviate(FormatTool.cleanBody(form.getContent(), false), MAX_LENGTH_TITLE));
+
+        //百度文本审核检测
+        result = UserService.content_need_check(loginUser.getId(), form.getTitle() + form.getContent(), TextCheckEnum.TYPE.BAIDU.getKey());
+        if (result.getCode() == ApiResult.fail) {
+            return result;
+        }
         form.save();
         Node n = Node.ME.get(form.getNode());
         QuestionDAO.ME.evictNode(form.getNode());

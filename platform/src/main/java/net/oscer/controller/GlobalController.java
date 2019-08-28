@@ -37,7 +37,7 @@ public class GlobalController extends BaseController {
         request.setAttribute("nodes", nodes);
         //查询置顶的帖子
         List<Question> tops = QuestionDAO.ME.tops(Question.SYSTEM_LIMIT_TOP);
-        request.setAttribute("tops", QuestionVO.list(tops,getLoginUser()));
+        request.setAttribute("tops", QuestionVO.list(tops,getLoginUser(), "0"));
 
         //回帖周榜
         List<Map<User, Integer>> weekUserCommentHots = CommentQuestionDAO.ME.weekUserCommentHots();

@@ -1,31 +1,25 @@
 package net.oscer.controller;
 
-import net.oscer.beans.*;
+import net.oscer.beans.CollectQuestion;
+import net.oscer.beans.Node;
+import net.oscer.beans.Question;
+import net.oscer.beans.User;
 import net.oscer.common.ApiResult;
 import net.oscer.dao.CollectQuestionDAO;
-import net.oscer.dao.CommentQuestionDAO;
 import net.oscer.dao.NodeDAO;
 import net.oscer.dao.QuestionDAO;
-import net.oscer.db.CacheMgr;
-import net.oscer.db.DbQuery;
-import net.oscer.db.TransactionService;
+import net.oscer.enums.TextCheckEnum;
 import net.oscer.enums.ViewEnum;
 import net.oscer.framework.FormatTool;
+import net.oscer.service.UserService;
 import net.oscer.service.ViewService;
-import net.oscer.vo.QuestionVO;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static net.oscer.beans.Question.MAX_LENGTH_TITLE;
-import static net.oscer.db.Entity.STATUS_NORMAL;
 
 /**
  * 帖子类
@@ -63,9 +57,12 @@ public class QuestionController extends BaseController {
             request.setAttribute("collected", collectQuestion != null && collectQuestion.getStatus() == CollectQuestion.STATUS_SHOW ? true : false);
         }
         ViewService.keyCache(q.getId(), ViewEnum.TYPE.QUESTION.getKey());
+
+        List<Question> list = QuestionDAO.ME.allByUser(q.getUser(), 0);
         request.setAttribute("author", q.getUser());
         request.setAttribute("q", q);
         request.setAttribute("u", u);
+        request.setAttribute("authorQuestions", list.subList(0, 5 > list.size() ? list.size() : 5));
         return "/question/detail";
     }
 
@@ -110,7 +107,18 @@ public class QuestionController extends BaseController {
                 return ApiResult.failWithMessage("积分不够哦~");
             }
         }
-        form.setContent(net.oscer.framework.StringUtils.abbreviate(FormatTool.cleanBody(form.getContent(),false), MAX_LENGTH_TITLE));
+
+
+        if (login_user.getId() > 2 && QuestionDAO.ME.canPub(login_user.getId())) {
+            return ApiResult.failWithMessage("发帖太快啦");
+        }
+        form.setContent(net.oscer.framework.StringUtils.abbreviate(FormatTool.cleanBody(form.getContent(), false), MAX_LENGTH_TITLE));
+
+        //百度文本审核检测
+        result = UserService.content_need_check(login_user.getId(), form.getTitle() + form.getContent(), TextCheckEnum.TYPE.BAIDU.getKey());
+        if (result.getCode() == ApiResult.fail) {
+            return result;
+        }
         form.save();
         Node n = Node.ME.get(form.getNode());
         QuestionDAO.ME.evictNode(form.getNode());

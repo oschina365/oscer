@@ -20,6 +20,11 @@ public class QuestionDAO extends CommonDao<Question> {
 
     public final static QuestionDAO ME = new QuestionDAO();
 
+    /**
+     * 发帖时间间隔
+     */
+    public static final long pub_interval_time = 1000L * 60;
+
     @Override
     protected String databaseName() {
         return "mysql";
@@ -88,10 +93,10 @@ public class QuestionDAO extends CommonDao<Question> {
      * @return
      */
     public List<Question> hots(long node, int limit) {
-        String sql = "select id from questions where status=0 and YEARWEEK(date_format(insert_date,'%Y-%m-%d'))= YEARWEEK(now())" +
+        String sql = "select id from questions where status=0 and comment_count >0 and YEARWEEK(date_format(insert_date,'%Y-%m-%d'))= YEARWEEK(now())" +
                 " order by (collect_count*10+praise_count*5+comment_count*2+view_count) desc limit ?";
         if (node > 0L) {
-            sql = "select id from questions where status=0 and node=" + node + " and YEARWEEK(date_format(insert_date,'%Y-%m-%d'))= YEARWEEK(now())" +
+            sql = "select id from questions where status=0 and node=" + node + " and comment_count >0 and YEARWEEK(date_format(insert_date,'%Y-%m-%d'))= YEARWEEK(now())" +
                     " order by (collect_count*10+praise_count*5+comment_count*2+view_count) desc limit ?";
         }
         List<Long> ids = getDbQuery().query_cache(long.class, isCacheNullObject(), CACHE_FIVE_MIN, "hots#" + node + "#" + limit, sql, limit);
@@ -112,6 +117,35 @@ public class QuestionDAO extends CommonDao<Question> {
     public void evict(long user) {
         CacheMgr.evict(Question.ME.CacheRegion(), "allByUser#" + user + "#" + 0);
         CacheMgr.evict(Question.ME.CacheRegion(), "allByUser#" + user + "#" + 1);
+    }
+
+    /**
+     * 查询用户最后一篇问答
+     *
+     * @param user
+     * @return
+     */
+    public Question userLastQuestion(long user) {
+        if (user <= 0L) {
+            return null;
+        }
+        String sql = "select * from questions where user=? order by id desc limit 1";
+        return getDbQuery().read(Question.class, sql, user);
+    }
+
+    /**
+     * 用户是否可以发帖
+     *
+     * @param user
+     * @return
+     */
+    public boolean canPub(long user) {
+        Question q = userLastQuestion(user);
+        if (q == null) {
+            return true;
+        }
+        return (System.currentTimeMillis() - q.getInsert_date().getTime()) < pub_interval_time;
+
     }
 
     /**

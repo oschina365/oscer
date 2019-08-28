@@ -2,6 +2,7 @@ package net.oscer.vo;
 
 import net.oscer.beans.*;
 import net.oscer.dao.CollectQuestionDAO;
+import net.oscer.framework.FormatTool;
 import net.oscer.framework.StringUtils;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -152,7 +153,7 @@ public class QuestionVO {
         this.hasBanner = hasBanner;
     }
 
-    public static List<QuestionVO> list(List<Question> questions, User login_user) {
+    public static List<QuestionVO> list(List<Question> questions, User login_user, String rhtml) {
         if (CollectionUtils.isEmpty(questions)) {
             return null;
         }
@@ -181,6 +182,9 @@ public class QuestionVO {
 
         List<Long> finalCollect_ids = collect_ids;
         questions.stream().filter(q -> q != null && q.getId() > 0L).forEach(q -> {
+            if(StringUtils.equalsIgnoreCase(rhtml,"1")){
+                q.setTitle(FormatTool.reHtml(q.getTitle()));
+            }
             QuestionVO vo = new QuestionVO();
             vo.setQ(q);
             if (q.getNode() > 0) {

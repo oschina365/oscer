@@ -72,11 +72,13 @@
                         <#if q.reward_point gt 0>
                             <span style="padding-right: 10px; color: #FF7200">悬赏：${q.reward_point!'0'}积分</span>
                         </#if>
-                        <#if login_user?? && login_user.id=author>
+                        <#if login_user?? && (login_user.id=author || login_user.id==2)>
                             <span class="layui-btn layui-btn-xs jie-admin"><a href="/q/edit/${q.id}">编辑此贴</a></span>
                         </#if>
-                        <span class="layui-btn layui-btn-xs jie-admin layui-btn-normal"><a href="add.html">关注</a></span>
-                        <span class="layui-btn layui-btn-xs jie-admin layui-btn-warm"><a href="add.html">私信</a></span>
+                        <#if login_user?? && login_user.id!=author>
+                            <span class="layui-btn layui-btn-xs jie-admin layui-btn-normal"><a href="add.html">关注</a></span>
+                            <span class="layui-btn layui-btn-xs jie-admin layui-btn-warm"><a href="add.html">私信</a></span>
+                        </#if>
                     </div>
                 </div>
 
@@ -112,11 +114,14 @@
         </div>
         <div class="layui-col-md4">
             <dl class="fly-panel fly-list-one">
-                <dt class="fly-panel-title">本周热议</dt>
-                <dd>
-                    <a href="">基于 layui 的极简社区页面模版</a>
-                    <span><i class="iconfont icon-pinglun1"></i> 16</span>
-                </dd>
+                <dt class="fly-panel-title">楼主其它帖子</dt>
+                <#list authorQuestions as orther>
+                    <dd>
+                        <a href="">${orther.title}</a>
+                        <span><i class="iconfont icon-pinglun1"></i> ${orther.comment_count}</span>
+                    </dd>
+                </#list>
+
                 <!-- 无数据时 -->
                 <!--
                 <div class="fly-none">没有相关数据</div>
@@ -205,6 +210,7 @@
                 dataType: 'json',
                 data: {"id":${q.id}, "number": number},
                 success: function (data) {
+                    console.log(data)
                     if (data && data.code == 1) {
                         var listData = {"list": data.result.comments,"rankMap": data.result.rankMap};
                         var getTpl = commentListTpl.innerHTML, view = document.getElementById('commentBodys');

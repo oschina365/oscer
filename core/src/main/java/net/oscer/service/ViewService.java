@@ -2,6 +2,7 @@ package net.oscer.service;
 
 import net.oscer.beans.Question;
 import net.oscer.db.CacheMgr;
+import net.oscer.db.DbQuery;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.ArrayList;
@@ -79,9 +80,12 @@ public class ViewService {
 
             if (type.equalsIgnoreCase(TYPE.QUESTION.getKey())) {
                 Question q = Question.ME.get(id);
-                if(q!=null){
-                    q.setView_count(q.getView_count() + count);
-                    q.doUpdate();
+                if (q != null) {
+                    String sql = "update questions set view_count =? where id =?";
+                    /*q.setView_count(q.getView_count() + count);
+                    q.doUpdate();*/
+                    DbQuery.get("mysql").update(sql, q.getView_count() + count, q.getId());
+                    q.evict(true);
                 }
 
             } else if (type.equalsIgnoreCase(TYPE.BLOG.getKey())) {

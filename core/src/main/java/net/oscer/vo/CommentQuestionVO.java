@@ -4,6 +4,7 @@ import net.oscer.beans.CommentQuestion;
 import net.oscer.beans.Question;
 import net.oscer.beans.User;
 import net.oscer.framework.FormatTool;
+import net.oscer.framework.StringUtils;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.ArrayList;
@@ -91,7 +92,7 @@ public class CommentQuestionVO {
         this.can_option = can_option;
     }
 
-    public static List<CommentQuestionVO> list(Long question, User login_user, List<CommentQuestion> commentQuestions) {
+    public static List<CommentQuestionVO> list(Long question, User login_user, List<CommentQuestion> commentQuestions, String rhtml) {
         if (CollectionUtils.isEmpty(commentQuestions)) {
             return null;
         }
