@@ -40,7 +40,7 @@ public class TextCheckService {
         if (StringUtils.isBlank(content)) {
             return ApiResult.failWithMessage("内容为空，请填写内容");
         }
-        Map<Integer, String> result = null;
+        String result = null;
         try {
             result = TextCheckBaiduService.baidu().checkText(userId, content);
         } catch (Exception e) {
@@ -49,7 +49,7 @@ public class TextCheckService {
         if (result == null) {
             return ApiResult.success();
         }
-        return ApiResult.failWithMessageAndObject("", result);
+        return ApiResult.failWithMessage(result);
     }
 
     /**

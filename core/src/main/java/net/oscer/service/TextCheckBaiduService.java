@@ -52,7 +52,7 @@ public abstract class TextCheckBaiduService {
      * @return -1 调用失败；0 正常； 1 包含垃圾内容  2：建议人工复审
      * @throws Exception
      */
-    public abstract Map<Integer, String> checkText(long user, String content) throws Exception;
+    public abstract String checkText(long user, String content) throws Exception;
 
     /**
      * 使用百度云的文本审核接口
@@ -62,8 +62,7 @@ public abstract class TextCheckBaiduService {
     public static TextCheckBaiduService baidu() {
         return new TextCheckBaiduService() {
             @Override
-            public Map<Integer, String> checkText(long user, String content) throws Exception {
-                Map<Integer, String> map = new HashMap<>();
+            public String checkText(long user, String content) throws Exception {
                 JSONObject json = baidu_client.antiSpam(content, null);
                 if (!json.has("result")) {
                     //map.put(-1, "检测超时");
@@ -75,8 +74,7 @@ public abstract class TextCheckBaiduService {
                 JSONArray review = result.getJSONArray("review");
                 int label = hashHightScore(user, pass);
                 if (label > 0) {
-                    map.put(label, BaiduCheckLabelEnum.map.get(label));
-                    return map;
+                    return BaiduCheckLabelEnum.map.get(label);
                 }
                 int spam = result.getInt("spam");
                 if (spam == 0) {
@@ -87,8 +85,7 @@ public abstract class TextCheckBaiduService {
                     if (label == 0) {
                         label = BaiduCheckLabelEnum.LABEL.L_99.getCode();
                     }
-                    map.put(label, BaiduCheckLabelEnum.map.get(label));
-                    return map;
+                    return BaiduCheckLabelEnum.map.get(label);
                 }
                 if (spam == 2) {
                     label = hashHightScore(user, reject);
@@ -98,8 +95,7 @@ public abstract class TextCheckBaiduService {
                             label = BaiduCheckLabelEnum.LABEL.L_99.getCode();
                         }
                     }
-                    map.put(label, BaiduCheckLabelEnum.map.get(label));
-                    return map;
+                    return BaiduCheckLabelEnum.map.get(label);
                 }
                 return null;
             }

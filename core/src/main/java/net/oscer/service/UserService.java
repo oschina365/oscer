@@ -36,7 +36,7 @@ public class UserService {
             return false;
         }
         //官方人员无需检测
-        if (userId == 2) {
+        if (userId <= 2) {
             return false;
         }
         //注册时间超过三个月的就不需要检测
@@ -60,6 +60,7 @@ public class UserService {
         if (StringUtils.isBlank(FormatTool.text(content))) {
             return ApiResult.failWithMessage("内容为空，请填写内容");
         }
+        //敏感词检测
         ApiResult apiResult = BadWordDAO.ME.check(content, true);
 
         if (apiResult != null && apiResult.getCode() == 0) {
