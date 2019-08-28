@@ -1,7 +1,6 @@
 package net.oscer.config.shiro.realm;
 
 import net.oscer.beans.User;
-import net.oscer.dao.UserDAO;
 import net.oscer.db.CacheMgr;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -11,6 +10,10 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
+
+import static net.oscer.db.Entity.ONLINE;
 
 
 /**
@@ -70,6 +73,9 @@ public class MyShiroRealm extends AuthorizingRealm {
             msg = "账号被屏蔽,请联系管理员";
             throw new AccountException(msg);
         }
+        u.setLogin_time(new Date());
+        u.setOnline(ONLINE);
+        u.doUpdate();
         logger.info("身份认证成功，登录用户:{}", name);
 
         return new SimpleAuthenticationInfo(u, password, getName());
