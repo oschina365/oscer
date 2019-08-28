@@ -56,6 +56,7 @@ public class FormatTool {
         rpl_filter.addAttributes("table", "border", "cellpadding", "cellspacing");
         rpl_filter.addAttributes("emoji", "class", "data-name", "data-emoji", "align");
     }
+
     /**
      * 对用户输入的问题和答案进行过滤
      *
@@ -71,10 +72,10 @@ public class FormatTool {
         document.outputSettings(new Document.OutputSettings().prettyPrint(false));//makes html() preserve linebreaks and spacing
         //简书图片链接的处理
         Elements imgs = document.select("img");
-        for(Element e:imgs){
+        for (Element e : imgs) {
             String originalSrc = e.attr("data-original-src");
-            if(StringUtils.isNotEmpty(originalSrc)){//data-original-src有值的时候，再替换img的url
-                e.attr("src",originalSrc);
+            if (StringUtils.isNotEmpty(originalSrc)) {//data-original-src有值的时候，再替换img的url
+                e.attr("src", originalSrc);
             }
         }
         String context = document.html();
@@ -649,6 +650,20 @@ public class FormatTool {
             dom.select(node).remove();
         }
         return dom;
+    }
+
+    /**
+     * 是否包含某字符串
+     *
+     * @param key
+     * @param text
+     * @return
+     */
+    public static boolean CheckContent(String key, String text) {
+        //去掉 - _ | . , 及中文全角字符
+        String regEx = "[`~!\\-_@#$%^&*()+=|{}:;\\\\\\\\[\\\\\\\\].<>/?~！@#￥%……&*（）——+『』$》《〖〗｛｝|{}【】‘；：”“’。，、？]";
+        text = text.replaceAll(regEx, "");
+        return !org.apache.commons.lang3.StringUtils.containsIgnoreCase(text, key);
     }
 
     /**
