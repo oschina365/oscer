@@ -116,8 +116,12 @@ public class ReadVO extends Visit {
 
         List<ReadVO> list = new LinkedList<>();
         for (Visit v : visits) {
+
             ReadVO vo = new ReadVO();
             Entity e = obj.get(v.getObj_id());
+            if(e==null){
+                continue;
+            }
             vo.setAuthor(obj(Visit.USER).get(e.user()));
             vo.setEntity(e);
             vo.setSdf_read_time(FormatTool.format_intell_time(v.getLast_date()));

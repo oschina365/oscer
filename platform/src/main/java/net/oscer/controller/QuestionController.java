@@ -112,7 +112,7 @@ public class QuestionController extends BaseController {
         if (login_user.getId() > 2 && QuestionDAO.ME.canPub(login_user.getId())) {
             return ApiResult.failWithMessage("发帖太快啦");
         }
-        form.setContent(net.oscer.framework.StringUtils.abbreviate(FormatTool.cleanBody(form.getContent(), false), MAX_LENGTH_TITLE));
+        form.setContent(FormatTool.cleanBody(form.getContent(), false));
 
         //百度文本审核检测
         result = UserService.content_need_check(login_user.getId(), form.getTitle() + form.getContent(), TextCheckEnum.TYPE.BAIDU.getKey());
@@ -148,6 +148,7 @@ public class QuestionController extends BaseController {
         if (q.getUser() != u.getId()) {
             return "/error/404";
         }
+        request.setAttribute("author", q.getUser());
         request.setAttribute("q", q);
         request.setAttribute("u", u);
         List<Node> nodes = NodeDAO.ME.nodes(Node.STATUS_NORMAL, 0);

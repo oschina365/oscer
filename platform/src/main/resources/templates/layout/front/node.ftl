@@ -1,4 +1,5 @@
 <div class="fly-panel fly-column">
+    <input type="hidden" id="show" value="${show!}"/>
     <div class="layui-container">
         <ul class="layui-clear">
             <#if nodes??>

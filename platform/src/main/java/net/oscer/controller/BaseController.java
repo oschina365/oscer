@@ -108,6 +108,9 @@ public class BaseController {
             }
         }
         request.setAttribute("currentUrl", request.getRequestURI());
+        if(StringUtils.isNotEmpty(request.getParameter("show"))){
+            request.setAttribute("show","show");
+        }
 
     }
 

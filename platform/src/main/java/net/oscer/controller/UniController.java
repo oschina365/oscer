@@ -20,10 +20,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static net.oscer.beans.Question.MAX_LENGTH_TITLE;
@@ -72,15 +69,17 @@ public class UniController extends BaseController {
      * 首页帖子列表，节点帖子列表
      *
      * @param id
+     * @param show 最新发帖，最新回帖
      * @return
      */
     @PostMapping("q/list")
     @ResponseBody
     public ApiResult list(@RequestParam(value = "id", defaultValue = "0", required = false) Long id,
-                          @RequestParam(value = "rhtml", defaultValue = "0", required = false) String rhtml) {
+                          @RequestParam(value = "rhtml", defaultValue = "0", required = false) String rhtml,
+                          @RequestParam(value = "show", required = false) String show) {
         Map<String, Object> map = new HashMap<>();
         //帖子列表
-        List<Question> questions = QuestionDAO.ME.all(id, pageNumber, 10);
+        List<Question> questions = QuestionDAO.ME.all(id, pageNumber, 10, show);
         map.put("questions", QuestionVO.list(questions, getLoginUser(), rhtml));
         //帖子总数
         int count = QuestionDAO.ME.count(id);
@@ -242,8 +241,10 @@ public class UniController extends BaseController {
         c.setParent(parent);
         c.save();
         q.setLast_comment_user(loginUser.getId());
+        q.setLast_comment_time(new Date());
         q.setComment_count(q.getComment_count() + 1);
         q.doUpdate();
+        QuestionDAO.ME.evictNode(q.getNode());
         CommentQuestionDAO.ME.evict(id, loginUser.getId());
         return ApiResult.success();
     }
@@ -440,7 +441,7 @@ public class UniController extends BaseController {
         }
         form.setUser(loginUser.getId());
         form.setTitle(StringUtils.abbreviate(FormatTool.text(form.getTitle()), MAX_LENGTH_TITLE));
-        form.setContent(net.oscer.framework.StringUtils.abbreviate(FormatTool.cleanBody(form.getContent(), false), MAX_LENGTH_TITLE));
+        form.setContent(FormatTool.cleanBody(form.getContent(), false));
 
         //百度文本审核检测
         result = UserService.content_need_check(loginUser.getId(), form.getTitle() + form.getContent(), TextCheckEnum.TYPE.BAIDU.getKey());

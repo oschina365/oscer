@@ -3,7 +3,7 @@
 
 <div class="layui-container fly-marginTop">
     <div class="fly-panel" pad20 style="padding-top: 5px;">
-        <#if login_user?? && login_user.id==q.user>
+        <#if login_user?? && login_user.id==author>
             <div class="layui-form layui-form-pane">
                 <div class="layui-tab layui-tab-brief" lay-filter="user">
                     <ul class="layui-tab-title">

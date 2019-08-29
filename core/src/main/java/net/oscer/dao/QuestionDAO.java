@@ -76,12 +76,21 @@ public class QuestionDAO extends CommonDao<Question> {
         return Question.ME.loadList(ids);
     }
 
-    public List<Question> all(long node, int page, int size) {
+    public List<Question> all(long node, int page, int size, String show) {
         String sql = "select id from questions where status=0 order by system_top desc,recomm desc, id desc";
+        String cacheKey = "status#0";
+        if (StringUtils.equalsIgnoreCase(show, "show")) {
+            sql = "select id from questions where status=0 order by system_top desc,recomm desc, last_comment_time desc";
+            cacheKey = cacheKey + "#reply";
+        }
         if (node > 0L) {
             sql = "select id from questions where node=" + node + " and status=0 order by system_top desc,recomm desc, id desc";
+            cacheKey = cacheKey + node;
+            if (StringUtils.equalsIgnoreCase(show, "show")) {
+                sql = "select id from questions where node=" + node + " and status=0 order by system_top desc,recomm desc, last_comment_time desc";
+            }
         }
-        List<Long> ids = getDbQuery().query_slice_cache(long.class, getCache_region(), "status#0" + node, 100, sql, page, size);
+        List<Long> ids = getDbQuery().query_slice_cache(long.class, getCache_region(), cacheKey, 100, sql, page, size);
         return Question.ME.loadList(ids);
     }
 
@@ -104,6 +113,9 @@ public class QuestionDAO extends CommonDao<Question> {
     }
 
     public void evictNode(long node) {
+        CacheMgr.evict(getCache_region(), "status#0");
+        CacheMgr.evict(getCache_region(), "status#0" + "#reply");
+        CacheMgr.evict(getCache_region(), "status#0"  + "#reply"+node);
         CacheMgr.evict(getCache_region(), "status#0" + node);
         CacheMgr.evict(getCache_region(), "count#0" + node);
         CacheMgr.evict(getCache_region(), "status#0" + 0);

@@ -56,6 +56,7 @@ public class UrlPermissionsFilter extends PermissionsAuthorizationFilter {
         if (user != null && user.getId() > 0L) {
             id = user.getId();
         }
+
         if (StringUtils.startsWith(curUrl, "/error/")) {
             return true;
         }
@@ -66,6 +67,10 @@ public class UrlPermissionsFilter extends PermissionsAuthorizationFilter {
         }
 
         if (StringUtils.equalsIgnoreCase(curUrl, "/")) {
+            return true;
+        }
+
+        if (StringUtils.equalsIgnoreCase(curUrl, "/?show=reply")) {
             return true;
         }
 
@@ -84,7 +89,7 @@ public class UrlPermissionsFilter extends PermissionsAuthorizationFilter {
         List<Node> nodes = NodeDAO.ME.nodes(Node.STATUS_NORMAL, 0);
 
         if (CollectionUtils.isNotEmpty(nodes)) {
-            if (nodes.stream().filter(n -> StringUtils.isNotBlank(n.getUrl())).anyMatch(node -> StringUtils.equalsIgnoreCase(node.getUrl(), curUrl))) {
+            if (nodes.stream().filter(n -> StringUtils.isNotBlank(n.getUrl())).anyMatch(node -> StringUtils.startsWith(curUrl, node.getUrl()))) {
                 return true;
             }
 

@@ -45,7 +45,7 @@ public class GiteeOpenAuth {
      */
     public static JSONObject getAccessTokenInfo(String code, String redirect_url) throws Exception {
         if (redirect_url.equals("")) {
-            redirect_url = "http://127.0.0.1:88/oauth/after_bind_gitee";
+            redirect_url = "http://holer.cc:50220/oauth/after_bind_gitee";
         }
         Map<String, String> params = new HashMap<>();
         params.put("client_id", client_id);

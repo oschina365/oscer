@@ -59,9 +59,9 @@
             <div class="fly-panel" style="margin-bottom: 0;">
 
                 <div class="fly-panel-title fly-filter">
-                    <a href="" class="layui-this">最新发帖</a>
+                    <a href="/" <#if show??><#else >class="layui-this"</#if>>最新发帖</a>
                     <span class="fly-mid"></span>
-                    <a href="">最新回帖</a>
+                    <a href="?show=reply" <#if show?? && show == 'show'> class="layui-this"</#if>>最新回帖</a>
 
                 </div>
 
@@ -247,11 +247,12 @@
          * @param number
          */
         function dataList(number) {
+            var show = $("#show").val();
             $.ajax({
                 url: '/uni/q/list',
                 method: 'post',
                 dataType: 'json',
-                data: {"number": number},
+                data: {"number": number,"show":show},
                 success: function (data) {
                     if (data && data.code == 1) {
                         var listData = {"list": data.result.questions};
