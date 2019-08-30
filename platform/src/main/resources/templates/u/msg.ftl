@@ -29,7 +29,6 @@
 
 </div>
 
-<script src="../../res/layui/layui.js"></script>
 <script>
 layui.cache.page = 'user';
 layui.cache.user = {

@@ -3,7 +3,7 @@
 
     <#include '../layout/front/node.ftl'/>
 
-<div class="layui-container">
+    <div class="layui-container">
     <form action="/tw/add" method="post" id="listForm">
         <div class="layui-form-item">
             <label class="layui-form-label">温度</label>
@@ -77,10 +77,8 @@
     {{# }}}
 
 </script>
-<script src="http://cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
 <script src="/res/js/jquery.form.js"></script>
 <script src="https://cdn.bootcss.com/echarts/4.2.1/echarts.min.js"></script>
-<script src="/res/layui/layui.js"></script>
 
 <script>
 

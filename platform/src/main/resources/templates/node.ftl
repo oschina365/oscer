@@ -93,8 +93,6 @@
 
 </script>
 
-<script src="http://cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
-<script src="/res/layui/layui.js"></script>
 <script>
     layui.use('carousel', function () {
         var carousel = layui.carousel;

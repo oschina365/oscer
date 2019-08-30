@@ -91,7 +91,6 @@
   </div>
 </div>
 
-<script src="../../res/layui/layui.js"></script>
 <script>
 layui.config({
   version: "3.0.0"

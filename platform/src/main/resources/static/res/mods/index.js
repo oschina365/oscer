@@ -161,8 +161,6 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
   ,'{{# }); }}'].join('')
   ,elemReply = $('#LAY_replyRank');
 
-
-
   //相册
   if($(window).width() > 750){
     layer.photos({
@@ -280,13 +278,6 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
     $('body').removeClass('site-mobile');
   });
 
-  //获取统计数据
-  $('.fly-handles').each(function(){
-    var othis = $(this);
-    $.get('/api/handle?alias='+ othis.data('alias'), function(res){
-      othis.html('（下载量：'+ res.number +'）');
-    })
-  });
   
   //固定Bar
   util.fixbar({
@@ -294,7 +285,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
     ,bgcolor: '#009688'
     ,click: function(type){
       if(type === 'bar1'){
-        location.href = 'q/add';
+        location.href = '/q/add';
       }
     }
   });

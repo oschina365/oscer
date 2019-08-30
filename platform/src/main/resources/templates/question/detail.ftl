@@ -185,9 +185,7 @@
     {{# }}}
 
 </script>
-<script src="http://cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
 <script src="/res/js/jquery.form.js"></script>
-<script src="/res/layui/layui.js"></script>
 <script>
     layui.config({
         version: "3.0.0"
