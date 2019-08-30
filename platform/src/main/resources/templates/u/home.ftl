@@ -15,7 +15,7 @@
                 <li data-type="mine-jie" lay-id="index" class="layui-this">
                     我的发帖（<span><#if questions_pub?? && (questions_pub?size > 0)>${questions_pub?size}<#else >0</#if></span>）
                 </li>
-                <li data-type="collection" data-url="/collection/find/" lay-id="collection">
+                <li data-type="collection" lay-id="collection">
                     我收藏的帖（<span><#if questions_collect?? && (questions_collect?size > 0)>${questions_collect?size}<#else >0</#if></span>）
                 </li>
             </ul>
@@ -47,7 +47,8 @@
                             <#list questions_collect as collect>
                                 <#if collect?? && collect.id gt 0>
                                     <li>
-                                    <a class="jie-title" href="/q/${collect.id}" target="_blank">${collect.title}</a>
+                                        <a class="jie-title" href="/q/${collect.id}" target="_blank">${collect.title}</a>
+                                        <a class="mine-edit" style="background-color: #FFB800;cursor: pointer;" onclick="collect(${collect.id})">取消收藏</a>
                                     </li>
                                 </#if>
                             </#list>
@@ -86,6 +87,26 @@
 
                     } else {
                         layer.msg(data.message?data.message:"删除失败~",{icon:5});
+                    }
+                }
+            });
+        }
+
+        window.collect = function (id) {
+            $.ajax({
+                url: '/uni/q/collect',
+                method: 'post',
+                dataType: 'json',
+                data:{'id':id},
+                success: function (data) {
+                    if (data && data.code == 1) {
+                        layer.msg("取消收藏成功", {icon: 6});
+                        setTimeout(function () {
+                            location.reload();
+                        },800)
+
+                    } else {
+                        layer.msg(data.message?data.message:"操作失败~",{icon:5});
                     }
                 }
             });
