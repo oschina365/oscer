@@ -44,20 +44,9 @@
                         </div>
                     </#if>
 
-                    <span class="fly-list-nums">
-                            <a href="#comment"><i class="iconfont" title="回答">&#xe60c;</i> ${q.comment_count!'0'}</a>
-                            <i class="iconfont" title="人气">&#xe60b;</i> ${q.view_count!'0'}
-                            <a onclick="collect()">
-                                <#if collected?? && collected>
-                                        <i class="layui-icon" title="收藏" style="color: red" >&#xe67a;</i> ${q.collect_count!'0'}</a>
-                                    <#else >
-                                        <i class="layui-icon" title="收藏">&#xe67b;</i> ${q.collect_count!'0'}</a>
-                                </#if>
 
-                    </span>
                 </div>
 
-                <br>
                 <div class="detail-about">
                     <a class="fly-avatar" href="/u/${u.id}"><img src="${u.headimg}" alt="${u.nickname!u.username!u.name}"></a>
                     <div class="fly-detail-user">
@@ -67,6 +56,19 @@
                             <i class="layui-badge fly-badge-vip">VIP3</i>-->
                         </a>
                         <span>${q.insert_date}</span>
+
+                        <span class="fly-list-nums">
+                            <a href="#comment"><i class="iconfont" title="回答">&#xe60c;</i> ${q.comment_count!'0'}</a>
+                            <i class="iconfont" title="人气">&#xe60b;</i> ${q.view_count!'0'}
+                            <a onclick="collect()">
+                                <#if collected?? && collected>
+                                    <i class="layui-icon" title="收藏" style="color: red" >&#xe67a;</i> ${q.collect_count!'0'}
+                                    <#else >
+                                    <i class="layui-icon" title="收藏">&#xe67b;</i> ${q.collect_count!'0'}
+                                </#if>
+                            </a>
+
+                    </span>
                     </div>
                     <div class="detail-hits" id="LAY_jieAdmin">
                         <#if q.reward_point gt 0>
