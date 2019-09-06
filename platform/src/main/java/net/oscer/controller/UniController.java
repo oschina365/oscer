@@ -161,12 +161,7 @@ public class UniController extends BaseController {
         if (null == u || u.getId() <= 0L || u.getStatus() != User.STATUS_NORMAL) {
             return ApiResult.failWithMessage("用户被屏蔽");
         }
-        User loginUser = null;
-        if (user != null && user > 0L) {
-            loginUser = User.ME.get(user);
-        } else {
-            loginUser = getLoginUser();
-        }
+        User loginUser = current_user(user);
         ViewService.keyCache(q.getId(), ViewEnum.TYPE.QUESTION.getKey());
         if (loginUser != null && loginUser.status_is_normal() && loginUser.getId() != q.getUser()) {
             VisitDAO.ME.save(loginUser.getId(), q.getId(), Visit.QUESTION);
@@ -224,12 +219,7 @@ public class UniController extends BaseController {
     @PostMapping("/q/delete/{id}")
     @ResponseBody
     public ApiResult delete(@PathVariable("id") Long id, @RequestParam(value = "user", required = false) Long user) throws Exception {
-        User loginUser = null;
-        if (user != null && user > 0L) {
-            loginUser = User.ME.get(user);
-        } else {
-            loginUser = getLoginUser();
-        }
+        User loginUser = current_user(user);
         if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
             return ApiResult.failWithMessage("请重新登录");
         }
@@ -265,12 +255,7 @@ public class UniController extends BaseController {
     @PostMapping("/user_pub_q_comment")
     @ResponseBody
     public ApiResult user_pub_q_comment(@RequestParam("id") long id, @RequestParam(value = "user", required = false) Long user) {
-        User loginUser = null;
-        if (user != null && user > 0L) {
-            loginUser = User.ME.get(user);
-        } else {
-            loginUser = getLoginUser();
-        }
+        User loginUser = current_user(user);
         if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
             return ApiResult.failWithMessage("请重新登录");
         }
@@ -311,12 +296,7 @@ public class UniController extends BaseController {
     @PostMapping("/q/collect")
     @ResponseBody
     public ApiResult collect(@RequestParam("id") long id, @RequestParam(value = "user", required = false) Long user) throws Exception {
-        User loginUser = null;
-        if (user != null && user > 0L) {
-            loginUser = User.ME.get(user);
-        } else {
-            loginUser = getLoginUser();
-        }
+        User loginUser = current_user(user);
         if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
             return ApiResult.failWithMessage("请重新登录");
         }
@@ -418,12 +398,7 @@ public class UniController extends BaseController {
     @PostMapping("user_visits/{user}")
     @ResponseBody
     public ApiResult user_visits(@PathVariable("user") Long user, @RequestParam(value = "obj_type", required = false) Integer obj_type) {
-        User loginUser = null;
-        if (user != null && user > 0L) {
-            loginUser = User.ME.get(user);
-        } else {
-            loginUser = getLoginUser();
-        }
+        User loginUser = current_user(user);
         if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
             return ApiResult.failWithMessage("请重新登录");
         }
@@ -449,12 +424,7 @@ public class UniController extends BaseController {
     @PostMapping("user_comments_q/{user}")
     @ResponseBody
     public ApiResult user_comments_q(@PathVariable("user") Long user) {
-        User loginUser = null;
-        if (user != null && user > 0L) {
-            loginUser = User.ME.get(user);
-        } else {
-            loginUser = getLoginUser();
-        }
+        User loginUser = current_user(user);
         if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
             return ApiResult.failWithMessage("请重新登录");
         }
@@ -473,12 +443,7 @@ public class UniController extends BaseController {
     @PostMapping("/q/add")
     @ResponseBody
     public ApiResult add(Question form, @RequestParam("user") Long user) {
-        User loginUser = null;
-        if (user != null && user > 0L) {
-            loginUser = User.ME.get(user);
-        } else {
-            loginUser = getLoginUser();
-        }
+        User loginUser = current_user(user);
         if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
             return ApiResult.failWithMessage("请重新登录");
         }
@@ -516,12 +481,7 @@ public class UniController extends BaseController {
     @PostMapping("set_info")
     @ResponseBody
     public ApiResult set_info(User form, @RequestParam(value = "user", required = false) Long user) {
-        User loginUser = null;
-        if (user != null && user > 0L) {
-            loginUser = User.ME.get(user);
-        } else {
-            loginUser = getLoginUser();
-        }
+        User loginUser = current_user(user);
         if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
             return ApiResult.failWithMessage("请重新登录");
         }

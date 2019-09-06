@@ -32,8 +32,13 @@
   <p class="fly-home-sign">（${u.self_info!'这个人很懒~~~'}）</p>
 
   <div class="fly-sns" data-user="">
-    <a href="javascript:;" class="layui-btn layui-btn-primary fly-imActive" data-type="addFriend">加为好友</a>
-    <a href="javascript:;" class="layui-btn layui-btn-normal fly-imActive" data-type="chat">发起会话</a>
+    <#if followed?? && followed>
+      <a onclick="follow()" class="layui-btn layui-btn-danger fly-imActive" data-type="chat">取消关注</a>
+    <#else >
+      <a onclick="follow()" class="layui-btn layui-btn-normal fly-imActive" data-type="chat">关注</a>
+    </#if>
+    <a href="javascript:;" class="layui-btn layui-btn-warm fly-imActive" data-type="addFriend">私信</a>
+
   </div>
 
 </div>
@@ -92,6 +97,24 @@
 </div>
 
 <script>
+  function follow() {
+    $.ajax({
+      url: '/f/follow',
+      method: 'post',
+      dataType: 'json',
+      data: {"friend":${u.id}},
+      success: function (d) {
+        if (d && d.code == 1) {
+          layui.layer.msg(d.message ? d.message : "操作成功", {icon: 6});
+        } else {
+          layui.layer.msg(d.message ? d.message : "网络问题，请重试", {icon: 5});
+        }
+        location.reload();
+      },error:function () {
+        layui.layer.msg("网络问题，请重试", {icon: 5});
+      }
+    });
+  };
 layui.config({
   version: "3.0.0"
   ,base: '../../res/mods/'

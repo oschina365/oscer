@@ -33,6 +33,7 @@ import java.util.Map;
 
 import static com.alibaba.druid.util.DruidWebUtils.getRemoteAddr;
 import static net.oscer.db.Entity.OFFLINE;
+import static net.oscer.db.Entity.STATUS_NORMAL;
 
 /**
  * @author kz
@@ -108,8 +109,8 @@ public class BaseController {
             }
         }
         request.setAttribute("currentUrl", request.getRequestURI());
-        if(StringUtils.isNotEmpty(request.getParameter("show"))){
-            request.setAttribute("show","show");
+        if (StringUtils.isNotEmpty(request.getParameter("show"))) {
+            request.setAttribute("show", "show");
         }
 
     }
@@ -460,6 +461,20 @@ public class BaseController {
         request.removeAttribute("login_user");
         request.removeAttribute("vip_text");
         deleteCookie(COOKIE_LOGIN, true);
+    }
+
+    /**
+     * 获取当前登录用户
+     *
+     * @param id
+     * @return
+     */
+    public User current_user(Long id) {
+        User loginUser = getLoginUser();
+        if (loginUser != null) {
+            return loginUser;
+        }
+        return User.ME.get(id);
     }
 
 }

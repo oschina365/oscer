@@ -3,10 +3,7 @@ package net.oscer.controller;
 import net.oscer.beans.*;
 import net.oscer.common.ApiResult;
 import net.oscer.config.provider.OauthEnum;
-import net.oscer.dao.CollectQuestionDAO;
-import net.oscer.dao.CommentQuestionDAO;
-import net.oscer.dao.QuestionDAO;
-import net.oscer.dao.UserBindDAO;
+import net.oscer.dao.*;
 import net.oscer.db.Entity;
 import net.oscer.framework.FormatTool;
 import org.apache.commons.collections.CollectionUtils;
@@ -97,8 +94,12 @@ public class UserController extends BaseController {
         User u = User.ME.get(id);
         int status = 0;
         User loginUser = getLoginUser();
+        if(null!=loginUser){
+            request.setAttribute("followed", FriendDAO.ME.followed(loginUser.getId(), u.getId()));
+        }
         if (null != loginUser && loginUser.getId() == id) {
             status = 1;
+
         }
         if (null == u || u.getStatus() != STATUS_NORMAL) {
             return "/error/404";
@@ -189,8 +190,6 @@ public class UserController extends BaseController {
         }
         return "redirect:/";
     }
-
-
 
     /**
      * 修改密码

@@ -6,6 +6,7 @@ import net.oscer.beans.Question;
 import net.oscer.beans.User;
 import net.oscer.common.ApiResult;
 import net.oscer.dao.CollectQuestionDAO;
+import net.oscer.dao.FriendDAO;
 import net.oscer.dao.NodeDAO;
 import net.oscer.dao.QuestionDAO;
 import net.oscer.enums.TextCheckEnum;
@@ -53,6 +54,7 @@ public class QuestionController extends BaseController {
         }
         User loginUser = getLoginUser();
         if (loginUser != null) {
+            request.setAttribute("followed", FriendDAO.ME.followed(loginUser.getId(), q.getUser()));
             CollectQuestion collectQuestion = CollectQuestionDAO.ME.getByUser(loginUser.getId(), q.getId());
             request.setAttribute("collected", collectQuestion != null && collectQuestion.getStatus() == CollectQuestion.STATUS_SHOW ? true : false);
         }

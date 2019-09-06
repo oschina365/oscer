@@ -78,7 +78,12 @@
                             <span class="layui-btn layui-btn-xs jie-admin"><a href="/q/edit/${q.id}">编辑此贴</a></span>
                         </#if>
                         <#if login_user?? && login_user.id!=author>
-                            <span class="layui-btn layui-btn-xs jie-admin layui-btn-normal"><a href="add.html">关注</a></span>
+                            <#if followed>
+                                    <span class="layui-btn layui-btn-xs jie-admin layui-btn-danger"><a onclick="follow()">取消关注</a></span>
+                                <#else >
+                                    <span class="layui-btn layui-btn-xs jie-admin layui-btn-normal"><a onclick="follow()">关注</a></span>
+                            </#if>
+
                             <span class="layui-btn layui-btn-xs jie-admin layui-btn-warm"><a href="add.html">私信</a></span>
                         </#if>
                     </div>
@@ -188,6 +193,93 @@
 </script>
 <script src="/res/js/jquery.form.js"></script>
 <script>
+    function follow() {
+        $.ajax({
+            url: '/f/follow',
+            method: 'post',
+            dataType: 'json',
+            data: {"friend":${author}},
+            success: function (d) {
+                if (d && d.code == 1) {
+                    layui.layer.msg(d.message ? d.message : "操作成功", {icon: 6});
+                } else {
+                    layui.layer.msg(d.message ? d.message : "网络问题，请重试", {icon: 5});
+                }
+                location.reload();
+            },error:function () {
+                layui.layer.msg("网络问题，请重试", {icon: 5});
+            }
+        });
+    };
+    function del() {
+        $.ajax({
+            url: '/uni/q/delete/'+${q.id},
+            method: 'post',
+            dataType: 'json',
+            success: function (data) {
+                if (data && data.code == 1) {
+                    layer.msg("删除成功", {icon: 6});
+                    setTimeout(function () {
+                        location.href="/";
+                    },800)
+
+                } else {
+                    layui.layer.msg(data.message?data.message:"删除失败~",{icon:5});
+                }
+            }
+        });
+    }
+
+    function recomm() {
+        $.ajax({
+            url: '/q/recomm',
+            method: 'post',
+            dataType: 'json',
+            data: {"id":${q.id}},
+            success: function (data) {
+                if (data && data.code == 1) {
+                    layui.layer.msg("操作成功", {icon: 6});
+                    window.location.reload();
+                } else {
+                    layui.layer.msg("操作失败", {icon: 6});
+                }
+            }
+        });
+    };
+
+    function as_top() {
+        $.ajax({
+            url: '/q/as_top',
+            method: 'post',
+            dataType: 'json',
+            data: {"id":${q.id}},
+            success: function (data) {
+                if (data && data.code == 1) {
+                    layui.layer.msg("操作成功", {icon: 6});
+                    window.location.reload();
+                } else {
+                    layui.layer.msg("操作失败", {icon: 6});
+                }
+            }
+        });
+    };
+
+    window.collect = function () {
+        $.ajax({
+            url: '/uni/q/collect',
+            method: 'post',
+            dataType: 'json',
+            data: {"id":${q.id}},
+            success: function (d) {
+                if (d && d.code == 1) {
+                    layer.msg(d.message ? d.message : "操作成功", {icon: 6});
+                } else {
+                    layer.msg(d.message ? d.message : "网络问题，请重试", {icon: 5});
+                }
+            }
+        });
+    };
+
     layui.config({
         version: "3.0.0"
         , base: '../../res/mods/'
@@ -270,74 +362,9 @@
             return false;
         });
 
-        window.del = function () {
-            $.ajax({
-                url: '/uni/q/delete/'+${q.id},
-                method: 'post',
-                dataType: 'json',
-                success: function (data) {
-                    if (data && data.code == 1) {
-                        layer.msg("删除成功", {icon: 6});
-                        setTimeout(function () {
-                            location.href="/";
-                        },800)
 
-                    } else {
-                        layer.msg(data.message?data.message:"删除失败~",{icon:5});
-                    }
-                }
-            });
-        }
 
-        window.recomm = function () {
-            $.ajax({
-                url: '/q/recomm',
-                method: 'post',
-                dataType: 'json',
-                data: {"id":${q.id}},
-                success: function (data) {
-                    if (data && data.code == 1) {
-                        layer.msg("操作成功", {icon: 6});
-                        window.location.reload();
-                    } else {
-                        layer.msg("操作失败", {icon: 6});
-                    }
-                }
-            });
-        };
 
-        window.as_top = function () {
-            $.ajax({
-                url: '/q/as_top',
-                method: 'post',
-                dataType: 'json',
-                data: {"id":${q.id}},
-                success: function (data) {
-                    if (data && data.code == 1) {
-                        layer.msg("操作成功", {icon: 6});
-                        window.location.reload();
-                    } else {
-                        layer.msg("操作失败", {icon: 6});
-                    }
-                }
-            });
-        };
-
-        window.collect = function () {
-            $.ajax({
-                url: '/uni/q/collect',
-                method: 'post',
-                dataType: 'json',
-                data: {"id":${q.id}},
-                success: function (d) {
-                    if (d && d.code == 1) {
-                        layer.msg(d.message ? d.message : "操作成功", {icon: 6});
-                    } else {
-                        layer.msg(d.message ? d.message : "网络问题，请重试", {icon: 5});
-                    }
-                }
-            });
-        };
     });
 
 </script>
