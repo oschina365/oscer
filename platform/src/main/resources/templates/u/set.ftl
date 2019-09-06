@@ -14,7 +14,7 @@
       </ul>
       <div class="layui-tab-content" style="padding: 20px 0;">
         <div class="layui-form layui-form-pane layui-tab-item layui-show">
-          <form method="post" action="/u/set_info">
+          <form method="post" action="/uni/set_info">
             <div class="layui-form-item">
               <label for="L_email" class="layui-form-label">邮箱</label>
               <div class="layui-input-inline">
@@ -43,7 +43,7 @@
             <div class="layui-form-item layui-form-text">
               <label for="L_sign" class="layui-form-label">签名</label>
               <div class="layui-input-block">
-                <textarea placeholder="随便写些什么刷下存在感" id="L_sign"  name="sign" autocomplete="off" class="layui-textarea" style="height: 80px;">${login_user.self_info!''}</textarea>
+                <textarea placeholder="随便写些什么刷下存在感" id="L_sign"  name="self_info" autocomplete="off" class="layui-textarea" style="height: 80px;">${login_user.self_info!''}</textarea>
               </div>
             </div>
             <div class="layui-form-item">
@@ -142,7 +142,7 @@ layui.config({
    */
   form.on("submit(infoEdit)", function (data) {
     $.ajax({
-      url: '/u/set_info',
+      url: '/uni/set_info',
       method: 'post',
       dataType: 'json',
       data: data.field,

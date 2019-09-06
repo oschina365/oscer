@@ -17,6 +17,7 @@ import net.oscer.vo.QuestionVO;
 import net.oscer.vo.ReadVO;
 import net.oscer.vo.UserCommentVO;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static net.oscer.beans.Question.MAX_LENGTH_TITLE;
+import static net.oscer.beans.User.SEX_GIRL;
+import static net.oscer.beans.User.SEX_UNKONW;
+import static net.oscer.db.Entity.ONLINE;
 import static net.oscer.db.Entity.STATUS_NORMAL;
 
 /**
@@ -35,6 +39,55 @@ import static net.oscer.db.Entity.STATUS_NORMAL;
 @RequestMapping("/uni/")
 @Controller
 public class UniController extends BaseController {
+
+    /**
+     * 判断是否存在第三方
+     * 第三方登录
+     *
+     * @param from     注册方式
+     * @param union_id 第三方唯一ID
+     * @return
+     */
+    @PostMapping("user_bind_login")
+    @ResponseBody
+    public ApiResult user_bind_login(@RequestParam("provider") String provider, @RequestParam("union_id") String union_id, @RequestParam("from") String from,
+                                     @RequestParam("nickname") String nickname, @RequestParam("headimg") String headimg, @RequestParam("sex") String sex) {
+        UserBind bind = UserBindDAO.ME.bindByUnion_id(provider, union_id);
+        if (bind == null || bind.getUser() <= 0L) {
+            //未注册用户
+            User reg = new User();
+            reg.setOnline(ONLINE);
+            reg.setLogin_time(new Date());
+            reg.setHeadimg(headimg);
+            reg.setNickname(nickname);
+            reg.setUsername(nickname);
+            reg.setPassword(RandomStringUtils.randomAlphanumeric(8));
+            reg.setEmail(union_id);
+            reg.setSalt(User.ME._GeneratePwdHash(reg.getPassword(), reg.getEmail()));
+            reg.save();
+
+            bind = new UserBind();
+            bind.setUnion_id(union_id);
+            bind.setProvider(provider);
+            bind.setName(nickname);
+            bind.setHeadimg(headimg);
+            bind.setUser(reg.getId());
+            bind.setFrom(from);
+            bind.save();
+        } else {
+            bind.setHeadimg(headimg);
+            bind.setFrom(from);
+            bind.doUpdate();
+        }
+        User bindUser = User.ME.get(bind.getUser());
+        if (bindUser.getStatus() != STATUS_NORMAL) {
+            return ApiResult.failWithMessage("账号已被屏蔽");
+        }
+        bindUser.setOnline(ONLINE);
+        bindUser.setLogin_time(new Date());
+        bindUser.doUpdate();
+        return ApiResult.successWithObject(bindUser);
+    }
 
     /**
      * 获取所有顶级节点名称
@@ -453,6 +506,47 @@ public class UniController extends BaseController {
         QuestionDAO.ME.evictNode(form.getNode());
         QuestionDAO.ME.evict(loginUser.getId());
         return ApiResult.successWithObject(n.getUrl());
+    }
+
+    /**
+     * 更改用户基本信息
+     *
+     * @return
+     */
+    @PostMapping("set_info")
+    @ResponseBody
+    public ApiResult set_info(User form, @RequestParam(value = "user", required = false) Long user) {
+        User loginUser = null;
+        if (user != null && user > 0L) {
+            loginUser = User.ME.get(user);
+        } else {
+            loginUser = getLoginUser();
+        }
+        if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
+            return ApiResult.failWithMessage("请重新登录");
+        }
+
+        /*if (org.apache.commons.lang3.StringUtils.isBlank(form.getEmail())) {
+            return ApiResult.failWithMessage("请填写邮箱");
+        }*/
+        if (StringUtils.isNotEmpty(form.getEmail()) && !FormatTool.is_email(form.getEmail())) {
+            return ApiResult.failWithMessage("请填写正确的邮箱");
+        }
+        if (org.apache.commons.lang3.StringUtils.isBlank(form.getNickname())) {
+            return ApiResult.failWithMessage("请填写昵称");
+        }
+        if (form.getSex() != null && (form.getSex() > SEX_GIRL || form.getSex() < SEX_UNKONW)) {
+            return ApiResult.failWithMessage("请选择性别");
+        }
+
+        loginUser.setEmail(StringUtils.isEmpty(form.getEmail()) ? loginUser.getEmail() : form.getEmail());
+        loginUser.setNickname(form.getNickname());
+        loginUser.setSex(form.getSex());
+        loginUser.setSalt(loginUser._GeneratePwdHash(loginUser.getPassword(), loginUser.getEmail()));
+        loginUser.setCity(form.getCity());
+        loginUser.setSelf_info(StringUtils.isEmpty(form.getSelf_info()) ? loginUser.getSelf_info() : form.getSelf_info());
+        loginUser.doUpdate();
+        return ApiResult.successWithObject(loginUser);
     }
 
 }

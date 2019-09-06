@@ -3,6 +3,7 @@ package net.oscer.beans;
 
 import net.oscer.db.DbQuery;
 import net.oscer.db.Entity;
+import net.oscer.framework.FormatTool;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -139,6 +140,10 @@ public class User extends Entity implements Serializable {
     private String city;
 
     private String vip_text;
+
+    private String sdf_insert_date;
+
+    private String sdf_last_date;
 
     public String getUsername() {
         return username;
@@ -346,6 +351,22 @@ public class User extends Entity implements Serializable {
 
     public void setVip_text(String vip_text) {
         this.vip_text = vip();
+    }
+
+    public String getSdf_insert_date() {
+        return FormatTool.format_intell_time(this.insert_date);
+    }
+
+    public void setSdf_insert_date(String sdf_insert_date) {
+        this.sdf_insert_date =  FormatTool.format_intell_time(this.insert_date);
+    }
+
+    public String getSdf_last_date() {
+        return FormatTool.format_intell_time(this.last_date);
+    }
+
+    public void setSdf_last_date(String sdf_last_date) {
+        this.sdf_last_date =  FormatTool.format_intell_time(this.last_date);
     }
 
     /**

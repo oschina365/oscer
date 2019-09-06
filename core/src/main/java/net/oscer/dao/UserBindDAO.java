@@ -32,6 +32,18 @@ public class UserBindDAO extends CommonDao<UserBind> {
         return UserBind.ME.get(id.longValue());
     }
 
+    public UserBind bindByUnion_id(String provider, String union_id) {
+        if (StringUtils.isBlank(provider) || StringUtils.isBlank(union_id)) {
+            return null;
+        }
+        String sql = "select id from user_binds where provider=? and union_id=? limit 1";
+        Number id = getDbQuery().read(Number.class, sql, provider, union_id);
+        if (null == id) {
+            return null;
+        }
+        return UserBind.ME.get(id.longValue());
+    }
+
     public UserBind bindByUnion_id(String provider, String union_id, String name) {
         if (StringUtils.isBlank(provider) || StringUtils.isBlank(union_id)) {
             return null;

@@ -64,6 +64,10 @@ public class QuestionVO {
     private List<String> banners;
 
     private boolean hasBanner;
+    /**
+     * 1~3 1：单图（居左） 2：单图或视频（居右） 3：多图或无图
+     */
+    private int type;
 
     public Question getQ() {
         return q;
@@ -153,6 +157,14 @@ public class QuestionVO {
         this.hasBanner = hasBanner;
     }
 
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
     public static List<QuestionVO> list(List<Question> questions, User login_user, String rhtml) {
         if (CollectionUtils.isEmpty(questions)) {
             return null;
@@ -182,7 +194,7 @@ public class QuestionVO {
 
         List<Long> finalCollect_ids = collect_ids;
         questions.stream().filter(q -> q != null && q.getId() > 0L).forEach(q -> {
-            if(StringUtils.equalsIgnoreCase(rhtml,"1")){
+            if (StringUtils.equalsIgnoreCase(rhtml, "1")) {
                 q.setTitle(FormatTool.reHtml(q.getTitle()));
             }
             QuestionVO vo = new QuestionVO();
@@ -206,8 +218,15 @@ public class QuestionVO {
                 vo.setLogin_user(login_user);
                 vo.setCollected(CollectionUtils.isNotEmpty(finalCollect_ids) ? finalCollect_ids.contains(q.getId()) : false);
             }
-            vo.setBanner(StringUtils.getFirstImageUrl(q.getContent()));
-            vo.setBanners(StringUtils.getMoreImageUrl(q.getContent(),3));
+            //vo.setBanner(StringUtils.getFirstImageUrl(q.getContent()));
+            vo.setBanners(StringUtils.getMoreImageUrl(q.getContent(), 3));
+            vo.setType(3);
+            if (CollectionUtils.isEmpty(vo.getBanners()) || vo.getBanners().size() == 3) {
+                vo.setType(3);
+            }
+            if (CollectionUtils.isNotEmpty(vo.getBanners()) && vo.getBanners().size() == 1) {
+                vo.setType(2);
+            }
             vo.setHasBanner(false);
             if (StringUtils.isNotBlank(vo.getBanner())) {
                 vo.setHasBanner(true);

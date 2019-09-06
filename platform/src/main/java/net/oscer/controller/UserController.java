@@ -190,39 +190,7 @@ public class UserController extends BaseController {
         return "redirect:/";
     }
 
-    /**
-     * 更改用户基本信息
-     *
-     * @return
-     */
-    @PostMapping("set_info")
-    @ResponseBody
-    public ApiResult set_info(User form) {
-        User loginUser = getLoginUser();
-        if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
-            return ApiResult.failWithMessage("请重新登录后再试");
-        }
-        if (StringUtils.isBlank(form.getEmail())) {
-            return ApiResult.failWithMessage("请填写邮箱");
-        }
-        if (!FormatTool.is_email(form.getEmail())) {
-            return ApiResult.failWithMessage("请填写正确的邮箱");
-        }
-        if (StringUtils.isBlank(form.getNickname())) {
-            return ApiResult.failWithMessage("请填写昵称");
-        }
-        if (form.getSex() > SEX_GIRL || form.getSex() < SEX_UNKONW) {
-            return ApiResult.failWithMessage("请选择性别");
-        }
 
-        loginUser.setEmail(form.getEmail());
-        loginUser.setNickname(form.getNickname());
-        loginUser.setSex(form.getSex());
-        loginUser.setSalt(loginUser._GeneratePwdHash(loginUser.getPassword(), loginUser.getEmail()));
-        loginUser.setCity(form.getCity());
-        loginUser.doUpdate();
-        return ApiResult.success("修改成功");
-    }
 
     /**
      * 修改密码

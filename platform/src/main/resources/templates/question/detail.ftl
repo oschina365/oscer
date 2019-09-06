@@ -93,8 +93,7 @@
                 </fieldset>
 
                 <ul class="jieda" id="jieda"><div id="commentBodys"></div></ul>
-                <hr>
-                <div id="page"></div>
+                <div id="page" style="text-align: center;"></div>
             </div>
 
             <div class="fly-panel detail-box">
@@ -194,7 +193,7 @@
         , base: '../../res/mods/'
     }).extend({
         fly: 'index'
-    }).use(['fly', 'face', 'laypage', 'laytpl', 'jquery'], function () {
+    }).use(['fly', 'face', 'laypage', 'laytpl', 'jquery','jie'], function () {
         var form = layui.form, laypage = layui.laypage, laytpl = layui.laytpl, $ = layui.jquery, layer = layui.layer;
 
         dataList(1);
