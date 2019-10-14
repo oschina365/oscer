@@ -3,6 +3,7 @@ package net.oscer.vo;
 import net.oscer.beans.CommentQuestion;
 import net.oscer.beans.Question;
 import net.oscer.beans.User;
+import net.oscer.dao.CommentQuestionDAO;
 import net.oscer.framework.FormatTool;
 import net.oscer.framework.StringUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -25,7 +26,7 @@ public class CommentQuestionVO {
     /**
      * 评论用户
      */
-    private User cu;
+    private UserVO cu;
 
     private String sdf_insert_date;
 
@@ -44,6 +45,11 @@ public class CommentQuestionVO {
      */
     private boolean can_option;
 
+    /**
+     * 子评论
+     */
+    private List<CommentQuestionVO> childs;
+
     public CommentQuestion getCq() {
         return cq;
     }
@@ -52,11 +58,11 @@ public class CommentQuestionVO {
         this.cq = cq;
     }
 
-    public User getCu() {
+    public UserVO getCu() {
         return cu;
     }
 
-    public void setCu(User cu) {
+    public void setCu(UserVO cu) {
         this.cu = cu;
     }
 
@@ -92,6 +98,14 @@ public class CommentQuestionVO {
         this.can_option = can_option;
     }
 
+    public List<CommentQuestionVO> getChilds() {
+        return childs;
+    }
+
+    public void setChilds(List<CommentQuestionVO> childs) {
+        this.childs = childs;
+    }
+
     public static List<CommentQuestionVO> list(Long question, User login_user, List<CommentQuestion> commentQuestions, String rhtml) {
         if (CollectionUtils.isEmpty(commentQuestions)) {
             return null;
@@ -117,7 +131,7 @@ public class CommentQuestionVO {
         commentQuestions.stream().forEach(cq -> {
             CommentQuestionVO vo = new CommentQuestionVO();
             vo.setCq(cq);
-            vo.setCu(User.ME.get(cq.getUser()));
+            vo.setCu(UserVO.convert(User.ME.get(cq.getUser())));
             vo.setSdf_insert_date(FormatTool.format_intell_time(cq.getInsert_date()));
             vo.setBestComment(false);
             vo.setCan_option(false);
@@ -130,6 +144,13 @@ public class CommentQuestionVO {
                     vo.setCan_option(true);
                 }
             }
+            if (cq.getParent() <= 0L) {
+                List<CommentQuestion> childs = CommentQuestionDAO.ME.childs(question, cq.getId(), 1, 1000000);
+                if (CollectionUtils.isNotEmpty(childs)) {
+                    vo.setChilds(list(question, login_user, childs, rhtml));
+                }
+            }
+
             list.add(vo);
         });
         return list;

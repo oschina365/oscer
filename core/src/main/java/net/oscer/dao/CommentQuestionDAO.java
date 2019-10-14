@@ -70,7 +70,9 @@ public class CommentQuestionDAO extends CommonDao<CommentQuestion> {
 
     public void evict(long question, long user) {
         CacheMgr.evict(CommentQuestion.ME.CacheRegion(), "count#" + question);
+        CacheMgr.evict(CommentQuestion.ME.CacheRegion(), "first_count#" + question);
         CacheMgr.evict(CommentQuestion.ME.CacheRegion(), "question#all#" + question);
+        CacheMgr.evict(CommentQuestion.ME.CacheRegion(), "first#" + question);
         CacheMgr.evict(CommentQuestion.ME.CacheRegion(), "question#" + question);
         CacheMgr.evict(CommentQuestion.ME.CacheRegion(), "rankMap#" + question);
         CacheMgr.evict(CommentQuestion.ME.CacheRegion(), "allByUser#" + user + "#" + 0);
@@ -82,12 +84,53 @@ public class CommentQuestionDAO extends CommonDao<CommentQuestion> {
         return getDbQuery().stat_cache(CommentQuestion.ME.CacheRegion(), "count#" + question, sql, question);
     }
 
+    public int first_count(long question) {
+        String sql = "select count(id) from comment_questions where question=? and parent=0";
+        return getDbQuery().stat_cache(CommentQuestion.ME.CacheRegion(), "first_count#" + question, sql, question);
+    }
+
     public List<CommentQuestion> list(long question) {
         String sql = "select id from comment_questions where question=? order by id desc";
         List<Long> ids = getDbQuery().query_cache(long.class, false, CommentQuestion.ME.CacheRegion(), "question#all#" + question, sql, question);
         return CommentQuestion.ME.loadList(ids);
     }
 
+    /**
+     * 分页获取一级评论
+     *
+     * @param question
+     * @param page
+     * @param size
+     * @return
+     */
+    public List<CommentQuestion> first(long question, int page, int size) {
+        String sql = "select id from comment_questions where question=? and parent=0 order by id desc";
+        List<Long> ids = getDbQuery().query_slice_cache(long.class, CommentQuestion.ME.CacheRegion(), "first#" + question, 100, sql, page, size, question);
+        return CommentQuestion.ME.loadList(ids);
+    }
+
+    /**
+     * 分页获取二级评论，咱不考虑多级评论
+     *
+     * @param question
+     * @param page
+     * @param size
+     * @return
+     */
+    public List<CommentQuestion> childs(long question, long parent, int page, int size) {
+        String sql = "select id from comment_questions where question=? and parent=? order by id desc";
+        List<Long> ids = getDbQuery().query_slice_cache(long.class, CommentQuestion.ME.CacheRegion(), "childs#" + question + "#" + parent, 1000001, sql, page, size, question, parent);
+        return CommentQuestion.ME.loadList(ids);
+    }
+
+    /**
+     * 分页获取评论
+     *
+     * @param question
+     * @param page
+     * @param size
+     * @return
+     */
     public List<CommentQuestion> list(long question, int page, int size) {
         String sql = "select id from comment_questions where question=? order by id desc";
         List<Long> ids = getDbQuery().query_slice_cache(long.class, CommentQuestion.ME.CacheRegion(), "question#" + question, 100, sql, page, size, question);

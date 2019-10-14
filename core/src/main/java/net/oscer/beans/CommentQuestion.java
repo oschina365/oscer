@@ -40,6 +40,11 @@ public class CommentQuestion extends Entity {
      */
     private Integer praise_count;
 
+    /**
+     * 回复数量
+     */
+    private Integer reply_count;
+
     public long getQuestion() {
         return question;
     }
@@ -86,5 +91,13 @@ public class CommentQuestion extends Entity {
 
     public void setPraise_count(Integer praise_count) {
         this.praise_count = praise_count;
+    }
+
+    public Integer getReply_count() {
+        return reply_count;
+    }
+
+    public void setReply_count(Integer reply_count) {
+        this.reply_count = reply_count;
     }
 }

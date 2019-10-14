@@ -6,6 +6,7 @@ import net.oscer.config.provider.OauthEnum;
 import net.oscer.dao.*;
 import net.oscer.db.Entity;
 import net.oscer.framework.FormatTool;
+import net.oscer.vo.UserVO;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -35,6 +36,91 @@ import static net.oscer.db.Entity.STATUS_NORMAL;
 public class UserController extends BaseController {
 
     /**
+     * 我的发帖-web端
+     *
+     * @return
+     */
+    @PostMapping("pubs")
+    @ResponseBody
+    public ApiResult pubs() {
+        User loginUser = getLoginUser();
+        if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
+            return ApiResult.failWithMessage("未登录");
+        }
+        List<Question> questions = QuestionDAO.ME.page(loginUser.getId(), 1, pageNumber, pageSize);
+        int count = QuestionDAO.ME.user_pub_count(loginUser.getId());
+        Map<String, Object> map = new HashMap<>();
+        map.put("questions", questions);
+        map.put("count", count);
+        return ApiResult.successWithObject(map);
+    }
+
+    /**
+     * 我的收藏-web端
+     *
+     * @return
+     */
+    @PostMapping("collects")
+    @ResponseBody
+    public ApiResult collects() {
+        User loginUser = getLoginUser();
+        if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
+            return ApiResult.failWithMessage("未登录");
+        }
+        List<CollectQuestion> collects = CollectQuestionDAO.ME.page_list(loginUser.getId(), CollectQuestion.STATUS_SHOW, pageNumber, pageSize);
+        if (CollectionUtils.isNotEmpty(collects)) {
+            List<Long> ids = collects.stream().filter(c -> (null != c && c.getId() > 0L && c.getQuestion() > 0L)).map(CollectQuestion::getQuestion).collect(Collectors.toList());
+            int count = CollectQuestionDAO.ME.count(loginUser.getId(), CollectQuestion.STATUS_SHOW);
+            Map<String, Object> map = new HashMap<>();
+            map.put("questions_collect", Question.ME.loadList(ids));
+            map.put("count", count);
+            return ApiResult.successWithObject(map);
+        }
+        return ApiResult.failWithMessage("");
+    }
+
+    /**
+     * 我的关注-web端
+     *
+     * @return
+     */
+    @PostMapping("follows")
+    @ResponseBody
+    public ApiResult follows() {
+        User loginUser = getLoginUser();
+        if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
+            return ApiResult.failWithMessage("未登录");
+        }
+        List<User> list = FriendDAO.ME.pageFollows(loginUser.getId(), pageNumber, pageSize);
+        int count = FriendDAO.ME.countFollow(loginUser.getId());
+        Map<String, Object> map = new HashMap<>();
+        map.put("follows", UserVO.converts(list));
+        map.put("count", count);
+        return ApiResult.successWithObject(map);
+    }
+
+    /**
+     * 我的粉丝-web端
+     *
+     * @return
+     */
+    @PostMapping("fans")
+    @ResponseBody
+    public ApiResult fans() {
+        User loginUser = getLoginUser();
+        if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
+            return ApiResult.failWithMessage("未登录");
+        }
+        List<User> list = FriendDAO.ME.pageFans(loginUser.getId(), pageNumber, pageSize);
+        int count = FriendDAO.ME.countFan(loginUser.getId());
+        Map<String, Object> map = new HashMap<>();
+        map.put("currentFans", FriendDAO.ME.listFans(loginUser.getId(),pageNumber,pageSize));
+        map.put("fans", UserVO.converts(list));
+        map.put("count", count);
+        return ApiResult.successWithObject(map);
+    }
+
+    /**
      * 个人空间主页
      *
      * @return
@@ -44,13 +130,6 @@ public class UserController extends BaseController {
         User loginUser = getLoginUser();
         if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
             return "/error/404";
-        }
-        List<Question> questions = QuestionDAO.ME.allByUser(loginUser.getId(), 1);
-        request.setAttribute("questions_pub", questions);
-        List<CollectQuestion> collects = CollectQuestionDAO.ME.list(loginUser.getId(), CollectQuestion.STATUS_SHOW);
-        if (CollectionUtils.isNotEmpty(collects)) {
-            List<Long> ids = collects.stream().filter(c -> (null != c && c.getId() > 0L && c.getQuestion() > 0L)).map(CollectQuestion::getQuestion).collect(Collectors.toList());
-            request.setAttribute("questions_collect", Question.ME.loadList(ids));
         }
         return "/u/home";
     }
@@ -94,7 +173,7 @@ public class UserController extends BaseController {
         User u = User.ME.get(id);
         int status = 0;
         User loginUser = getLoginUser();
-        if(null!=loginUser){
+        if (null != loginUser) {
             request.setAttribute("followed", FriendDAO.ME.followed(loginUser.getId(), u.getId()));
         }
         if (null != loginUser && loginUser.getId() == id) {

@@ -25,6 +25,37 @@ public class CollectQuestionDAO extends CommonDao<CollectQuestion> {
         CacheMgr.evict(CollectQuestion.ME.CacheRegion(), "list#" + user + "#" + -1);
         CacheMgr.evict(CollectQuestion.ME.CacheRegion(), "list#" + user + "#" + 0);
         CacheMgr.evict(CollectQuestion.ME.CacheRegion(), "list#" + user + "#" + 1);
+        CacheMgr.evict(CollectQuestion.ME.CacheRegion(), "page_list#" + user + "#" + -1);
+        CacheMgr.evict(CollectQuestion.ME.CacheRegion(), "page_list#" + user + "#" + 0);
+        CacheMgr.evict(CollectQuestion.ME.CacheRegion(), "page_list#" + user + "#" + 1);
+        CacheMgr.evict(CollectQuestion.ME.CacheRegion(), "count#" + user + "#" + -1);
+        CacheMgr.evict(CollectQuestion.ME.CacheRegion(), "count#" + user + "#" + 0);
+        CacheMgr.evict(CollectQuestion.ME.CacheRegion(), "count#" + user + "#" + 1);
+    }
+
+    public int count(long user, int status) {
+        String sql = "select count(*) from collect_questions where user=? and status=? ";
+        return getDbQuery().stat_cache(CollectQuestion.ME.CacheRegion(), "count#" + user + "#" + status, sql, user, status);
+    }
+
+    /**
+     * 查询用户的收藏列表,分页查询
+     *
+     * @param user
+     * @param status
+     * @return
+     */
+    public List<CollectQuestion> page_list(long user, int status, int page, int size) {
+        if (user <= 0L) {
+            return null;
+        }
+        String sql = "select id from collect_questions where user=? and status=? order by last_date desc";
+        if (status < 0) {
+            sql = "select id from collect_questions where user=? and -2<? order by last_date desc";
+        }
+        List<Long> ids = getDbQuery().query_slice_cache(long.class, CollectQuestion.ME.CacheRegion(),
+                "page_list#" + user + "#" + status, 100, sql, page, size, user, status);
+        return CollectQuestion.ME.loadList(ids);
     }
 
     /**

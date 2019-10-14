@@ -57,6 +57,16 @@
                         </a>
                         <span>${q.insert_date}</span>
 
+
+                    </div>
+                    <div class="detail-hits" id="LAY_jieAdmin">
+                        <#if q.reward_point gt 0>
+                            <span style="padding-right: 10px; color: #FF7200">悬赏：${q.reward_point!'0'}积分</span>
+                        </#if>
+                        <#if login_user?? && (login_user.id=author || login_user.id==2)>
+                            <span class="layui-btn layui-btn-xs jie-admin"><a href="/q/edit/${q.id}">编辑此贴</a></span>
+
+                        </#if>
                         <span class="fly-list-nums">
                             <a href="#comment"><i class="iconfont" title="回答">&#xe60c;</i> ${q.comment_count!'0'}</a>
                             <i class="iconfont" title="人气">&#xe60b;</i> ${q.view_count!'0'}
@@ -68,15 +78,7 @@
                                 </#if>
                             </a>
 
-                    </span>
-                    </div>
-                    <div class="detail-hits" id="LAY_jieAdmin">
-                        <#if q.reward_point gt 0>
-                            <span style="padding-right: 10px; color: #FF7200">悬赏：${q.reward_point!'0'}积分</span>
-                        </#if>
-                        <#if login_user?? && (login_user.id=author || login_user.id==2)>
-                            <span class="layui-btn layui-btn-xs jie-admin"><a href="/q/edit/${q.id}">编辑此贴</a></span>
-                        </#if>
+                        </span>
                         <#if login_user?? && login_user.id!=author>
                             <#if followed>
                                     <span class="layui-btn layui-btn-xs jie-admin layui-btn-danger"><a onclick="follow()">取消关注</a></span>
@@ -106,7 +108,7 @@
                     <form action="/uni/user_pub_q_comment" method="post" id="commentFrom">
                         <input type="hidden" name="id" value="${q.id}"/>
                         <div class="layui-form-item layui-form-text">
-                            <a name="comment"></a>
+                            <input name="comment" type="hidden"/>
                             <div class="layui-input-block">
                                 <textarea name="content" placeholder="<#if login_user??>请输入内容<#else >请先登录再评论</#if>" class="layui-textarea fly-editor" style="height: 150px;"></textarea>
                             </div>
@@ -118,22 +120,27 @@
                 </div>
             </div>
         </div>
-        <div class="layui-col-md4">
+        <#if authorQuestions?? && authorQuestions?size gt 0>
+            <div class="layui-col-md4">
             <dl class="fly-panel fly-list-one">
-                <dt class="fly-panel-title">楼主其它帖子</dt>
-                <#list authorQuestions as orther>
+            <dt class="fly-panel-title">楼主其它帖子</dt>
+            <#list authorQuestions as orther>
+                <#if orther?? && orther.title??>
                     <dd>
-                        <a href="">${orther.title}</a>
-                        <span><i class="iconfont icon-pinglun1"></i> ${orther.comment_count}</span>
+                    <a href="">${orther.title}</a>
+                    <span><i class="iconfont icon-pinglun1"></i> ${orther.comment_count}</span>
                     </dd>
-                </#list>
+                </#if>
 
-                <!-- 无数据时 -->
-                <!--
-                <div class="fly-none">没有相关数据</div>
-                -->
+            </#list>
+
+            <!-- 无数据时 -->
+            <!--
+            <div class="fly-none">没有相关数据</div>
+            -->
             </dl>
-        </div>
+            </div>
+        </#if>
     </div>
 </div>
 
@@ -141,7 +148,6 @@
     {{#  if(d.list!=null&&d.list.length> 0){ }}
     {{#  layui.each(d.list, function(index, item){ }}
     <li class="jieda-daan">
-        <a></a>
         <div class="detail-about detail-about-reply">
             <p>{{d.rankMap[item.cq.id]}}楼<span>&nbsp;&nbsp;&nbsp;{{item.sdf_insert_date}}</span></p>
             <a class="fly-avatar" href="">
@@ -161,28 +167,78 @@
 
             {{# if(item.bestComment){ }} <i class="iconfont icon-caina" title="最佳答案"></i>{{# }}}
 
-        </div>
-        <div class="detail-body jieda-body photos">
-            <p>{{item.cq.content}}</p>
-        </div>
-        <div class="jieda-reply">
-              <a onclick="praise({{item.cq.id}})">
+            <div class="jieda-reply">
+                <a onclick="praise({{item.cq.id}})">
               <span class="jieda-zan {{# if(item.praise){ }}zanok{{# }}}" type="zan">
                 <i class="iconfont icon-zan"></i>
                 <em>{{item.cq.praise_count}}</em>
               </span>
-              </a>
-            <span type="reply">
+                </a>
+                <span type="reply">
+                <a onclick="show_reply_dom({{item.cq.id}})">
                 <i class="iconfont icon-svgmoban53"></i>
                 回复
+                </a>
               </span>
-            {{# if(item.bestComment){ }}
-            <div class="jieda-admin">
-                <span type="edit">编辑</span>
-                <span type="del">删除</span>
-                <!-- <span class="jieda-accept" type="accept">采纳</span> -->
+
+                {{# if(item.bestComment){ }}
+                <div class="jieda-admin">
+                    <span type="edit">编辑</span>
+                    <span type="del">删除</span>
+                    <!-- <span class="jieda-accept" type="accept">采纳</span> -->
+                </div>
+                {{# }}}
             </div>
-            {{# }}}
+
+        </div>
+        <div class="detail-body jieda-body photos">
+            <p>{{item.cq.content}}</p>
+        </div>
+        {{# if(item.childs && item.childs.length>0){ }}
+            <div class="childs" id="childs_{{item.cq.id}}">
+                <ul class="jieda" id="jieda">
+                    <div id="commentChildBodys">
+                        {{#  layui.each(item.childs, function(index, child){ }}
+                            <li class="jieda-daan"  {{# if(index>2){ }} style="display: none" {{# }}} >
+                                <div class="detail-about detail-about-reply"> <p><span>&nbsp;&nbsp;&nbsp;{{child.sdf_insert_date}}</span></p>
+                                    <a class="fly-avatar" href="">
+                                        <img src="{{child.cu.headimg}}" alt=" ">
+                                    </a>
+                                    <div class="fly-detail-user" style="margin-top: 10px;">
+                                        <a href="/u/{{child.cu.id}}" class="fly-link">
+                                            <cite>{{child.cu.nickname||child.cu.username}}</cite>
+                                            {{# if(child.cu.vip_text){ }}
+                                            <i class="layui-badge fly-badge-vip">{{child.cu.vip_text}}</i>
+                                            {{# }}}
+                                        </a>
+                                        {{# if(child.cu.id==2){ }}<span>(楼主)</span>{{# }}}
+                                    </div>
+                                    <div class="jieda-reply">
+                                        <a onclick="praise({{child.cq.id}})">
+                                            <span class="jieda-zan " type="zan"> <i class="iconfont icon-zan"></i>  <em>{{child.cq.praise_count}}</em> </span>
+                                        </a>
+                                        <span type="reply">
+                                            <a onclick="show_reply_dom({{item.cq.id}},{{child.cq.id}})"> <i class="iconfont icon-svgmoban53"></i> 回复 </a>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="detail-body jieda-body photos" style="margin: unset;"> <p>{{child.cq.content}}</p> </div>
+                                <div id="reply_div_{{child.cq.id}}" class="layui-form-item layui-form-text" style="margin-bottom: 22px;display: none">
+                                    <textarea name="content" id="content_{{child.cq.id}}" placeholder="<#if login_user??>请输入内容<#else >请先登录再评论</#if>" class="layui-textarea fly-editor"></textarea>
+                                </div>
+                            </li>
+                        {{#  }); }}
+                    </div>
+                </ul>
+                {{# if(item.cq.reply_count >0 && item.cq.reply_count >5){ }}
+                <a onclick="more_child_comments({{item.cq.id}})" style="cursor:pointer">查看更多回复</a>
+                {{# }}}
+            </div>
+        {{# }}}
+
+
+        <div id="reply_div_{{item.cq.id}}" class="layui-form-item layui-form-text" style="margin-bottom: 22px;display: none">
+            <textarea name="content" id="content_{{item.cq.id}}" placeholder="<#if login_user??>请输入内容<#else >请先登录再评论</#if>" class="layui-textarea fly-editor"></textarea>
         </div>
     </li>
     {{#  }); }}
@@ -191,8 +247,50 @@
     {{# }}}
 
 </script>
+
 <script src="/res/js/jquery.form.js"></script>
 <script>
+    function show_reply_dom(id,childid) {
+        var a = id;
+        if(childid){
+            a = childid;
+        }
+        var l = $("#reply_div_"+a)[0].style.display;
+        if(l=='none'){
+            $("#reply_div_"+a).show();
+        }else{
+            var content = $("#content_"+a).val();
+            console.log(content);
+            if(!content){
+                $("#reply_div_"+a).hide();
+            }else{
+                $.ajax({
+                    url: '/uni/user_pub_q_comment',
+                    method: 'post',
+                    dataType: 'json',
+                    data: {'id':${q.id},'content':content,'parent':id},
+                    success: function (res) {
+                        if (res.code == 1) {
+                            layer.msg('评论成功', {icon:6, shade: 0.1, time:500});
+                            location.reload();
+
+                        } else {
+                            layer.alert(res.message);
+                        }
+                    }
+                });
+                return false;
+            }
+
+        }
+    }
+
+    function more_child_comments(id) {
+        if(id){
+            $("#childs_"+id+" li").show();
+        }
+    }
+
     function follow() {
         $.ajax({
             url: '/f/follow',
@@ -264,7 +362,7 @@
         });
     };
 
-    window.collect = function () {
+    function collect(){
         $.ajax({
             url: '/uni/q/collect',
             method: 'post',
@@ -280,16 +378,16 @@
         });
     };
 
+
     layui.config({
         version: "3.0.0"
         , base: '../../res/mods/'
     }).extend({
         fly: 'index'
-    }).use(['fly', 'face', 'laypage', 'laytpl', 'jquery','jie'], function () {
+    }).use(['fly', 'face', 'laypage', 'laytpl', 'jquery'], function () {
         var form = layui.form, laypage = layui.laypage, laytpl = layui.laytpl, $ = layui.jquery, layer = layui.layer;
 
         dataList(1);
-
         /**
          * 查询数据列表
          * @param number

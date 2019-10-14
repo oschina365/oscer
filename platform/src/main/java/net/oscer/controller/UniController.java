@@ -135,7 +135,7 @@ public class UniController extends BaseController {
         List<Question> questions = QuestionDAO.ME.all(id, pageNumber, 10, show);
         map.put("questions", QuestionVO.list(questions, getLoginUser(), rhtml));
         //帖子总数
-        int count = QuestionDAO.ME.count(id);
+        int count = QuestionDAO.ME.countNode(id);
         map.put("count", count);
         return ApiResult.successWithObject(map);
     }
@@ -189,7 +189,7 @@ public class UniController extends BaseController {
         //评论列表 --分页
         String size = request.getParameter("size");
         int s = StringUtils.isEmpty(size) ? 10 : Integer.parseInt(size);
-        List<CommentQuestion> comments = CommentQuestionDAO.ME.list(id, pageNumber, s);
+        List<CommentQuestion> comments = CommentQuestionDAO.ME.first(id, pageNumber, s);
         if (CacheMgr.exists(CommentQuestion.ME.CacheRegion(), "rankMap#" + id)) {
             map.put("rankMap", CacheMgr.get(CommentQuestion.ME.CacheRegion(), "rankMap#" + id));
         } else {
@@ -206,7 +206,7 @@ public class UniController extends BaseController {
         }
         map.put("comments", CommentQuestionVO.list(id, login_user, comments, rhtml));
         //帖子总数
-        int count = CommentQuestionDAO.ME.count(id);
+        int count = CommentQuestionDAO.ME.first_count(id);
         map.put("count", count);
         return ApiResult.successWithObject(map);
     }
@@ -254,7 +254,7 @@ public class UniController extends BaseController {
      */
     @PostMapping("/user_pub_q_comment")
     @ResponseBody
-    public ApiResult user_pub_q_comment(@RequestParam("id") long id, @RequestParam(value = "user", required = false) Long user) {
+    public ApiResult user_pub_q_comment(@RequestParam("id") long id, @RequestParam(value = "user", required = false) Long user) throws Exception {
         User loginUser = current_user(user);
         if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
             return ApiResult.failWithMessage("请重新登录");
@@ -262,28 +262,49 @@ public class UniController extends BaseController {
         if (id <= 0L) {
             return ApiResult.failWithMessage("该帖子不存在");
         }
-        String content = param("content");
+        final String[] content = {param("content")};
         long parent = param("parent", 0L);
-        if (StringUtils.isBlank(content)) {
+        if (StringUtils.isBlank(content[0])) {
             return ApiResult.failWithMessage("请输入内容");
         }
         Question q = Question.ME.get(id);
         if (null == q || q.getId() <= 0L) {
             return ApiResult.failWithMessage("该帖子不存在");
         }
-        CommentQuestion c = new CommentQuestion();
-        c.setUser(loginUser.getId());
-        c.setQuestion(id);
-        content = FormatTool.text(content);
-        c.setContent(FormatTool.fixContent(false, null, 0L, 0, 0, content));
-        c.setParent(parent);
-        c.save();
-        q.setLast_comment_user(loginUser.getId());
-        q.setLast_comment_time(new Date());
-        q.setComment_count(q.getComment_count() + 1);
-        q.doUpdate();
-        QuestionDAO.ME.evictNode(q.getNode());
-        CommentQuestionDAO.ME.evict(id, loginUser.getId());
+        CommentQuestion commentQuestion = CommentQuestion.ME.get(parent);
+        if (parent > 0L) {
+            if (null == commentQuestion || commentQuestion.getId() <= 0L) {
+                return ApiResult.failWithMessage("原评论不存在");
+            }
+        }
+
+        DbQuery.get("mysql").transaction(new TransactionService() {
+            @Override
+            public void execute() throws Exception {
+
+                if (commentQuestion != null && commentQuestion.getId() > 0L) {
+                    commentQuestion.setReply_count(commentQuestion.getReply_count() + 1);
+                    commentQuestion.setLast_date(new Date());
+                    commentQuestion.doUpdate();
+                    commentQuestion.evict(true);
+                }
+                CommentQuestion c = new CommentQuestion();
+                c.setUser(loginUser.getId());
+                c.setQuestion(id);
+                content[0] = FormatTool.text(content[0]);
+                c.setContent(FormatTool.fixContent(false, null, 0L, 0, 0, content[0]));
+                c.setParent(parent);
+                c.save();
+                q.setLast_comment_user(loginUser.getId());
+                q.setLast_comment_time(new Date());
+                q.setComment_count(q.getComment_count() + 1);
+                q.doUpdate();
+                QuestionDAO.ME.evictNode(q.getNode());
+                CommentQuestionDAO.ME.evict(id, loginUser.getId());
+                CacheMgr.evict(CommentQuestion.ME.CacheRegion(), "childs#" + id + "#" + parent);
+            }
+        });
+
         return ApiResult.success();
     }
 
@@ -509,4 +530,29 @@ public class UniController extends BaseController {
         return ApiResult.successWithObject(loginUser);
     }
 
+    /**
+     * 子评论列表
+     *
+     * @return
+     */
+    @PostMapping("question_child_comments")
+    @ResponseBody
+    public ApiResult question_child_comments(@RequestParam(value = "user", required = false) Long user) {
+        User loginUser = current_user(user);
+        long question = param("question", 0L);
+        long parent = param("parent", 0L);
+        Question q = Question.ME.get(question);
+        if (q == null || q.getStatus() != 0) {
+            return ApiResult.failWithMessage("帖子不存在");
+        }
+        CommentQuestion c = CommentQuestion.ME.get(parent);
+        if (c == null) {
+            return ApiResult.failWithMessage("该评论不存在");
+        }
+        List<CommentQuestion> childs = CommentQuestionDAO.ME.childs(question, parent, pageNumber, pageSize);
+        if (CollectionUtils.isEmpty(childs)) {
+            return null;
+        }
+        return ApiResult.successWithObject(CommentQuestionVO.list(question, loginUser, childs, ""));
+    }
 }

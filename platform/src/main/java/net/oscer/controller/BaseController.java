@@ -474,6 +474,9 @@ public class BaseController {
         if (loginUser != null) {
             return loginUser;
         }
+        if(id==null || id <=0L){
+            return null;
+        }
         return User.ME.get(id);
     }
 

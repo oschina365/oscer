@@ -62,12 +62,12 @@ public class QuestionDAO extends CommonDao<Question> {
 
     }
 
-    public int count(long node) {
+    public int countNode(long node) {
         String sql = "select count(id) from questions where status=0 ";
         if (node > 0L) {
             sql = "select count(id) from questions where node=" + node + " and status=0 ";
         }
-        return getDbQuery().stat_cache(getCache_region(), "count#0" + node, sql);
+        return getDbQuery().stat_cache(getCache_region(), "countNode#0" + node, sql);
     }
 
     public List<Question> tops(int limit) {
@@ -115,11 +115,11 @@ public class QuestionDAO extends CommonDao<Question> {
     public void evictNode(long node) {
         CacheMgr.evict(getCache_region(), "status#0");
         CacheMgr.evict(getCache_region(), "status#0" + "#reply");
-        CacheMgr.evict(getCache_region(), "status#0"  + "#reply"+node);
+        CacheMgr.evict(getCache_region(), "status#0" + "#reply" + node);
         CacheMgr.evict(getCache_region(), "status#0" + node);
-        CacheMgr.evict(getCache_region(), "count#0" + node);
+        CacheMgr.evict(getCache_region(), "countNode#0" + node);
         CacheMgr.evict(getCache_region(), "status#0" + 0);
-        CacheMgr.evict(getCache_region(), "count#0" + 0);
+        CacheMgr.evict(getCache_region(), "countNode#0" + 0);
     }
 
     public void evictTops() {
@@ -129,6 +129,9 @@ public class QuestionDAO extends CommonDao<Question> {
     public void evict(long user) {
         CacheMgr.evict(Question.ME.CacheRegion(), "allByUser#" + user + "#" + 0);
         CacheMgr.evict(Question.ME.CacheRegion(), "allByUser#" + user + "#" + 1);
+        CacheMgr.evict(Question.ME.CacheRegion(), "page#" + user + "#" + 1);
+        CacheMgr.evict(Question.ME.CacheRegion(), "page#" + user + "#" + 1);
+        CacheMgr.evict(Question.ME.CacheRegion(), "user_pub_count#" + user);
     }
 
     /**
@@ -177,5 +180,25 @@ public class QuestionDAO extends CommonDao<Question> {
         }
         List<Long> ids = getDbQuery().query_cache(long.class, false, Question.ME.CacheRegion(), "allByUser#" + user + "#" + status, sql, user, status);
         return Question.ME.loadList(ids);
+    }
+
+    public List<Question> page(long user, int status, int page, int size) {
+        if (user <= 0L) {
+            return null;
+        }
+        String sql = "select id from questions where user =? and status=? order by top desc,id desc";
+        if (status == 1) {
+            sql = "select id from questions where user =? and 1=? order by top desc,id desc";
+        }
+        List<Long> ids = getDbQuery().query_slice_cache(long.class, Question.ME.CacheRegion(), "page#" + user + "#" + status, 100, sql, page, size, user, status);
+        return Question.ME.loadList(ids);
+    }
+
+    public int user_pub_count(long user) {
+        if (user <= 0L) {
+            return 0;
+        }
+        String sql = "select count(*) from questions where user =? and status!=1";
+        return getDbQuery().stat_cache(Question.ME.CacheRegion(), "user_pub_count#" + user, sql, user);
     }
 }

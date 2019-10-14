@@ -138,10 +138,6 @@ public class UrlPermissionsFilter extends PermissionsAuthorizationFilter {
 
     /**
      * 对ip或者某个用户进行访问限制
-     *
-     * @param ip
-     * @param user
-     * @return
      */
     public boolean canView(String ip, long user, String url) {
         if (ip.equalsIgnoreCase(IpPassEnum.local) || ip.equalsIgnoreCase(IpPassEnum.local) || ip.equalsIgnoreCase(IpPassEnum.remote_local)) {
@@ -149,38 +145,25 @@ public class UrlPermissionsFilter extends PermissionsAuthorizationFilter {
         }
         //单个ip所有访问链接次数
         Object totalView = CacheMgr.get(CACHE_TOTAL, ip);
-        if (totalView != null && ((Integer) totalView) > MAX_VIEW_COUNT) {
-            return false;
-        }
+        if (totalView != null && ((Integer) totalView) > MAX_VIEW_COUNT) { return false; }
         if (user > 0L) {
             //所有访问链接次数
             Object total = CacheMgr.get(CACHE_TOTAL, String.valueOf(user));
-            if (total != null && ((Integer) total) > MAX_VIEW_COUNT) {
-                return false;
-            }
+            if (total != null && ((Integer) total) > MAX_VIEW_COUNT) { return false; }
             //单个访问链接次数--用户
             Object urlView = CacheMgr.get(url, String.valueOf(user));
-            if (urlView != null && ((Integer) urlView) > MAX_SINGLE_COUNT) {
-                return false;
-            }
+            if (urlView != null && ((Integer) urlView) > MAX_SINGLE_COUNT) { return false; }
             CacheMgr.incr(CACHE_TOTAL, String.valueOf(user));
             if (!UrlPassEnum.list.contains(url)) {
                 CacheMgr.incr(url, String.valueOf(user));
             }
-
         } else {
             //单个ip
             Object urlView = CacheMgr.get(ip, url);
-            if (urlView != null && ((Integer) urlView) > MAX_SINGLE_COUNT) {
-                return false;
-            }
+            if (urlView != null && ((Integer) urlView) > MAX_SINGLE_COUNT) { return false; }
         }
         CacheMgr.incr(CACHE_TOTAL, ip);
-        if (!UrlPassEnum.list.contains(url)) {
-            CacheMgr.incr(ip, url);
-        }
-
+        if (!UrlPassEnum.list.contains(url)) { CacheMgr.incr(ip, url); }
         return true;
-
     }
 }
