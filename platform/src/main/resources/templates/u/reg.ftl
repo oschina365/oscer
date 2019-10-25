@@ -58,7 +58,7 @@
                                     <button class="layui-btn" lay-filter="*" lay-submit>立即注册</button>
                                 </div>
                                 <div class="layui-form-item fly-form-app">
-                                    <span>或者直接使用社交账号快捷注册</span>
+                                    <span>或者直接使用第三方账号快捷注册</span>
                                     <a href="/oauth/before_bind?rp=gitee"
                                        onclick="layer.msg('正在通过Gitee登入', {icon:16, shade: 0.1, time:0})"
                                        title="Gitee登入">

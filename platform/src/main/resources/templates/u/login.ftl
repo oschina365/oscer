@@ -30,7 +30,7 @@
                 </span>
               </div>
               <div class="layui-form-item fly-form-app">
-                <span>或者使用社交账号登入</span>
+                <span>或者使用第三方账号登入</span>
                 <a href="/oauth/before_bind?rp=gitee"
                    onclick="layer.msg('正在通过Gitee登入', {icon:16, shade: 0.1, time:0})" title="Gitee登入">
                   <img src="/res/images/logo_gitee_light_cn_with_domain_name.png" style="max-height: 36px;">
@@ -50,20 +50,10 @@
 <script src="../../res/js/login.js"></script>
 
 <script>
-layui.cache.page = 'user';
-layui.cache.user = {
-  username: '游客'
-  ,uid: -1
-  ,avatar: '../../res/images/avatar/00.jpg'
-  ,experience: 83
-  ,sex: '男'
-};
-layui.config({
-  version: "3.0.0"
-  ,base: '../../res/mods/'
-}).extend({
-  fly: 'index'
-}).use('fly');
-
+  $(document).keydown(function (e) {
+    if (e.keyCode == 13) {
+      login_check();
+    }
+  });
 </script>
 </@html>
