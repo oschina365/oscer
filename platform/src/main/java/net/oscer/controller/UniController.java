@@ -475,7 +475,7 @@ public class UniController extends BaseController {
         if (form.getReward_point() > loginUser.getScore()) {
             return ApiResult.failWithMessage("积分不够哦~");
         }
-        if (loginUser.getId() > 2 && QuestionDAO.ME.canPub(loginUser.getId())) {
+        if (loginUser.getId() > 2 && !QuestionDAO.ME.canPub(loginUser.getId())) {
             return ApiResult.failWithMessage("发帖太快啦");
         }
         form.setUser(loginUser.getId());

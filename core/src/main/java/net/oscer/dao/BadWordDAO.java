@@ -44,6 +44,8 @@ public class BadWordDAO extends CommonDao<BadWord> {
         if (CollectionUtils.isEmpty(all)) {
             return ApiResult.success();
         }
+        content = FormatTool.getSimpleContent(content);
+
         for (BadWord badWord : all) {
             if (FormatTool.CheckContent(badWord.getText(), content)) {
 

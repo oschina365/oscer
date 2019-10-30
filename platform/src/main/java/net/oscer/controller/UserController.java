@@ -171,6 +171,12 @@ public class UserController extends BaseController {
             return "/error/404";
         }
         User u = User.ME.get(id);
+
+        if (null == u || u.getStatus() != STATUS_NORMAL) {
+            setErrorMsg("用户不存在或被封");
+            return "/error/404";
+        }
+
         int status = 0;
         User loginUser = getLoginUser();
         if (null != loginUser) {
@@ -180,9 +186,11 @@ public class UserController extends BaseController {
             status = 1;
 
         }
-        if (null == u || u.getStatus() != STATUS_NORMAL) {
-            return "/error/404";
+
+        if(loginUser!=null && loginUser.getId()<=2L){
+            status = 1;
         }
+
         List<Question> questions = QuestionDAO.ME.allByUser(id, status);
 
         List<CommentQuestion> comments = CommentQuestionDAO.ME.allByUser(id, status);

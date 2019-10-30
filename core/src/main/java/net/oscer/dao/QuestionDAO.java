@@ -159,7 +159,7 @@ public class QuestionDAO extends CommonDao<Question> {
         if (q == null) {
             return true;
         }
-        return (System.currentTimeMillis() - q.getInsert_date().getTime()) < pub_interval_time;
+        return (System.currentTimeMillis() - q.getInsert_date().getTime()) > pub_interval_time;
 
     }
 

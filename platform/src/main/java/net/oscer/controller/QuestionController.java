@@ -41,26 +41,39 @@ public class QuestionController extends BaseController {
      */
     @GetMapping("/{id}")
     public String detail(@PathVariable("id") Long id) {
+        User loginUser = getLoginUser();
         Question q = Question.ME.get(id);
         if (null == q || q.getId() <= 0L) {
+            setErrorMsg("该帖子不存在或已删除");
             return "/error/404";
         }
         if (q.getStatus() != 0) {
-            return "403";
+            if (loginUser == null || loginUser.getId() != q.getUser()) {
+                if (loginUser.getId() > 2L) {
+                    setErrorMsg("该帖子为私有或审核中");
+                    return "/error/403";
+                }
+
+            }
+
         }
         User u = User.ME.get(q.getUser());
         if (null == u || u.getId() <= 0L || u.getStatus() != User.STATUS_NORMAL) {
-            return "403";
+            setErrorMsg("用户不存在或被封");
+            return "/error/403";
         }
-        User loginUser = getLoginUser();
+        int status = 0;
         if (loginUser != null) {
+            if (loginUser.getId() == q.getUser() || loginUser.getId()<=2L) {
+                status = 1;
+            }
             request.setAttribute("followed", FriendDAO.ME.followed(loginUser.getId(), q.getUser()));
             CollectQuestion collectQuestion = CollectQuestionDAO.ME.getByUser(loginUser.getId(), q.getId());
             request.setAttribute("collected", collectQuestion != null && collectQuestion.getStatus() == CollectQuestion.STATUS_SHOW ? true : false);
         }
         ViewService.keyCache(q.getId(), ViewEnum.TYPE.QUESTION.getKey());
 
-        List<Question> list = QuestionDAO.ME.allByUser(q.getUser(), 0);
+        List<Question> list = QuestionDAO.ME.allByUser(q.getUser(), status);
         request.setAttribute("author", q.getUser());
         request.setAttribute("q", q);
         request.setAttribute("u", u);
@@ -76,6 +89,10 @@ public class QuestionController extends BaseController {
      */
     @GetMapping("/add")
     public String index() {
+        User loginUser = getLoginUser();
+        if (loginUser == null) {
+            return "redirect:/";
+        }
         List<Node> nodes = NodeDAO.ME.nodes(Node.STATUS_NORMAL, 0);
         request.setAttribute("nodes", nodes);
         return "question/add";
@@ -111,7 +128,7 @@ public class QuestionController extends BaseController {
         }
 
 
-        if (login_user.getId() > 2 && QuestionDAO.ME.canPub(login_user.getId())) {
+        if (login_user.getId() > 2 && !QuestionDAO.ME.canPub(login_user.getId())) {
             return ApiResult.failWithMessage("发帖太快啦");
         }
         form.setContent(FormatTool.cleanBody(form.getContent(), false));

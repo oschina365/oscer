@@ -54,6 +54,8 @@
                 <li>
                   <#if q.recomm gt 0><span class="fly-jing">精</span></#if>
                   <#if q.top gt 0><span class="fly-stick">顶</span></#if>
+                  <#if q.status == 1><span class="fly-jing">私</span></#if>
+                  <#if q.status == 2><span class="fly-stick">审</span></#if>
                   <a href="/q/${q.id}" class="jie-title" target="_blank"> ${q.title}</a>
                   <i>${q.insert_date?string('yyyy-MM-dd')}</i>
                   <em class="layui-hide-xs">${q.view_count!'0'}阅/${q.comment_count!'0'}答</em>

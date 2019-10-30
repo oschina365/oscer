@@ -66,9 +66,9 @@ public class UserService {
         if (apiResult != null && apiResult.getCode() == 0) {
             return apiResult;
         }
-        if (!user_need_check(userId)) {
+        /*if (!user_need_check(userId)) {
             return ApiResult.success();
-        }
+        }*/
         return TextCheckService.auto(userId, content, checkType);
     }
 }

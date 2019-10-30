@@ -10,6 +10,9 @@
                     <#if q.status==2>
                         <span class="layui-badge">审核中</span>
                     </#if>
+                    <#if q.status==1>
+                        <span class="layui-badge layui-bg-orange">私有</span>
+                    </#if>
 
                     <#if q.reward_point gt 0>
                         <#if q.reward_comment == 0>

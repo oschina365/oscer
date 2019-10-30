@@ -661,9 +661,23 @@ public class FormatTool {
      */
     public static boolean CheckContent(String key, String text) {
         //去掉 - _ | . , 及中文全角字符
+        return !StringUtils.containsIgnoreCase(text, key);
+    }
+
+
+    public static String getSimpleContent(String txt){
+        if(StringUtils.isEmpty(txt)){
+            return txt;
+        }
         String regEx = "[`~!\\-_@#$%^&*()+=|{}:;\\\\\\\\[\\\\\\\\].<>/?~！@#￥%……&*（）——+『』$》《〖〗｛｝|{}【】‘；：”“’。，、？]";
-        text = text.replaceAll(regEx, "");
-        return !org.apache.commons.lang3.StringUtils.containsIgnoreCase(text, key);
+        txt = txt.replaceAll(regEx, "");
+        return checkSpecial(txt);
+    }
+
+    public static String checkSpecial(String txt){
+        String pattern = "[\\t\\n\\f\\r\\p{Z}]";
+        txt = txt.replaceAll(pattern,"");
+        return txt;
     }
 
     /**

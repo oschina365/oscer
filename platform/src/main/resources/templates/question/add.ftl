@@ -33,18 +33,30 @@
                   </div>
                 </div>
               </div>
+
               <div class="layui-form-item layui-form-text">
                 <div class="layui-input-block">
                   <textarea id="contents" name="content" placeholder="详细描述" class="layui-textarea fly-editor" style="height: 260px;"></textarea>
                 </div>
               </div>
-              <div class="layui-form-item">
-                <label class="layui-form-label">是否悬赏</label>
-                <div class="layui-input-block">
-                  <input type="checkbox" lay-skin="switch" lay-filter="reward" >
-                  <input type="hidden" id="is_reward" name="is_reward" value="0"/>
+
+              <div class="layui-row layui-col-space15 layui-form-item">
+                <div class="layui-col-md3">
+                  <label class="layui-form-label">仅自己可见</label>
+                  <div class="layui-input-block">
+                    <input type="checkbox" lay-skin="switch" lay-filter="is_show" >
+                    <input type="hidden" id="is_show" name="status" value="0"/>
+                  </div>
+                </div>
+                <div class="layui-col-md3">
+                  <label class="layui-form-label">是否悬赏</label>
+                  <div class="layui-input-block">
+                    <input type="checkbox" lay-skin="switch" lay-filter="reward" >
+                    <input type="hidden" id="is_reward" name="is_reward" value="0"/>
+                  </div>
                 </div>
               </div>
+
               <div class="layui-form-item layui-hide" id="reward_input">
                 <div class="layui-inline">
                   <label class="layui-form-label">悬赏积分</label>
@@ -112,6 +124,14 @@
       }else{
         $("#reward_input").addClass("layui-hide");
         $("#is_reward").val(0);
+      }
+    });
+
+    form.on('switch(is_show)', function(data){
+      if(data.elem.checked){
+        $("#is_show").val(1);
+      }else{
+        $("#is_show").val(0);
       }
     });
 

@@ -87,6 +87,10 @@ public class BaseController {
      */
     public final static String USER_VIEW_PAGE_PATH = "page/user/";
 
+    public void setErrorMsg(String msg) {
+        request.setAttribute("error_msg", msg);
+    }
+
 
     @ModelAttribute
     protected void setRequest(HttpServletRequest request) {
@@ -474,7 +478,7 @@ public class BaseController {
         if (loginUser != null) {
             return loginUser;
         }
-        if(id==null || id <=0L){
+        if (id == null || id <= 0L) {
             return null;
         }
         return User.ME.get(id);
