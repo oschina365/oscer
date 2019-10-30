@@ -67,6 +67,7 @@ public class UrlPermissionsFilter extends PermissionsAuthorizationFilter {
         }
 
         if (StringUtils.equalsIgnoreCase(curUrl, "/")) {
+            System.out.println(String.format("访问ip：%s,url: 首页", ip));
             return true;
         }
 
@@ -79,6 +80,9 @@ public class UrlPermissionsFilter extends PermissionsAuthorizationFilter {
         for (String url : urls) {
             if (StringUtils.startsWith(curUrl, url)) {
                 pass = true;
+                if(!StringUtils.equalsIgnoreCase(url,UrlPassEnum.res)){
+                    System.out.println(String.format("访问ip：%s,url: %s", ip,curUrl));
+                }
                 break;
             }
         }
@@ -140,6 +144,9 @@ public class UrlPermissionsFilter extends PermissionsAuthorizationFilter {
      * 对ip或者某个用户进行访问限制
      */
     public boolean canView(String ip, long user, String url) {
+        if(true){
+            return true;
+        }
         if (ip.equalsIgnoreCase(IpPassEnum.local) || ip.equalsIgnoreCase(IpPassEnum.local) || ip.equalsIgnoreCase(IpPassEnum.remote_local)) {
             return true;
         }
