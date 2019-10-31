@@ -292,5 +292,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
 
   exports('fly', fly);
 
+  $("ul.layui-fixbar li:first-child").css("display","none")
+
 });
 
