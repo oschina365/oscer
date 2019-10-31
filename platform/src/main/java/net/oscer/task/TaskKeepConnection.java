@@ -16,11 +16,11 @@ import org.springframework.stereotype.Component;
 public class TaskKeepConnection {
 
     /**
-     * 每隔6小时更新阅读数
+     * 每隔1小时查询
      *
      * @throws Exception
      */
-    @Scheduled(cron = "0 0 0/6 * * ?")
+    @Scheduled(cron = "0 0 0/1 * * ?")
     public void timer() throws Exception {
         DbQuery.get("mysql").transaction(new TransactionService() {
             @Override

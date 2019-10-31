@@ -49,7 +49,7 @@
                                                placeholder="请输入邮箱收到的验证码" autocomplete="off" class="layui-input">
                                     </div>
                                     <div class="layui-form-mid" style="padding: 0!important;">
-                                        <button type="button" class="layui-btn layui-btn-normal" onclick="sendEmail()">
+                                        <button type="button" class="layui-btn layui-btn-normal" onclick="sendImageCode('register_email')" id="imageCodeImg">
                                             获取验证码
                                         </button>
                                     </div>
@@ -92,7 +92,7 @@
 
             form.on("submit(commentAdd)", function (data) {
                 $.ajax({
-                    url: '/comment/q/${q.id}',
+                    url: '/u/reg',
                     method: 'post',
                     dataType: 'json',
                     data: data.field,
@@ -109,21 +109,60 @@
                 return false;
             });
 
-            window.sendEmail = function () {
-                $.ajax({
-                    url: '/q/recomm',
-                    method: 'post',
-                    dataType: 'json',
-                    data: {"id":${q.id}},
-                    success: function (data) {
-                        console.log(data);
-                        if (data && data.code == 1) {
-                            layer.msg("操作成功", {icon: 6});
-                            window.location.reload();
-                        } else {
-                            layer.msg("操作失败", {icon: 6});
-                        }
+            window.sendImageCode = function (email_id) {
+                layui.use('layer', function(){
+                    var timerYzm = null;
+                    var btn = $(this);
+                    var layer = layui.layer;
+                    var email = $("#"+email_id).val();
+                    console.log(email);
+                    var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+                    if (!myreg.test(email)) {
+                        layer.msg("请填写正确的邮箱!", {icon: 5});
+                        return false;
                     }
+                    $("#imageCodeImg").attr("disabled","disabled");
+                    $.ajax({
+                        url: "/api/email",
+                        data: {"email": email,"type":"register"},
+                        scriptCharset: 'utf-8',
+                        type:"post",
+                        success: function (data) {
+                            if(data && data.code==1){
+                                layer.msg("验证码发送成功!", {icon: 6});
+                                $("#imageCodeImg").removeAttr("disabled");
+                                var t = 60;
+                                btn.prev().focus();
+                                btn.addClass('disabled').val((t--) + '秒后可重新获取');
+                                btn.parent().find('.yzmTip').html('验证码已下发至手机');
+                                timerYzm = setInterval(function () {
+                                    if (t < 1) {
+                                        btn.removeClass('disabled').val('获取验证码');
+                                    } else {
+                                        btn.val(t + '秒后可重新获取');
+                                    }
+                                    t--;
+                                }, 1000);
+                            }else{
+                                layer.msg(data.message||"验证码发送失败!", {icon: 5});
+                            }
+                        },error:function () {
+                            layer.msg("验证码发送成功!", {icon: 6});
+                            $("#imageCodeImg").removeAttr("disabled");
+                            var t = 60;
+                            btn.prev().focus();
+                            btn.addClass('disabled').val((t--) + '秒后可重新获取');
+                            btn.parent().find('.yzmTip').html('验证码已下发至手机');
+                            timerYzm = setInterval(function () {
+                                if (t < 1) {
+                                    btn.removeClass('disabled').val('获取验证码');
+                                } else {
+                                    btn.val(t + '秒后可重新获取');
+                                }
+                                t--;
+                            }, 1000);
+                        }
+                    });
                 });
             }
 

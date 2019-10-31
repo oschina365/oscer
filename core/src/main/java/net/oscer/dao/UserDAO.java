@@ -212,4 +212,33 @@ public class UserDAO extends CommonDao<User> {
         return bind;
     }
 
+    /**
+     * 根据邮箱查找用户
+     *
+     * @param email
+     * @return
+     */
+    public User selectByEmail(String email) {
+        if (StringUtils.isBlank(email)) {
+            return null;
+        }
+        String sql = "select * from users where email =?";
+        return getDbQuery().read(User.class, sql, email);
+    }
+
+    /**
+     * 根据邮箱查找用户
+     *
+     * @param username
+     * @param email
+     * @return
+     */
+    public User selectByNameAndEmail(String username, String email) {
+        if (StringUtils.isBlank(username) || StringUtils.isBlank(email)) {
+            return null;
+        }
+        String sql = "select * from users where username=? and email =? and status=0";
+        return getDbQuery().read(User.class, sql, username, email);
+    }
+
 }
