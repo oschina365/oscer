@@ -75,6 +75,7 @@ public class MyShiroRealm extends AuthorizingRealm {
         }
         u.setLogin_time(new Date());
         u.setOnline(ONLINE);
+        u.setScore(u.getScore());
         u.doUpdate();
         logger.info("身份认证成功，登录用户:{}", name);
 

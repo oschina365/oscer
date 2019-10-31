@@ -5,7 +5,7 @@
     <div class="layui-row layui-col-space15">
         <div class="layui-col-md8 content detail">
             <div class="fly-panel detail-box">
-                <h2>${q.title}</h2>
+                <h1>${q.title}</h1>
                 <div class="fly-detail-info">
                     <#if q.status==2>
                         <span class="layui-badge">审核中</span>
@@ -16,7 +16,7 @@
 
                     <#if q.reward_point gt 0>
                         <#if q.reward_comment == 0>
-                            <span class="layui-badge" style="background-color: #999;">待悬赏</span>
+                            <span class="layui-badge layui-btn-warm" >悬赏中</span>
                         <#else >
                             <span class="layui-badge" style="background-color: #5FB878;">已悬赏</span>
                         </#if>
@@ -44,6 +44,19 @@
                                     <a onclick="as_top()"><span class="layui-btn layui-btn-xs">置顶</span></a>
                                 </#if>
                             </#if>
+
+                            <#if login_user?? && (login_user.id=author || login_user.id==2)>
+                                <a href="/q/edit/${q.id}"><span class="layui-btn layui-btn-xs jie-admin">编辑此贴</span></a>
+                            </#if>
+
+                            <#if login_user?? && login_user.id!=author>
+                                <#if followed>
+                                    <a onclick="follow()"><span class="layui-btn layui-btn-xs jie-admin layui-btn-danger">取消关注</span></a>
+                                <#else >
+                                    <a onclick="follow()"><span class="layui-btn layui-btn-xs jie-admin layui-btn-normal">关注</span></a>
+                                </#if>
+                                <a href="add.html"><span class="layui-btn layui-btn-xs jie-admin layui-btn-warm">私信</span></a>
+                            </#if>
                         </div>
                     </#if>
 
@@ -66,12 +79,9 @@
                         <#if q.reward_point gt 0>
                             <span style="padding-right: 10px; color: #FF7200">悬赏：${q.reward_point!'0'}积分</span>
                         </#if>
-                        <#if login_user?? && (login_user.id=author || login_user.id==2)>
-                            <span class="layui-btn layui-btn-xs jie-admin"><a href="/q/edit/${q.id}">编辑此贴</a></span>
 
-                        </#if>
-                        <span class="fly-list-nums">
-                            <a href="#comment"><i class="iconfont" title="回答">&#xe60c;</i> ${q.comment_count!'0'}</a>
+                        <span class="fly-list-nums" style="position: unset">
+                            <a href="#comments"><i class="iconfont" title="回答">&#xe60c;</i> ${q.comment_count!'0'}</a>
                             <i class="iconfont" title="人气">&#xe60b;</i> ${q.view_count!'0'}
                             <a onclick="collect()">
                                 <#if collected?? && collected>
@@ -82,21 +92,13 @@
                             </a>
 
                         </span>
-                        <#if login_user?? && login_user.id!=author>
-                            <#if followed>
-                                    <span class="layui-btn layui-btn-xs jie-admin layui-btn-danger"><a onclick="follow()">取消关注</a></span>
-                                <#else >
-                                    <span class="layui-btn layui-btn-xs jie-admin layui-btn-normal"><a onclick="follow()">关注</a></span>
-                            </#if>
 
-                            <span class="layui-btn layui-btn-xs jie-admin layui-btn-warm"><a href="add.html">私信</a></span>
-                        </#if>
                     </div>
                 </div>
 
-                <div class="detail-body photos">${q.content}</div>
+                <div class="detail-body layui-text photos">${q.content}</div>
             </div>
-
+            <a name="comments"></a>
             <div class="fly-panel detail-box" id="flyReply">
                 <fieldset class="layui-elem-field layui-field-title" style="text-align: center;">
                     <legend>回帖</legend>
@@ -402,7 +404,6 @@
                 dataType: 'json',
                 data: {"id":${q.id}, "number": number},
                 success: function (data) {
-                    console.log(data)
                     if (data && data.code == 1) {
                         var listData = {"list": data.result.comments,"rankMap": data.result.rankMap};
                         var getTpl = commentListTpl.innerHTML, view = document.getElementById('commentBodys');
