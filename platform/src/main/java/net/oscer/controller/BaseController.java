@@ -311,6 +311,9 @@ public class BaseController {
     }
 
     public Cookie cookie(String name) {
+        if(cookies==null || StringUtils.isEmpty(name)){
+            return null;
+        }
         return cookies.get(name);
     }
 
@@ -330,6 +333,9 @@ public class BaseController {
 
     public Cookie deleteCookie(String name, boolean all_sub_domain) {
         Cookie cookie = cookie(name);
+        if(cookie==null){
+            return null;
+        }
         cookie(name, "", 0, all_sub_domain);
         return cookie;
     }

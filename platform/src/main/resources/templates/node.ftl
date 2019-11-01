@@ -20,6 +20,13 @@
         </div>
         <div class="layui-col-md4">
 
+            <div class="fly-panel">
+                <div class="fly-panel" style="padding: 10px 0; text-align: center;">
+                    <img src="/res/images/oscer_wx.jpg" style="max-width: 100%;" alt="oscer">
+                    <p style="position: relative; color: #999;">扫码体验小程序</p>
+                </div>
+            </div>
+
             <dl class="fly-panel fly-list-one">
                 <dt class="fly-panel-title">本周热议</dt>
                 <#if weekHots??>
@@ -35,16 +42,6 @@
                     <div class="fly-none">没有相关数据</div>
                 </#if>
             </dl>
-
-            <div class="fly-panel">
-                <div class="fly-panel-title">
-                    这里可作为广告区域
-                </div>
-                <div class="fly-panel-main">
-                    <a href="http://layim.layui.com/?from=fly" target="_blank" class="fly-zanzhu"
-                       time-limit="2017.09.25-2099.01.01" style="background-color: #5FB878;">LayIM 3.0 - layui 旗舰之作</a>
-                </div>
-            </div>
 
         </div>
     </div>

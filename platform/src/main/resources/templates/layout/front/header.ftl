@@ -3,7 +3,7 @@
 <div class="fly-header layui-bg-black">
     <div class="layui-container">
         <a class="fly-logo" href="/">
-            <img src="/res/images/oscer.png" style="max-height: 36px;" alt="layui">
+            <img src="/res/images/oscer.png" style="max-height: 36px;" alt="oscer">
         </a>
         <ul class="layui-nav fly-nav layui-hide-xs">
             <li class="layui-nav-item layui-this"><a href="/">首页</a></li>

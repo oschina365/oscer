@@ -23,6 +23,12 @@ public class UserDAO extends CommonDao<User> {
         return "mysql";
     }
 
+    public void logout(long id) {
+        String sql = "update users set logout_time=now(),online=0 where id=?";
+        getDbQuery().update(sql, id);
+        CacheMgr.evict(getCache_region(), String.valueOf(id));
+    }
+
     /**
      * 查询用户
      *

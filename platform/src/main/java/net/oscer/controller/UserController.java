@@ -187,7 +187,7 @@ public class UserController extends BaseController {
 
         }
 
-        if(loginUser!=null && loginUser.getId()<=2L){
+        if (loginUser != null && loginUser.getId() <= 2L) {
             status = 1;
         }
 
@@ -267,9 +267,10 @@ public class UserController extends BaseController {
     public String logout() {
         try {
             User login_user = getLoginUser();
-            login_user.setLogout_time(new Date());
-            login_user.setOnline(OFFLINE);
-            login_user.doUpdate();
+            if (login_user == null) {
+                throw new Exception();
+            }
+            UserDAO.ME.logout(login_user.getId());
             SecurityUtils.getSubject().logout();
             deleteUserInCookie();
         } catch (Exception e) {
