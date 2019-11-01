@@ -36,6 +36,24 @@ import static net.oscer.db.Entity.STATUS_NORMAL;
 public class UserController extends BaseController {
 
     /**
+     * 检查用户是否登录
+     *
+     * @return
+     */
+    @PostMapping("logined")
+    @ResponseBody
+    public ApiResult logined() {
+        User loginUser = getLoginUser();
+        if (null == loginUser) {
+            return ApiResult.failWithMessage("请先登录");
+        }
+        if (loginUser.getStatus() != STATUS_NORMAL) {
+            return ApiResult.failWithMessage("用户状态异常，请联系管理员邮箱：305389431@qq.com");
+        }
+        return ApiResult.success();
+    }
+
+    /**
      * 我的发帖-web端
      *
      * @return
@@ -114,7 +132,7 @@ public class UserController extends BaseController {
         List<User> list = FriendDAO.ME.pageFans(loginUser.getId(), pageNumber, pageSize);
         int count = FriendDAO.ME.countFan(loginUser.getId());
         Map<String, Object> map = new HashMap<>();
-        map.put("currentFans", FriendDAO.ME.listFans(loginUser.getId(),pageNumber,pageSize));
+        map.put("currentFans", FriendDAO.ME.listFans(loginUser.getId(), pageNumber, pageSize));
         map.put("fans", UserVO.converts(list));
         map.put("count", count);
         return ApiResult.successWithObject(map);

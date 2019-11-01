@@ -115,7 +115,6 @@
                     var btn = $(this);
                     var layer = layui.layer;
                     var email = $("#"+email_id).val();
-                    console.log(email);
                     var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
                     if (!myreg.test(email)) {
                         layer.msg("请填写正确的邮箱!", {icon: 5});

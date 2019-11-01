@@ -92,7 +92,6 @@
                 dataType: "json",
                 success: function (d) {
                     if (d && d.code == 1) {
-                        console.log(d);
                         parent.layer.msg("编辑成功~", {icon: 6});
                         setTimeout(function () {
                             window.location.href = "/q/" + d.result;

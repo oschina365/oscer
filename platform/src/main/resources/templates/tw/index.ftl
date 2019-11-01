@@ -102,7 +102,6 @@
             type: 'post',
             dataType: 'json',
             success: function (d) {
-                console.log(d);
                 if (d && d.code == 1) {
 
                     // 基于准备好的dom，初始化echarts实例

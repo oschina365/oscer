@@ -138,12 +138,10 @@
     form.on("submit(questionAdd)",function(data){
       var content = layedit.getContent(editIndex);
       $("#contents").val(content);
-      console.log(data.field);
       var options = {
         dataType: "json",
         success: function (d) {
           if(d && d.code==1){
-            console.log(d);
             parent.layer.msg("发帖成功~", {icon: 6});
             setTimeout(function () {
               window.location.href=d.result;

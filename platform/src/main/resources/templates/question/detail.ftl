@@ -265,7 +265,6 @@
             $("#reply_div_"+a).show();
         }else{
             var content = $("#content_"+a).val();
-            console.log(content);
             if(!content){
                 $("#reply_div_"+a).hide();
             }else{

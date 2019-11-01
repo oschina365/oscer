@@ -129,7 +129,6 @@ layui.config({
     elem: '.thumbBox',
     url: '/api/upload',
     done: function(res, index, upload){
-      console.log(res);
       var src = res.result;
       $("#headimg").val(src);
 

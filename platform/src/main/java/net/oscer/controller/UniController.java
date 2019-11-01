@@ -257,7 +257,7 @@ public class UniController extends BaseController {
     public ApiResult user_pub_q_comment(@RequestParam("id") long id, @RequestParam(value = "user", required = false) Long user) throws Exception {
         User loginUser = current_user(user);
         if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
-            return ApiResult.failWithMessage("请重新登录");
+            return ApiResult.failWithMessage("请先登录");
         }
         if (id <= 0L) {
             return ApiResult.failWithMessage("该帖子不存在");

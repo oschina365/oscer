@@ -141,7 +141,6 @@
 
 <script>
     function fn(list,id) {
-        console.log(list);
         for(var i in list){
             if(list[i]==id){
                 return true;
@@ -171,7 +170,6 @@
                 dataType: 'json',
                 data: {"number": number},
                 success: function (data) {
-                    console.log(data);
                     if (data && data.code == 1) {
                         var listData = {"list": data.result.questions};
                         var getTpl = pubsTpl.innerHTML, view = document.getElementById('pubBodys');
@@ -206,7 +204,6 @@
                 dataType: 'json',
                 data: {"number": number},
                 success: function (data) {
-                    console.log(data);
                     if (data && data.code == 1) {
                         var listData = {"list": data.result.questions_collect};
                         var getTpl = collectsTpl.innerHTML, view = document.getElementById('collectBodys');
@@ -240,7 +237,6 @@
                 dataType: 'json',
                 data: {"number": number},
                 success: function (data) {
-                    console.log(data);
                     if (data && data.code == 1) {
                         var listData = {"list": data.result.follows};
                         var getTpl = followsTpl.innerHTML, view = document.getElementById('followBodys');
@@ -274,12 +270,9 @@
                 dataType: 'json',
                 data: {"number": number},
                 success: function (data) {
-                    console.log(data);
                     if (data && data.code == 1) {
                         var listData = {"list": data.result.fans,"currentFans":data.result.currentFans};
-                        console.log(listData);
                         var getTpl = fansTpl.innerHTML, view = document.getElementById('fanBodys');
-
 
                         laytpl(getTpl).render(listData, function (html) {
                             view.innerHTML = html;

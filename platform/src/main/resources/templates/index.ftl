@@ -62,7 +62,12 @@
                     <a href="/" <#if show??><#else >class="layui-this"</#if>>最新发帖</a>
                     <span class="fly-mid"></span>
                     <a href="?show=reply" <#if show?? && show == 'show'> class="layui-this"</#if>>最新回帖</a>
+
+                    <div class="layui-hide-sm fly-column-right ">
+                        <a onclick="add();" class="layui-btn layui-btn-sm layui-bg-green">发表新帖</a>
+                    </div>
                 </div>
+
 
                 <ul class="fly-list">
                     <div id="questionBodys"></div>
@@ -120,6 +125,24 @@
 
 </script>
     <script>
+
+    function add() {
+        $.ajax({
+            url: '/u/logined',
+            method: 'post',
+            dataType: 'json',
+            success: function (d) {
+                if (d && d.code == 1) {
+                    window.open("/q/add","_blank");
+                } else {
+                    layui.layer.msg(d.message ? d.message : "网络问题，请重试", {icon: 5});
+                }
+            },error:function () {
+                layui.layer.msg("网络问题，请重试", {icon: 5});
+            }
+        });
+    };
+
     layui.use('carousel', function () {
         var carousel = layui.carousel;
 
