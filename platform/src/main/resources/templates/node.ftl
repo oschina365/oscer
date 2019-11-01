@@ -22,7 +22,7 @@
 
             <div class="fly-panel">
                 <div class="fly-panel" style="padding: 10px 0; text-align: center;">
-                    <img src="/res/images/oscer_wx.jpg" style="max-width: 100%;" alt="oscer">
+                    <img src="/res/images/oscer_wx.jpg" style="max-width: 100%;max-height: 215px;" alt="oscer">
                     <p style="position: relative; color: #999;">扫码体验小程序</p>
                 </div>
             </div>
