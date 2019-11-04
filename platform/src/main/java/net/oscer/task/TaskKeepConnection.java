@@ -25,6 +25,7 @@ public class TaskKeepConnection {
         DbQuery.get("mysql").transaction(new TransactionService() {
             @Override
             public void execute() throws Exception {
+                UserDAO.ME.evict_count_signed_today();
                 UserDAO.ME.count_signed_today();
             }
         });
