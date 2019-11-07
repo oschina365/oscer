@@ -266,6 +266,7 @@ public class UserController extends BaseController {
             loginUser(name, pwd);
             User login_user = getLoginUser();
             if (login_user != null && login_user.getStatus() == STATUS_NORMAL) {
+                saveUserInCookie(login_user);
                 return ApiResult.successWithObject(login_user);
             } else {
                 return ApiResult.failWithMessage("登录失败");
