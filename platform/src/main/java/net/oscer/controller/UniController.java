@@ -80,6 +80,9 @@ public class UniController extends BaseController {
             bind.doUpdate();
         }
         User bindUser = User.ME.get(bind.getUser());
+        if(bindUser ==null){
+            return ApiResult.failWithMessage("网络异常");
+        }
         if (bindUser.getStatus() != STATUS_NORMAL) {
             return ApiResult.failWithMessage("账号已被屏蔽");
         }
