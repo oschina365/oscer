@@ -359,7 +359,7 @@ body .layui-edit-face  .layui-layer-content{padding:0; background-color:#fff; co
 .jieda-admin{position:absolute; right: 0; top: 4px;}
 
 /* 回答 */
-.jieda{margin-bottom: 30px;}
+/*.jieda{margin-bottom: 30px;}*/
 .jieda li{position: relative; padding: 20px 0 10px; border-bottom: 1px dotted #DFDFDF;}
 .jieda li:last-child{border-bottom: none;}
 .jieda .fly-none{height: 50px; min-height: 0;}

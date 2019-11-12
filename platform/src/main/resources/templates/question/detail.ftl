@@ -204,7 +204,7 @@
                 <ul class="jieda" id="jieda">
                     <div id="commentChildBodys">
                         {{#  layui.each(item.childs, function(index, child){ }}
-                            <li class="jieda-daan"  {{# if(index>2){ }} style="display: none" {{# }}} >
+                            <li class="jieda-daan"  style="padding: 0px 0 4px;">
                                 <div class="detail-about detail-about-reply"> <p><span>&nbsp;&nbsp;&nbsp;{{child.sdf_insert_date}}</span></p>
                                     <a class="fly-avatar" href="">
                                         <img src="{{child.cu.headimg}}" alt=" ">
@@ -228,8 +228,12 @@
                                     </div>
                                 </div>
                                 <div class="detail-body jieda-body photos" style="margin: unset;"> <p>{{child.cq.content}}</p> </div>
-                                <div id="reply_div_{{child.cq.id}}" class="layui-form-item layui-form-text" style="margin-bottom: 22px;display: none">
-                                    <textarea name="content" id="content_{{child.cq.id}}" placeholder="<#if login_user??>请输入内容<#else >请先登录再评论</#if>" class="layui-textarea fly-editor"></textarea>
+                                <div id="reply_div_{{child.cq.id}}" class="layui-form-item layui-form-text reply_div" style="margin-bottom: 22px;display: none">
+                                    <textarea name="content" id="content_{{child.cq.id}}" placeholder="<#if login_user??>请输入内容<#else >请先登录再评论</#if>"
+                                              style="font-size: 16px;" class="layui-textarea fly-editor"></textarea>
+                                    <div class="layui-form-item">
+                                        <button class="layui-btn" onclick="reply_comment({{item.cq.id}},{{child.cq.id}});" >回复</button>
+                                    </div>
                                 </div>
                             </li>
                         {{#  }); }}
@@ -242,8 +246,13 @@
         {{# }}}
 
 
-        <div id="reply_div_{{item.cq.id}}" class="layui-form-item layui-form-text" style="margin-bottom: 22px;display: none">
-            <textarea name="content" id="content_{{item.cq.id}}" placeholder="<#if login_user??>请输入内容<#else >请先登录再评论</#if>" class="layui-textarea fly-editor"></textarea>
+        <div id="reply_div_{{item.cq.id}}" class="layui-form-item layui-form-text reply_div" style="margin-bottom: 22px;display: none">
+            <hr>
+            <textarea name="content" id="content_{{item.cq.id}}" placeholder="<#if login_user??>请输入内容<#else >请先登录再评论</#if>"
+                      style="font-size: 16px;" class="layui-textarea fly-editor"></textarea>
+            <div class="layui-form-item">
+                <button class="layui-btn" onclick="reply_comment({{item.cq.id}});" >回复</button>
+            </div>
         </div>
     </li>
     {{#  }); }}
@@ -255,7 +264,32 @@
 
 <script src="/res/js/jquery.form.js"></script>
 <script>
+    function reply_comment(id,childid) {
+        $(".reply_div").hide();
+        var a = id;
+        if(childid){
+            a = childid;
+        }
+        var content = $("#content_"+a).val();
+        $.ajax({
+            url: '/uni/user_pub_q_comment',
+            method: 'post',
+            dataType: 'json',
+            data: {'id':${q.id},'content':content,'parent':id},
+            success: function (res) {
+                if (res.code == 1) {
+                    layer.msg('评论成功', {icon:6, shade: 0.1, time:500});
+                    location.reload();
+
+                } else {
+                    layer.alert(res.message);
+                }
+            }
+        });
+    }
+
     function show_reply_dom(id,childid) {
+        $(".reply_div").hide();
         var a = id;
         if(childid){
             a = childid;
