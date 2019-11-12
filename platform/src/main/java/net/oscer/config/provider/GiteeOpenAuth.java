@@ -18,8 +18,8 @@ import java.util.Map;
  */
 public class GiteeOpenAuth {
 
-    private static final String client_id = "ef14012bc0f6b6e25296ad24b1f53b11545b7ce61ed0cc3043988944fd8dbac7";
-    private static final String client_secret = "da0086700f631e350acf05b1938476a3b6471b69239e5cecd72eb80053d341ab";
+    private static final String client_id = "33b7e5b64a347f438df3d557d2532a1c8729ce6e14b950c7cc01dde3f4e72983";
+    private static final String client_secret = "91f31387bc5d8838121c0f216320969b5bc3ebebabce452ecccfe124c757942e";
     private static final String GET_CODE_URL = "https://gitee.com/oauth/authorize";
     private static final String ACCESS_TOKEN_URL = "https://gitee.com/oauth/token";
     private static final String GET_USER_INFO = "https://gitee.com/api/v5/user";
@@ -45,7 +45,7 @@ public class GiteeOpenAuth {
      */
     public static JSONObject getAccessTokenInfo(String code, String redirect_url) throws Exception {
         if (redirect_url.equals("")) {
-            redirect_url = "http://holer.cc:50220/oauth/after_bind_gitee";
+            redirect_url = "http://www.oscer.net/oauth/after_bind_gitee";
         }
         Map<String, String> params = new HashMap<>();
         params.put("client_id", client_id);
