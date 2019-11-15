@@ -1,6 +1,5 @@
 package net.oscer.api.vo;
 
-
 import net.oscer.framework.ImageUtils;
 import net.oscer.framework.LinkTool;
 import net.oscer.framework.UploadUtils;
@@ -154,6 +153,23 @@ public class UploadResultVO implements Serializable {
                 ", \"data\":{\"" + data + "}" +
                 ", \"size\"" + ":" + size +
                 '}';
+    }
+
+    /**
+     * 返回成功
+     *
+     * @param msg
+     * @param key
+     * @param size
+     * @return
+     */
+    public static UploadResultVO successWith(String domain, String msg, String key, long size, String name, data data) {
+        UploadResultVO vo = new UploadResultVO(status.SUCCESS.getCode(), msg, key, size, name, data);
+        vo.setKey("http://" + domain + "/" + vo.getKey());
+        UploadResultVO.data d = new UploadResultVO.data();
+        d.setSrc(vo.getKey());
+        vo.setData(d);
+        return vo;
     }
 
     /**
