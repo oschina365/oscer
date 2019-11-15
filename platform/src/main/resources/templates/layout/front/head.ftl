@@ -12,5 +12,5 @@
     <link rel="stylesheet" href="${static}/res/layui/css/layui.css">
     <link rel="stylesheet" href="${static}/res/css/global.css">
 
-    <script src="http://cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
     <script src="/res/layui/layui.js"></script>
