@@ -11,10 +11,11 @@ import net.oscer.dao.SendEmailRecordDAO;
 import net.oscer.dao.UserDAO;
 import net.oscer.enums.EmailTemplateTypeEnum;
 import net.oscer.framework.*;
+import net.oscer.service.CaptchaService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import util.IpUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +37,9 @@ import java.util.Map;
 public class ApiController extends BaseController {
 
     public static final int STATUS_SUCCESS_CODE = 200;
+
+    @Autowired
+    private CaptchaService captchaService;
 
     /**
      * 发送邮件
@@ -59,7 +63,7 @@ public class ApiController extends BaseController {
         if (record != null && (System.currentTimeMillis() - record.getLast_date().getTime()) < SendEmailRecord.SEND_REGISTER_INTERVAL_TIME) {
             return ApiResult.failWithMessage("验证码已经发送，有效时间为" + SendEmailRecord.SEND_REGISTER_INTERVAL_MIN + "分钟");
         }
-        String code = CaptchaUtils.getCode(email, request);
+        String code = captchaService.getCode(email, request);
         if (StringUtils.isBlank(code)) {
             return ApiResult.failWithMessage("网络错误，请重试");
         }
@@ -99,7 +103,7 @@ public class ApiController extends BaseController {
         if (StringUtils.isBlank(email) || StringUtils.isBlank(code)) {
             return ApiResult.failWithMessage("验证码不对");
         }
-        return CaptchaUtils.check(email, code, request);
+        return captchaService.check(email, code, request);
     }
 
     /**
@@ -130,7 +134,7 @@ public class ApiController extends BaseController {
         if (record != null && (System.currentTimeMillis() - record.getLast_date().getTime()) < SendEmailRecord.SEND_REGISTER_INTERVAL_TIME) {
             return ApiResult.failWithMessage("验证码已经发送，有效时间为" + SendEmailRecord.SEND_REGISTER_INTERVAL_MIN + "分钟");
         }
-        String code = CaptchaUtils.getCode(email, request);
+        String code = captchaService.getCode(email, request);
         if (StringUtils.isBlank(code)) {
             return ApiResult.failWithMessage("网络错误，请重试");
         }

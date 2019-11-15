@@ -358,22 +358,14 @@ function register_check() {
 function forgetpwd_check() {
     layui.use('layer', function(data){
         var layer = layui.layer;
-        $(this).attr("disabled","disabled");
-        var time = 1200;
-        var username = $("#forget_username").val();
         var email = $("#forget_email").val();
-        if (!username) {
-            layer.msg("请输入用户名!", {icon: 5,time:time});
-            setTimeout(function () {
-                $(this).removeAttr("disabled");
-            },time)
+        var forget_code = $("#forget_code").val();
+        if (!email) {
+            layer.msg("请输入邮箱!", {icon: 5});
             return;
         }
-        if (!email) {
-            layer.msg("请输入邮箱!", {icon: 5,time:time});
-            setTimeout(function () {
-                $(this).removeAttr("disabled");
-            },time)
+        if (!forget_code) {
+            layer.msg("请输入验证码!", {icon: 5});
             return;
         }
         var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
@@ -383,22 +375,20 @@ function forgetpwd_check() {
         }
 
         $.ajax({
-            url: ("/api/send_forget_email"),
+            url: ("/u/forget_pwd"),
             type: "post",
-            data:{"username":username,"email":email},
+            data:{"email":email,"code":forget_code},
             dataType: "json",
             async:false,
             success: function (data) {
                 if (data && data.code==1) {
                     layer.msg(data.message?data.message:"密码发送至邮箱成功~",{icon:6});
-                    window.location.reload();
                 } else {
                     layer.msg(data.message?data.message:"发送邮件失败~",{icon:5});
                 }
             },
             error: function (data) {
-                layer.msg(data.message?data.message:"密码发送至邮箱成功~",{icon:6});
-                window.location.reload();
+                layer.msg(data.message?data.message:"发送邮件失败~",{icon:5});
             }
         });
     })

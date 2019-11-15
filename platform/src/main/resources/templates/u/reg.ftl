@@ -33,7 +33,7 @@
                                         <input type="password" id="register_password" name="pass" required lay-verify="required"
                                                autocomplete="off" class="layui-input">
                                     </div>
-                                    <div class="layui-form-mid layui-word-aux">6到16个字符</div>
+                                    <div class="layui-form-mid layui-word-aux">6到16个字符，字母与数字结合</div>
                                 </div>
                                 <div class="layui-form-item">
                                     <label for="L_repass" class="layui-form-label">确认密码</label>

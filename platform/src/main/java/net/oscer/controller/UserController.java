@@ -1,11 +1,17 @@
 package net.oscer.controller;
 
+import com.forever7776.sendcloud.remote.common.vo.ResultVO;
+import com.forever7776.sendcloud.remote.common.vo.SendCloudEmailParamVO;
 import net.oscer.beans.*;
 import net.oscer.common.ApiResult;
+import net.oscer.common.PlaceHoldersConstants;
 import net.oscer.config.provider.OauthEnum;
 import net.oscer.dao.*;
 import net.oscer.db.Entity;
+import net.oscer.enums.EmailTemplateTypeEnum;
 import net.oscer.framework.FormatTool;
+import net.oscer.framework.Send;
+import net.oscer.service.CaptchaService;
 import net.oscer.vo.UserVO;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +27,7 @@ import java.util.stream.Collectors;
 
 import static net.oscer.beans.User.SEX_GIRL;
 import static net.oscer.beans.User.SEX_UNKONW;
+import static net.oscer.controller.ApiController.STATUS_SUCCESS_CODE;
 import static net.oscer.db.Entity.OFFLINE;
 import static net.oscer.db.Entity.STATUS_NORMAL;
 
@@ -253,6 +260,16 @@ public class UserController extends BaseController {
     }
 
     /**
+     * 忘记密码页面
+     *
+     * @return
+     */
+    @GetMapping("forget")
+    public String forget() {
+        return "/u/forget";
+    }
+
+    /**
      * 用户登录
      *
      * @param name
@@ -357,7 +374,65 @@ public class UserController extends BaseController {
     @ResponseBody
     public ApiResult reg(User user) {
         String code = param("code");
-        ApiResult result = UserDAO.ME.register(user,code);
+        ApiResult result = UserDAO.ME.register(user, code);
         return result;
+    }
+
+    /**
+     * 发送忘记密码邮件
+     *
+     * @return
+     */
+    @PostMapping("/forget_pwd")
+    @ResponseBody
+    public ApiResult send_forget_email() throws Exception {
+        String email = param("email", "");
+        String code = param("code", "");
+
+        if (StringUtils.isBlank(email)) {
+            return ApiResult.failWithMessage("请填写邮箱");
+        }
+        if (!FormatTool.is_email(email)) {
+            return ApiResult.failWithMessage("请填写正确的邮箱");
+        }
+        User user = UserDAO.ME.selectByEmail(email);
+        if (user == null) {
+            return ApiResult.failWithMessage("邮箱不存在");
+        }
+        Object code_old = request.getSession().getAttribute("forgetPwdImageCode");
+        if (code_old == null) {
+            return ApiResult.failWithMessage("验证码已过期，请点击验证码图片更换新的验证码");
+        }
+        if (!(StringUtils.equalsIgnoreCase(code,code_old.toString()))) {
+            return ApiResult.failWithMessage("验证码不正确，请重试");
+        }
+
+        SendEmailRecord record = SendEmailRecordDAO.ME.selectByEmail(email, SendEmailRecord.TYPE_WEB, EmailTemplateTypeEnum.TYPE.RETRIEVE_PASSWORD.getKey());
+        if (record != null && (System.currentTimeMillis() - record.getLast_date().getTime()) < SendEmailRecord.SEND_REGISTER_INTERVAL_TIME) {
+            return ApiResult.failWithMessage("验证码已经发送，有效时间为" + SendEmailRecord.SEND_REGISTER_INTERVAL_MIN + "分钟,请勿重复请求");
+        }
+
+
+        Map<String, String> map = new HashMap<>(1);
+        map.put(PlaceHoldersConstants.USER_NAME, user.getUsername());
+        map.put(PlaceHoldersConstants.PASSWORD, user.getPassword());
+        SendCloudEmailParamVO vo = Send.createSendEmailVo(null, email, EmailTemplateTypeEnum.TYPE.RETRIEVE_PASSWORD.getKey());
+        vo.setPlaceholders(map);
+        ResultVO resultVO = Send.sendEmail(vo);
+        if (resultVO == null || resultVO.getCode() != STATUS_SUCCESS_CODE) {
+            return ApiResult.failWithMessage("发送邮件失败，请重试");
+        }
+        record = new SendEmailRecord();
+        record.setSend_email(vo.getFrom());
+        record.setReceive_email(email);
+        record.setReceiver(0L);
+        record.setType(SendEmailRecord.TYPE_WEB);
+        record.setInsert_date(new Date());
+        record.setLast_date(new Date());
+        record.setSubject(vo.getSubject());
+        record.setText(vo.getContent());
+        record.setEmail_type(EmailTemplateTypeEnum.TYPE.RETRIEVE_PASSWORD.getKey());
+        record.save();
+        return ApiResult.success("密码已发送至邮件，请查收");
     }
 }
