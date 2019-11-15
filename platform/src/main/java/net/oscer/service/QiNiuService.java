@@ -159,6 +159,9 @@ public class QiNiuService {
     }
 
     public static UploadResultVO pic(MultipartFile multipartFile, long userId) throws IOException {
+        if(userId<=0L){
+            return UploadResultVO.failWith("请先登录");
+        }
         long begin = System.currentTimeMillis();
         if (multipartFile.isEmpty()) {
             return UploadResultVO.failWith("图片为空");
