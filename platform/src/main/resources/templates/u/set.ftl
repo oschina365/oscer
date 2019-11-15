@@ -127,7 +127,7 @@ layui.config({
   //上传缩略图
   upload.render({
     elem: '.thumbBox',
-    url: '/api/upload',
+    url: '/up/lay',
     done: function(res, index, upload){
       var src = res.result;
       $("#headimg").val(src);
