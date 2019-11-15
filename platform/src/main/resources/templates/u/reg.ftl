@@ -11,11 +11,11 @@
                 <div class="layui-form layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
                     <div class="layui-tab-item layui-show">
                         <div class="layui-form layui-form-pane">
-                            <form method="post">
+
                                 <div class="layui-form-item">
                                     <label for="L_email" class="layui-form-label">邮箱</label>
                                     <div class="layui-input-inline">
-                                        <input type="text" id="L_email" name="email" required lay-verify="email"
+                                        <input type="text" id="register_email" name="email" required lay-verify="email"
                                                autocomplete="off" class="layui-input">
                                     </div>
                                     <div class="layui-form-mid layui-word-aux">请输入正确的邮箱地址</div>
@@ -23,14 +23,14 @@
                                 <div class="layui-form-item">
                                     <label for="L_username" class="layui-form-label">昵称</label>
                                     <div class="layui-input-inline">
-                                        <input type="text" id="L_username" name="username" required
+                                        <input type="text" id="register_username" name="username" required
                                                lay-verify="required" autocomplete="off" class="layui-input">
                                     </div>
                                 </div>
                                 <div class="layui-form-item">
                                     <label for="L_pass" class="layui-form-label">密码</label>
                                     <div class="layui-input-inline">
-                                        <input type="password" id="L_pass" name="pass" required lay-verify="required"
+                                        <input type="password" id="register_password" name="pass" required lay-verify="required"
                                                autocomplete="off" class="layui-input">
                                     </div>
                                     <div class="layui-form-mid layui-word-aux">6到16个字符</div>
@@ -38,14 +38,14 @@
                                 <div class="layui-form-item">
                                     <label for="L_repass" class="layui-form-label">确认密码</label>
                                     <div class="layui-input-inline">
-                                        <input type="password" id="L_repass" name="repass" required
+                                        <input type="password" id="register_password_re" name="repass" required
                                                lay-verify="required" autocomplete="off" class="layui-input">
                                     </div>
                                 </div>
                                 <div class="layui-form-item">
                                     <label for="L_vercode" class="layui-form-label">验证码</label>
                                     <div class="layui-input-inline">
-                                        <input type="text" id="L_vercode" name="vercode" required lay-verify="required"
+                                        <input type="text" id="vercode" name="vercode" required lay-verify="required"
                                                placeholder="请输入邮箱收到的验证码" autocomplete="off" class="layui-input">
                                     </div>
                                     <div class="layui-form-mid" style="padding: 0!important;">
@@ -55,7 +55,7 @@
                                     </div>
                                 </div>
                                 <div class="layui-form-item">
-                                    <button class="layui-btn" lay-filter="*" lay-submit>立即注册</button>
+                                    <button class="layui-btn" onclick="register_check()">立即注册</button>
                                 </div>
                                 <div class="layui-form-item fly-form-app">
                                     <span>或者直接使用第三方账号快捷注册</span>
@@ -71,7 +71,6 @@
                                         <img src="/res/images/github.png" style="max-height: 36px;">
                                     </a>
                                 </div>
-                            </form>
                         </div>
                     </div>
                 </div>
@@ -79,7 +78,7 @@
         </div>
 
     </div>
-
+    <script src="../../res/js/login.js"></script>
     <script>
         layui.config({
             version: "3.0.0"
@@ -88,26 +87,6 @@
             fly: 'index'
         }).use(['fly', 'face', 'laypage', 'laytpl', 'jquery'], function () {
             var form = layui.form, $ = layui.jquery, layer = layui.layer;
-
-
-            form.on("submit(commentAdd)", function (data) {
-                $.ajax({
-                    url: '/u/reg',
-                    method: 'post',
-                    dataType: 'json',
-                    data: data.field,
-                    success: function (res) {
-                        if (res.code == 1) {
-                            layer.msg('评论成功', {icon:6, shade: 0.1, time:500});
-                            location.reload();
-
-                        } else {
-                            layer.alert(res.message);
-                        }
-                    }
-                });
-                return false;
-            });
 
             window.sendImageCode = function (email_id) {
                 layui.use('layer', function(){
@@ -120,7 +99,6 @@
                         layer.msg("请填写正确的邮箱!", {icon: 5});
                         return false;
                     }
-                    $("#imageCodeImg").attr("disabled","disabled");
                     $.ajax({
                         url: "/api/email",
                         data: {"email": email,"type":"register"},
@@ -129,7 +107,6 @@
                         success: function (data) {
                             if(data && data.code==1){
                                 layer.msg("验证码发送成功!", {icon: 6});
-                                $("#imageCodeImg").removeAttr("disabled");
                                 var t = 60;
                                 btn.prev().focus();
                                 btn.addClass('disabled').val((t--) + '秒后可重新获取');
@@ -147,7 +124,6 @@
                             }
                         },error:function () {
                             layer.msg("验证码发送成功!", {icon: 6});
-                            $("#imageCodeImg").removeAttr("disabled");
                             var t = 60;
                             btn.prev().focus();
                             btn.addClass('disabled').val((t--) + '秒后可重新获取');

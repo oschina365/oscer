@@ -16,7 +16,7 @@ public class SendEmailRecord extends Entity {
 
     public static final SendEmailRecord ME = new SendEmailRecord();
 
-    public static final long SEND_REGISTER_INTERVAL_MIN = 5L;
+    public static final long SEND_REGISTER_INTERVAL_MIN = 30L;
 
     /**
      * 发布注册邮件间隔时间

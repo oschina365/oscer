@@ -347,4 +347,17 @@ public class UserController extends BaseController {
         loginUser.doUpdate();
         return ApiResult.success("上传成功");
     }
+
+    /**
+     * 注册
+     *
+     * @return
+     */
+    @PostMapping("reg")
+    @ResponseBody
+    public ApiResult reg(User user) {
+        String code = param("code");
+        ApiResult result = UserDAO.ME.register(user,code);
+        return result;
+    }
 }

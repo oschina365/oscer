@@ -1,11 +1,16 @@
 package net.oscer.framework;
 
 
+import net.oscer.beans.SendEmailRecord;
 import net.oscer.common.ApiResult;
+import net.oscer.dao.SendEmailRecordDAO;
+import net.oscer.enums.EmailTemplateTypeEnum;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
+import static net.oscer.beans.SendEmailRecord.SEND_REGISTER_INTERVAL_TIME;
 
 /**
  * @author kz
@@ -46,15 +51,15 @@ public class CaptchaUtils {
     }
 
     public static ApiResult check(String key, String value, HttpServletRequest request) throws IOException {
-        if (request.getSession().getAttribute(key) == null) {
-            return ApiResult.failWithMessage("");
-        }
-        String sessionYzm = request.getSession().getAttribute(key).toString();
 
-        if (sessionYzm.equalsIgnoreCase(value)) {
+        SendEmailRecord record = SendEmailRecordDAO.ME.selectByEmail(key, SendEmailRecord.TYPE_WEB, EmailTemplateTypeEnum.TYPE.REGISTER.getKey());
+        if (record == null) {
+            return ApiResult.failWithMessage("请重新获取验证码");
+        }
+        if ((System.currentTimeMillis() - record.getInsert_date().getTime()) < SEND_REGISTER_INTERVAL_TIME) {
             return ApiResult.success();
         } else {
-            return ApiResult.failWithMessage("");
+            return ApiResult.failWithMessage("验证码已过期，请重新获取");
         }
     }
 }

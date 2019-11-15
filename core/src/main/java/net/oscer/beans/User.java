@@ -145,6 +145,12 @@ public class User extends Entity implements Serializable {
 
     private String sdf_last_date;
 
+
+    /**
+     * 注册来源，默认是pc
+     */
+    private String from;
+
     public String getUsername() {
         return username;
     }
@@ -367,6 +373,14 @@ public class User extends Entity implements Serializable {
 
     public void setSdf_last_date(String sdf_last_date) {
         this.sdf_last_date =  FormatTool.format_intell_time(this.last_date);
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
     }
 
     /**

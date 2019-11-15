@@ -12,10 +12,7 @@ import net.oscer.dao.UserDAO;
 import net.oscer.enums.EmailTemplateTypeEnum;
 import net.oscer.framework.*;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import util.IpUtil;
 
@@ -94,15 +91,15 @@ public class ApiController extends BaseController {
      *
      * @return
      */
+    @PostMapping("check_register_code")
+    @ResponseBody
     public ApiResult check_register_code() throws IOException {
         String email = param("key");
         String code = param("value");
         if (StringUtils.isBlank(email) || StringUtils.isBlank(code)) {
             return ApiResult.failWithMessage("验证码不对");
         }
-        String ip = IpUtil.getIpAddress(request);
-        String key = ip.concat("_").concat(email);
-        return CaptchaUtils.check(key, code, request);
+        return CaptchaUtils.check(email, code, request);
     }
 
     /**

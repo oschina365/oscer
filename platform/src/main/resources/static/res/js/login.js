@@ -242,13 +242,23 @@ function logout() {
  * 注册账号
  */
 function register_check() {
+    console.log("注册");
     layui.use('layer', function(data){
         var layer = layui.layer;
         $(this).attr("disabled","disabled");
         var time = 1200;
         var username = $("#register_username").val();
         var password = $("#register_password").val();
+        var password_re = $("#register_password_re").val();
         var email = $("#register_email").val();
+        var vercode = $("#vercode").val();
+        if (!email) {
+            layer.msg("请输入邮箱!", {icon: 5,time:time});
+            setTimeout(function () {
+                $(this).removeAttr("disabled");
+            },time)
+            return;
+        }
         if (!username) {
             layer.msg("请输入用户名!", {icon: 5,time:time});
             setTimeout(function () {
@@ -263,8 +273,31 @@ function register_check() {
             },time)
             return;
         }
+        if (!password_re) {
+            layer.msg("请输入确认密码!", {icon: 5,time:time});
+            setTimeout(function () {
+                $(this).removeAttr("disabled");
+            },time)
+            return;
+        }
         if (!password || password.length<6) {
             layer.msg("密码太简短!", {icon: 5,time:time});
+            setTimeout(function () {
+                $(this).removeAttr("disabled");
+            },time)
+            return;
+        }
+        console.log(password);
+        console.log(password_re);
+        if (!(password == password_re)) {
+            layer.msg("两次密码不相同!", {icon: 5,time:time});
+            setTimeout(function () {
+                $(this).removeAttr("disabled");
+            },time)
+            return;
+        }
+        if (!vercode) {
+            layer.msg("请输入验证码!", {icon: 5,time:time});
             setTimeout(function () {
                 $(this).removeAttr("disabled");
             },time)
@@ -287,7 +320,7 @@ function register_check() {
             layer.msg("请填写正确的邮箱!", {icon: 5});
             return false;
         }
-        if (!checkRegisterCode(email)) {
+        if (checkRegisterCode(vercode,email)) {
             layer.msg("验证码错误!", {icon: 5,time:time});
             setTimeout(function () {
                 $(this).removeAttr("disabled");
@@ -296,16 +329,22 @@ function register_check() {
         }
 
         $.ajax({
-            url: '/u/register',
+            url: '/u/reg',
             type: 'post',
-            data: {'username': username, 'password': password,"email":email},
+            data: {'username': username, 'password': password,"email":email,"code":vercode},
             dataType: 'json',
             success: function (data) {
+                console.log(data);
                 if (data && data.code==1) {
-                    layer.msg("注册成功~~~",{icon:6});
-                    $(".cd-user-modal").removeClass("is-visible");
+                    layer.confirm('注册成功~~~', {
+                        btn: ['去登陆','好的'] //按钮
+                    }, function(){
+                        window.location.href="/u/login";
+                    }, function(){
+
+                    });
                 }else{
-                    layer.msg(data.msg?data.msg:"注册失败~~~",{icon:6});
+                    layer.msg(data.message?data.message:"注册失败~~~",{icon:6});
                 }
             }
         });
@@ -456,4 +495,33 @@ function blog_praise_option(blogId) {
 
         }
     });
+}
+
+function checkRegisterCode(code,value) {
+    var email = value;
+    if (!code && code.length != 4) {
+        return false;
+    }
+    var r = false;
+    $.when(
+        $.ajax({
+            url: '/api/check_register_code',
+            data:{"key":email,"value":code},
+            type: 'post',
+            dataType: 'json',
+            success: function (d) {
+                console.log(d);
+                if (d && d.code == 1) {
+                    r = true;
+                }else{
+                    r = false;
+                }
+            }, error: function (d) {
+                r = false;
+            }
+        })
+    ).done(function () {
+        return r;
+    })
+
 }

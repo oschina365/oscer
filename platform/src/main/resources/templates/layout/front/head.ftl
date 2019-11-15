@@ -4,7 +4,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <link rel="icon" href="/res/images/oscer.png" mce_href="/res/images/oscer.png" type="image/x-icon">
     <link rel="shortcut icon" href="/res/images/oscer.png" mce_href="/res/images/oscer.png" type="image/x-icon">
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <meta name="renderer" content="webkit">
     <meta name="baidu-site-verification" content="R9XA5lWxu2"/>
     <meta name="author" content="lifes77">

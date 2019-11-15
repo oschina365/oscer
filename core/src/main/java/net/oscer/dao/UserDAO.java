@@ -1,9 +1,12 @@
 package net.oscer.dao;
 
+import net.oscer.beans.SendEmailRecord;
 import net.oscer.beans.User;
 import net.oscer.beans.UserBind;
 import net.oscer.common.ApiResult;
 import net.oscer.db.CacheMgr;
+import net.oscer.enums.EmailTemplateTypeEnum;
+import net.oscer.framework.FormatTool;
 import net.oscer.framework.LinkTool;
 import net.oscer.framework.StringUtils;
 
@@ -247,4 +250,63 @@ public class UserDAO extends CommonDao<User> {
         return getDbQuery().read(User.class, sql, username, email);
     }
 
+    /**
+     * 注册账号校验
+     *
+     * @param user
+     * @param code
+     * @return
+     */
+    public ApiResult checkRegisterForm(User user, String code) {
+        if (user == null || StringUtils.isBlank(user.getUsername())) {
+            return ApiResult.failWithMessage("请填写用户名");
+        }
+        if (StringUtils.isBlank(user.getEmail())) {
+            return ApiResult.failWithMessage("请填写邮箱");
+        }
+        if (!FormatTool.is_email(user.getEmail())) {
+            return ApiResult.failWithMessage("请填写合法邮箱");
+        }
+
+        if (selectByEmail(user.getEmail()) != null) {
+            return ApiResult.failWithMessage("该邮箱已被注册");
+        }
+        if (StringUtils.isBlank(user.getPassword())) {
+            return ApiResult.failWithMessage("请填写密码");
+        }
+        if (user.getPassword().length() < 6) {
+            return ApiResult.failWithMessage("密码至少6位");
+        }
+        if(StringUtils.isEmpty(code)){
+            return ApiResult.failWithMessage("请填写验证码");
+        }
+
+        return ApiResult.success();
+    }
+
+
+    /**
+     * 注册账号
+     *
+     * @param user
+     * @param code
+     * @return
+     */
+    public ApiResult register(User user, String code) {
+        ApiResult result = checkRegisterForm(user,code);
+        if (result != null && result.getCode() == ApiResult.fail) {
+            return result;
+        }
+        user.setSalt(User.ME._GeneratePwdHash(user.getPassword(), user));
+        user.setHeadimg("http://img.oscer.net/avatar/" + (int) (Math.random() * 12) + ".jpg");
+        user.setFrom("pc");
+        user.save();
+        SendEmailRecord record = SendEmailRecordDAO.ME.selectByEmail(user.getEmail(), SendEmailRecord.TYPE_WEB, EmailTemplateTypeEnum.TYPE.REGISTER.getKey());
+        if (record != null && record.getId() > 0) {
+            record.setReceiver(user.getId());
+            record.setLast_date(new Date());
+            record.doUpdate();
+        }
+        return ApiResult.success("注册成功");
+    }
 }
