@@ -4,7 +4,7 @@
 <div class="layui-container fly-marginTop fly-user-main">
   <#include '../layout/user/left_nav.ftl'/>
 
-  <div class="fly-panel fly-panel-user" pad20>
+  <div class="fly-panel fly-panel-user" pad10>
     <div class="layui-tab layui-tab-brief" lay-filter="user">
       <ul class="layui-tab-title" id="LAY_mine">
         <li class="layui-this" lay-id="info">我的资料</li>

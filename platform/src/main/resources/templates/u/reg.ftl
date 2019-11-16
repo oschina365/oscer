@@ -2,7 +2,7 @@
 <@html title_="注册-oscer社区">
 
     <div class="layui-container fly-marginTop">
-        <div class="fly-panel fly-panel-user" pad20>
+        <div class="fly-panel fly-panel-user" pad10>
             <div class="layui-tab layui-tab-brief" lay-filter="user">
                 <ul class="layui-tab-title">
                     <li><a href="login">登入</a></li>

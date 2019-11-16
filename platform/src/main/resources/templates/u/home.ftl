@@ -5,7 +5,7 @@
 
     <#include '../layout/user/left_nav.ftl'/>
 
-    <div class="fly-panel fly-panel-user" pad20>
+    <div class="fly-panel fly-panel-user" pad10>
         <#--<div class="fly-msg" style="margin-top: 15px;">
           您的邮箱尚未验证，这比较影响您的帐号安全，<a href="activate.html">立即去激活？</a>
         </div>-->
@@ -74,6 +74,7 @@
 </script>
 
 <script id="collectsTpl" type="text/html">
+    {{d.list}}
     {{#  if(d.list!=null&&d.list.length> 0){ }}
     {{#  layui.each(d.list, function(index, item){ }}
     <li>

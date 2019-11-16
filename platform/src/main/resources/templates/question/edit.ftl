@@ -2,7 +2,7 @@
 <@html title_="编辑帖子">
 
 <div class="layui-container fly-marginTop">
-    <div class="fly-panel" pad20 style="padding-top: 5px;">
+    <div class="fly-panel" pad10 style="padding-top: 5px;">
         <#if login_user?? && login_user.id==author>
             <div class="layui-form layui-form-pane">
                 <div class="layui-tab layui-tab-brief" lay-filter="user">

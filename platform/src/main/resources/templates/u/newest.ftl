@@ -1,5 +1,5 @@
 <#include "../layout/front/layout.ftl"/>
-<@html title_="个人主页-oscer社区">
+<@html title_="最新动态-oscer社区">
 
 <div class="layui-container fly-marginTop fly-user-main">
   <#include '../layout/user/left_nav.ftl'/>

@@ -184,6 +184,11 @@ public class UserController extends BaseController {
         return "/u/msg";
     }
 
+    @GetMapping("newest")
+    public String newest() {
+        return "/u/newest";
+    }
+
     /**
      * 用户信息主页
      *

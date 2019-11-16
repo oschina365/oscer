@@ -6,22 +6,28 @@
                 我的主页
             </a>
         </li>
+        <li class="layui-nav-item <#if currentUrl?? && currentUrl=='/u/newest'>layui-this</#if>">
+            <a href="/u/newest">
+                <i class="layui-icon">&#xe611;</i>
+                最新动态
+            </a>
+        </li>
         <li class="layui-nav-item <#if currentUrl?? && currentUrl=='/u/home'>layui-this</#if>">
             <a href="/u/home">
                 <i class="layui-icon">&#xe612;</i>
                 用户中心
             </a>
         </li>
-        <li class="layui-nav-item <#if currentUrl?? && currentUrl=="/u/set">layui-this</#if>">
-            <a href="/u/set">
-                <i class="layui-icon">&#xe620;</i>
-                基本设置
-            </a>
-        </li>
         <li class="layui-nav-item <#if currentUrl?? && currentUrl=='/u/msg'>layui-this</#if>">
             <a href="/u/msg">
                 <i class="layui-icon">&#xe611;</i>
                 我的消息
+            </a>
+        </li>
+        <li class="layui-nav-item <#if currentUrl?? && currentUrl=="/u/set">layui-this</#if>">
+            <a href="/u/set">
+                <i class="layui-icon">&#xe620;</i>
+                基本设置
             </a>
         </li>
     </ul>
