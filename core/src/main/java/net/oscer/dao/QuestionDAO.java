@@ -1,10 +1,15 @@
 package net.oscer.dao;
 
+import net.oscer.beans.Dynamic;
 import net.oscer.beans.Question;
 import net.oscer.common.ApiResult;
 import net.oscer.common.PatternUtil;
 import net.oscer.db.CacheMgr;
+import net.oscer.db.DbQuery;
+import net.oscer.db.TransactionService;
+import net.oscer.enums.DynamicEnum;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -28,6 +33,29 @@ public class QuestionDAO extends CommonDao<Question> {
     @Override
     protected String databaseName() {
         return "mysql";
+    }
+
+    /**
+     * 保存帖子
+     *
+     * @param question
+     * @return
+     */
+    public long save(Question question) throws Exception {
+        if (question == null) {
+            return 0L;
+        }
+        final long[] id = {0L};
+        DbQuery.get("mysql").transaction(new TransactionService() {
+            @Override
+            public void execute() throws Exception {
+                question.save();
+                DynamicDAO.ME.save(question.getUser(), question.getId());
+                id[0] = question.getId();
+            }
+
+        });
+        return id[0];
     }
 
     /**

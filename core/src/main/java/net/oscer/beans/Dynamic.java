@@ -21,17 +21,19 @@ public class Dynamic extends Entity {
      */
     private long user;
     /**
-     * 对象ID，如帖子ID，评论ID
+     * 帖子ID
      */
-    private long obj_id;
+    private long question;
+
     /**
-     * 对象类型，如帖子1,评论2
-     */
-    private int obj_type;
-    /**
-     * 显示状态，显示1，如用户被封号，就隐藏
+     * 显示状态，正常显示为0，如用户被封号，就隐藏
      */
     private Integer status;
+
+    /**
+     * 评论ID
+     */
+    private long comment;
 
     public long getUser() {
         return user;
@@ -41,20 +43,12 @@ public class Dynamic extends Entity {
         this.user = user;
     }
 
-    public long getObj_id() {
-        return obj_id;
+    public long getQuestion() {
+        return question;
     }
 
-    public void setObj_id(long obj_id) {
-        this.obj_id = obj_id;
-    }
-
-    public int getObj_type() {
-        return obj_type;
-    }
-
-    public void setObj_type(int obj_type) {
-        this.obj_type = obj_type;
+    public void setQuestion(long question) {
+        this.question = question;
     }
 
     public Integer getStatus() {
@@ -63,5 +57,13 @@ public class Dynamic extends Entity {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public long getComment() {
+        return comment;
+    }
+
+    public void setComment(long comment) {
+        this.comment = comment;
     }
 }

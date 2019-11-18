@@ -107,7 +107,7 @@ public class QuestionController extends BaseController {
      */
     @PostMapping("/add")
     @ResponseBody
-    public ApiResult add(Question form, @RequestParam(value = "is_reward", defaultValue = "0") int is_reward) {
+    public ApiResult add(Question form, @RequestParam(value = "is_reward", defaultValue = "0") int is_reward) throws Exception {
         User login_user = getLoginUser();
         if (login_user == null || !login_user.status_is_normal()) {
             return ApiResult.failWithMessage("请登录后重试");
@@ -138,7 +138,7 @@ public class QuestionController extends BaseController {
         if (result.getCode() == ApiResult.fail) {
             return result;
         }
-        form.save();
+        QuestionDAO.ME.save(form);
         Node n = Node.ME.get(form.getNode());
         QuestionDAO.ME.evictNode(form.getNode());
         QuestionDAO.ME.evict(login_user.getId());

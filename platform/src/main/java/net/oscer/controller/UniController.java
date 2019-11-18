@@ -12,10 +12,7 @@ import net.oscer.framework.FormatTool;
 import net.oscer.framework.StringUtils;
 import net.oscer.service.UserService;
 import net.oscer.service.ViewService;
-import net.oscer.vo.CommentQuestionVO;
-import net.oscer.vo.QuestionVO;
-import net.oscer.vo.ReadVO;
-import net.oscer.vo.UserCommentVO;
+import net.oscer.vo.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Controller;
@@ -80,7 +77,7 @@ public class UniController extends BaseController {
             bind.doUpdate();
         }
         User bindUser = User.ME.get(bind.getUser());
-        if(bindUser ==null){
+        if (bindUser == null) {
             return ApiResult.failWithMessage("网络异常");
         }
         if (bindUser.getStatus() != STATUS_NORMAL) {
@@ -557,5 +554,23 @@ public class UniController extends BaseController {
             return null;
         }
         return ApiResult.successWithObject(CommentQuestionVO.list(question, loginUser, childs, ""));
+    }
+
+    /**
+     * 更改用户基本信息
+     *
+     * @return
+     */
+    @PostMapping("newest")
+    @ResponseBody
+    public ApiResult newest(@RequestParam(value = "user", required = false) Long user) {
+        User loginUser = current_user(user);
+        if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
+            return ApiResult.failWithMessage("请重新登录");
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("list", DynamicVO.construct(DynamicDAO.ME.listByUser(loginUser.getId(), pageNumber, pageSize)));
+        map.put("count", DynamicDAO.ME.countByUser(loginUser.getId()));
+        return ApiResult.successWithObject(map);
     }
 }

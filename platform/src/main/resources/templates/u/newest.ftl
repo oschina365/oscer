@@ -5,45 +5,111 @@
   <#include '../layout/user/left_nav.ftl'/>
   
   <div class="fly-panel fly-panel-user" pad10>
-	  <div class="layui-tab layui-tab-brief" lay-filter="user" id="LAY_msg" style="margin-top: 15px;">
-	    <button class="layui-btn layui-btn-danger" id="LAY_delallmsg">清空全部消息</button>
-	    <div  id="LAY_minemsg" style="margin-top: 10px;">
-        <!--<div class="fly-none">您暂时没有最新消息</div>-->
-        <ul class="mine-msg">
-          <li data-id="123">
-            <blockquote class="layui-elem-quote">
-              <a href="/jump?username=Absolutely" target="_blank"><cite>Absolutely</cite></a>回答了您的求解<a target="_blank" href="/jie/8153.html/page/0/#item-1489505778669"><cite>layui后台框架</cite></a>
-            </blockquote>
-            <p><span>1小时前</span><a href="javascript:;" class="layui-btn layui-btn-small layui-btn-danger fly-delete">删除</a></p>
-          </li>
-          <li data-id="123">
-            <blockquote class="layui-elem-quote">
-              系统消息：欢迎使用 layui
-            </blockquote>
-            <p><span>1小时前</span><a href="javascript:;" class="layui-btn layui-btn-small layui-btn-danger fly-delete">删除</a></p>
-          </li>
-        </ul>
-      </div>
+	  <div class="layui-tab layui-tab-brief" lay-filter="user" id="LAY_msg" style="margin-top: 8px;">
+          <ul class="home-jieda " id="bodys">
+          </ul>
+          <div id="page"></div>
 	  </div>
-	</div>
+  </div>
 
 </div>
 
+<script id="listTpl" type="text/html">
+    {{#  if(d.list!=null&&d.list.length> 0){ }}
+    {{#  layui.each(d.list, function(index, item){ }}
+    <li>
+        <a href="/u/{{item.author.id}}" class="fly-avatar" style="top: unset;"> <img src="{{item.author.headimg}}" alt="{{item.author.username}}"> </a>
+        <p>
+
+            <span>{{item.sdf_insert_date}}</span>
+        </p>
+        {{# if(item.d.comment> 0){ }}
+            {{item.commentQuestion.content}}
+        {{#} else { }}
+        发布了新的帖子：
+        {{# }}}
+        <div class="home-dacontent">
+            <a href="/q/{{item.q.id}}" target="_blank">{{item.q.title}}</a>
+        </div>
+    </li>
+    {{#  }); }}
+    {{#} else { }}
+    <div class="fly-none">没有相关帖子</div>
+    {{# }}}
+
+</script>
+
 <script>
-layui.cache.page = 'user';
-layui.cache.user = {
-  username: '游客'
-  ,uid: -1
-  ,avatar: '../../res/images/avatar/00.jpg'
-  ,experience: 83
-  ,sex: '男'
-};
-layui.config({
-  version: "3.0.0"
-  ,base: '../../res/mods/'
-}).extend({
-  fly: 'index'
-}).use('fly');
+    layui.config({
+        version: "3.0.0"
+        , base: '/res/mods/' //这里实际使用时，建议改成绝对路径
+    }).use(['form', 'layer', 'jquery', 'laypage', 'laytpl', 'util'], function () {
+        var form = layui.form
+            , layer = parent.layer === undefined ? layui.layer : parent.layer
+            , laypage = layui.laypage, laytpl = layui.laytpl, $ = layui.jquery;
+
+        dataList(1);
+
+        /**
+         * 查询数据列表
+         * @param number
+         */
+        function dataList(number) {
+            $.ajax({
+                url: '/uni/newest',
+                method: 'post',
+                dataType: 'json',
+                data: {"number": number},
+                success: function (data) {
+                    console.log(data);
+                    if (data && data.code == 1) {
+                        var listData = {"list": data.result.list};
+                        var getTpl = listTpl.innerHTML, view = document.getElementById('bodys');
+
+                        laytpl(getTpl).render(listData, function (html) {
+                            view.innerHTML = html;
+                        });
+                        form.render();
+
+                        if(data.result.count >0){
+                            if (number === 1) {
+                                //分页标签
+                                pageBar(data.result.count, 10);
+                            }
+                        }
+
+                    }
+                }
+            });
+        }
+
+        /**
+         * 数据分页
+         * @param count
+         * @param limit
+         */
+        function pageBar(count, limit) {
+            var themes = ['#ff0000', '#eb4310', '#3f9337', '#219167', '#239676', '#24998d', '#1f9baa', '#0080ff', '#3366cc', '#800080', '#a1488e', '#c71585', '#bd2158'];
+
+            laypage.render({
+                elem: "page",
+                limit: limit,
+                count: count,
+                first: '首页',
+                last: '尾页',
+                theme: themes[parseInt(Math.random() * themes.length)],
+                layout: ['prev', 'page', 'next'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        $("#number").val(obj.curr);
+                        dataList(obj.curr);
+                    }
+                }
+            });
+        }
+    }).extend({
+        fly: 'index'
+    }).use('fly');
 </script>
 
 </@html>

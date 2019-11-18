@@ -8,7 +8,7 @@
         </li>
         <li class="layui-nav-item <#if currentUrl?? && currentUrl=='/u/newest'>layui-this</#if>">
             <a href="/u/newest">
-                <i class="layui-icon">&#xe611;</i>
+                <i class="layui-icon">&#xe63a;</i>
                 最新动态
             </a>
         </li>
