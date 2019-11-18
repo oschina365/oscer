@@ -46,7 +46,7 @@
                 <li class="layui-nav-item layui-hide-xs">
                     <a href="/oauth/before_bind?rp=gitee"
                        onclick="layer.msg('正在通过Gitee登入', {icon:16, shade: 0.1, time:0})" title="Gitee登入">
-                        <img src="/res/images/logo_gitee_white_cn.png" style="max-height: 36px;">
+                        <img src="/res/images/logo_gitee_light_cn_with_domain_name.png" style="max-height: 36px;">
                     </a>
                 </li>
             </#if>
