@@ -29,15 +29,15 @@ public class QuestionVO {
     /**
      * 帖子作者
      */
-    private User q_user;
+    private UserVO q_user;
     /**
      * 最后的评论用户
      */
-    private User c_user;
+    private UserVO c_user;
     /**
      * 悬赏帖子，最佳评论用户
      */
-    private User r_user;
+    private UserVO r_user;
     /**
      * 悬赏帖子，最佳评论
      */
@@ -46,7 +46,7 @@ public class QuestionVO {
     /**
      * 登录用户
      */
-    private User login_user;
+    private UserVO login_user;
 
     /**
      * 登录用户是否收藏该帖子
@@ -85,27 +85,27 @@ public class QuestionVO {
         this.n = n;
     }
 
-    public User getQ_user() {
+    public UserVO getQ_user() {
         return q_user;
     }
 
-    public void setQ_user(User q_user) {
+    public void setQ_user(UserVO q_user) {
         this.q_user = q_user;
     }
 
-    public User getC_user() {
+    public UserVO getC_user() {
         return c_user;
     }
 
-    public void setC_user(User c_user) {
+    public void setC_user(UserVO c_user) {
         this.c_user = c_user;
     }
 
-    public User getR_user() {
+    public UserVO getR_user() {
         return r_user;
     }
 
-    public void setR_user(User r_user) {
+    public void setR_user(UserVO r_user) {
         this.r_user = r_user;
     }
 
@@ -117,11 +117,11 @@ public class QuestionVO {
         this.reward_comment = reward_comment;
     }
 
-    public User getLogin_user() {
+    public UserVO getLogin_user() {
         return login_user;
     }
 
-    public void setLogin_user(User login_user) {
+    public void setLogin_user(UserVO login_user) {
         this.login_user = login_user;
     }
 
@@ -202,20 +202,20 @@ public class QuestionVO {
             if (q.getNode() > 0) {
                 vo.setN(Node.ME.get(q.getNode()));
             }
-            vo.setQ_user(User.ME.get(q.getUser()));
+            vo.setQ_user(UserVO.convert(User.ME.get(q.getUser())));
             if (q.getLast_comment_user() > 0L) {
-                vo.setC_user(User.ME.get(q.getLast_comment_user()));
+                vo.setC_user(UserVO.convert(User.ME.get(q.getLast_comment_user())));
             }
             if (q.getReward_comment() > 0L) {
                 CommentQuestion commentQuestion = CommentQuestion.ME.get(q.getReward_comment());
                 if (commentQuestion != null) {
                     User r_user = User.ME.get(commentQuestion.getUser());
-                    vo.setR_user(r_user);
+                    vo.setR_user(UserVO.convert(r_user));
                     vo.setReward_comment(commentQuestion);
                 }
             }
             if (login_user != null) {
-                vo.setLogin_user(login_user);
+                vo.setLogin_user(UserVO.convert(login_user));
                 vo.setCollected(CollectionUtils.isNotEmpty(finalCollect_ids) ? finalCollect_ids.contains(q.getId()) : false);
             }
             //vo.setBanner(StringUtils.getFirstImageUrl(q.getContent()));

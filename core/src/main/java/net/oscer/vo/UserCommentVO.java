@@ -21,16 +21,16 @@ public class UserCommentVO extends CommentQuestion {
     /**
      * 帖子作者
      */
-    private User author;
+    private UserVO author;
     private Question q;
     private String question_pub_time;
 
 
-    public User getAuthor() {
+    public UserVO getAuthor() {
         return author;
     }
 
-    public void setAuthor(User author) {
+    public void setAuthor(UserVO author) {
         this.author = author;
     }
 
@@ -77,7 +77,7 @@ public class UserCommentVO extends CommentQuestion {
             if (author == null || !author.status_is_normal()) {
                 continue;
             }
-            vo.setAuthor(author);
+            vo.setAuthor(UserVO.convert(author));
             vo.setQ(q);
             vo.setQuestion(c.getQuestion());
             vo.setQuestion_pub_time(FormatTool.format_intell_time(q.getInsert_date()));

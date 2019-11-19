@@ -24,7 +24,7 @@ public class ReadVO extends Visit {
     /**
      * 文章作者
      */
-    private User author;
+    private UserVO author;
 
     private Entity entity;
 
@@ -36,11 +36,11 @@ public class ReadVO extends Visit {
         this.sdf_read_time = sdf_read_time;
     }
 
-    public User getAuthor() {
+    public UserVO getAuthor() {
         return author;
     }
 
-    public void setAuthor(User author) {
+    public void setAuthor(UserVO author) {
         this.author = author;
     }
 
@@ -122,7 +122,7 @@ public class ReadVO extends Visit {
             if(e==null){
                 continue;
             }
-            vo.setAuthor(obj(Visit.USER).get(e.user()));
+            vo.setAuthor(UserVO.convert(obj(Visit.USER).get(e.user())));
             vo.setEntity(e);
             vo.setSdf_read_time(FormatTool.format_intell_time(v.getLast_date()));
             vo.setId(v.getId());

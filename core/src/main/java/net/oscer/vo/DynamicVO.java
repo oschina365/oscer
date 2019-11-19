@@ -30,7 +30,7 @@ public class DynamicVO {
     /**
      * 作者
      */
-    private User author;
+    private UserVO author;
 
     /**
      * 评论或回复评论
@@ -53,11 +53,11 @@ public class DynamicVO {
         this.q = q;
     }
 
-    public User getAuthor() {
+    public UserVO getAuthor() {
         return author;
     }
 
-    public void setAuthor(User author) {
+    public void setAuthor(UserVO author) {
         this.author = author;
     }
 
@@ -105,7 +105,7 @@ public class DynamicVO {
         }
         vo.setSdf_insert_date(FormatTool.format_intell_time(d.getInsert_date()));
         vo.setD(d);
-        vo.setAuthor(u);
+        vo.setAuthor(UserVO.convert(u));
         vo.setQ(question);
         vo.setCommentQuestion(c);
         return vo;
