@@ -37,7 +37,7 @@
 
 </div>
 
-  <script src="../../res/js/login.js"></script>
+  <script src="/res/js/login.js"></script>
 
   <script>
     $(document).keydown(function (e) {

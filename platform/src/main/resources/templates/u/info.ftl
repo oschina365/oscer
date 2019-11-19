@@ -37,7 +37,7 @@
     <#else >
       <a onclick="follow()" class="layui-btn layui-btn-normal fly-imActive" data-type="chat">关注</a>
     </#if>
-    <a href="javascript:;" class="layui-btn layui-btn-warm fly-imActive" data-type="addFriend">私信</a>
+    <a onclick="send()" class="layui-btn layui-btn-warm fly-imActive" data-type="addFriend">私信</a>
 
   </div>
 
@@ -115,6 +115,19 @@
       },error:function () {
         layui.layer.msg("网络问题，请重试", {icon: 5});
       }
+    });
+  };
+
+  function send() {
+//例子2
+    layer.prompt({
+      formType: 2,
+      title: '发送私信',
+      area: ['400px', '150px'] ,//自定义文本域宽高
+      btn: ['发送','取消'] //按钮
+    }, function(value, index, elem){
+      layui.layer.msg( "发送成功", {icon: 6});
+      layer.close(index);
     });
   };
 layui.config({

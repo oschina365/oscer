@@ -78,7 +78,7 @@
         </div>
 
     </div>
-    <script src="../../res/js/login.js"></script>
+    <script src="/res/js/login.js"></script>
     <script>
         layui.config({
             version: "3.0.0"
