@@ -119,14 +119,29 @@
   };
 
   function send() {
-//例子2
     layer.prompt({
       formType: 2,
       title: '发送私信',
       area: ['400px', '150px'] ,//自定义文本域宽高
       btn: ['发送','取消'] //按钮
     }, function(value, index, elem){
-      layui.layer.msg( "发送成功", {icon: 6});
+      $.ajax({
+        url: '/uni/send_msg',
+        method: 'post',
+        dataType: 'json',
+        data: {"receiver":${u.id},"content":value},
+        success: function (d) {
+          console.log(d);
+          if (d && d.code == 1) {
+            layui.layer.msg(d.message ? d.message : "操作成功", {icon: 6});
+          } else {
+            layui.layer.msg(d.message ? d.message : "网络问题，请重试", {icon: 5});
+          }
+          location.reload();
+        },error:function () {
+          layui.layer.msg("网络问题，请重试", {icon: 5});
+        }
+      });
       layer.close(index);
     });
   };

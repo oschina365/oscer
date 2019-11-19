@@ -37,6 +37,11 @@ public class LastMsg extends Entity {
      */
     private long msg_id;
 
+    /**
+     * 私信来源（网页端，小程序）
+     */
+    private String source;
+
     public long getSender() {
         return sender;
     }
@@ -75,5 +80,13 @@ public class LastMsg extends Entity {
 
     public void setMsg_id(long msg_id) {
         this.msg_id = msg_id;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 }

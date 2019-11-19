@@ -299,7 +299,7 @@ public class UniController extends BaseController {
                 q.setLast_comment_time(new Date());
                 q.setComment_count(q.getComment_count() + 1);
                 q.doUpdate();
-                DynamicDAO.ME.save(loginUser.getId(),id,c.getId());
+                DynamicDAO.ME.save(loginUser.getId(), id, c.getId());
                 QuestionDAO.ME.evictNode(q.getNode());
                 CommentQuestionDAO.ME.evict(id, loginUser.getId());
                 CacheMgr.evict(CommentQuestion.ME.CacheRegion(), "childs#" + id + "#" + parent);
@@ -573,5 +573,39 @@ public class UniController extends BaseController {
         map.put("list", DynamicVO.construct(DynamicDAO.ME.listByUser(loginUser.getId(), pageNumber, pageSize)));
         map.put("count", DynamicDAO.ME.countByUser(loginUser.getId()));
         return ApiResult.successWithObject(map);
+    }
+
+    /**
+     * 发送私信
+     *
+     * @return
+     */
+    @PostMapping("send_msg")
+    @ResponseBody
+    public ApiResult send_msg(@RequestParam(value = "user", required = false) Long user) throws Exception {
+        User loginUser = current_user(user);
+        if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
+            return ApiResult.failWithMessage("请重新登录");
+        }
+        long receiver = param("receiver", 0L);
+        User re = User.ME.get(receiver);
+        if (re == null) {
+            return ApiResult.failWithMessage("用户不存在");
+        }
+        String content = param("content");
+        int type = param("type", 1);
+        String source = param("source", "网页端");
+        if (StringUtils.isEmpty(content)) {
+            return ApiResult.failWithMessage("请输入内容");
+        }
+        if (content.length() > 255) {
+            return ApiResult.failWithMessage("内容过长！");
+        }
+        boolean r = MsgDAO.ME.send(loginUser.getId(), receiver, content, type, source);
+        if (!r) {
+            return ApiResult.failWithMessage("发送失败！");
+        }
+
+        return ApiResult.success("发送成功");
     }
 }
