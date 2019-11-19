@@ -2322,3 +2322,9 @@ body .fly-user-main {
     line-height: 20px;
     font-size: 10px !important;
 }
+
+@media screen and (max-width: 750px){
+    .fly-logo {
+        left: 5px!important;
+    }
+}
