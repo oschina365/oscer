@@ -61,7 +61,6 @@
                 dataType: 'json',
                 data: {"number": number},
                 success: function (data) {
-                    console.log(data);
                     if (data && data.code == 1) {
                         var listData = {"list": data.result.list};
                         var getTpl = listTpl.innerHTML, view = document.getElementById('bodys');

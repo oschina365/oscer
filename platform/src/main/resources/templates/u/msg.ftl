@@ -161,7 +161,6 @@
         success: function (data) {
           if (data && data.code == 1) {
             var listData = {"list": data.result.questions};
-            console.log(listData);
             var getTpl = pubsTpl.innerHTML, view = document.getElementById('pubBodys');
 
             laytpl(getTpl).render(listData, function (html) {

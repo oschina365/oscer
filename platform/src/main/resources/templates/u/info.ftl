@@ -131,7 +131,6 @@
         dataType: 'json',
         data: {"receiver":${u.id},"content":value},
         success: function (d) {
-          console.log(d);
           if (d && d.code == 1) {
             layui.layer.msg(d.message ? d.message : "操作成功", {icon: 6});
           } else {
