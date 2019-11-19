@@ -76,7 +76,7 @@
           <#if comments?? && commentMap??>
             <#list comments as c>
               <#if commentMap[''+c.question]??>
-                <li>
+                <li style="padding-left: 0px !important;">
                   <p>
                   <span>${c.insert_date}</span>
                   在<a href="/q/${commentMap[''+c.question].id}" target="_blank"> ${commentMap[''+c.question].title}</a>中回答：

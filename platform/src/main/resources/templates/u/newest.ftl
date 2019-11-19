@@ -24,7 +24,7 @@
             <span>{{item.sdf_insert_date}}</span>
         </p>
         {{# if(item.d.comment> 0){ }}
-            {{item.commentQuestion.content}}
+            发表了评论：{{item.commentQuestion.content}}
         {{#} else { }}
         发布了新的帖子：
         {{# }}}

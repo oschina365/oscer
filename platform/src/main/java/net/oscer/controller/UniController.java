@@ -299,6 +299,7 @@ public class UniController extends BaseController {
                 q.setLast_comment_time(new Date());
                 q.setComment_count(q.getComment_count() + 1);
                 q.doUpdate();
+                DynamicDAO.ME.save(loginUser.getId(),id,c.getId());
                 QuestionDAO.ME.evictNode(q.getNode());
                 CommentQuestionDAO.ME.evict(id, loginUser.getId());
                 CacheMgr.evict(CommentQuestion.ME.CacheRegion(), "childs#" + id + "#" + parent);

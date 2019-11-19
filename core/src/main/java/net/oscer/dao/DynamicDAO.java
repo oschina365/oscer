@@ -44,12 +44,12 @@ public class DynamicDAO extends CommonDao<Dynamic> {
 
     public int countByUser(long user) {
         String sql = "select count(*) from dynamics  d left join friends f on d.user=f.friend where f.user=? order by d.id desc ";
-        return getDbQuery().stat_cache(getCache_region(), "countByUser#" + user, sql, user);
+        return getDbQuery().stat_cache("one_min", "countByUser#" + user, sql, user);
     }
 
     public List<Dynamic> listByUser(long user, int page, int size) {
         String sql = "select d.* from dynamics  d left join friends f on d.user=f.friend where f.user=? order by d.id desc ";
-        return getDbQuery().query_slice_cache(Dynamic.class, getCache_region(), "listByUser#" + user, 50, sql, page, size, user);
+        return getDbQuery().query_slice_cache(Dynamic.class, "one_min", "listByUser#" + user, 50, sql, page, size, user);
     }
 
 }

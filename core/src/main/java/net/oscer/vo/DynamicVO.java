@@ -66,7 +66,7 @@ public class DynamicVO {
     }
 
     public void setCommentQuestion(CommentQuestion commentQuestion) {
-        commentQuestion = commentQuestion;
+        this.commentQuestion = commentQuestion;
     }
 
     public String getSdf_insert_date() {
