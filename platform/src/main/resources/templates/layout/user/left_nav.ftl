@@ -1,11 +1,13 @@
 <#--个人空间左侧导航栏-->
     <ul class="layui-nav layui-nav-tree layui-inline" lay-filter="user">
-        <li class="layui-nav-item">
-            <a href="/u/${login_user.id}">
+        <#if login_user??>
+            <li class="layui-nav-item">
+                <a href="/u/${login_user.id}">
                 <i class="layui-icon">&#xe609;</i>
                 我的主页
-            </a>
-        </li>
+                </a>
+            </li>
+        </#if>
         <li class="layui-nav-item <#if currentUrl?? && currentUrl=='/u/newest'>layui-this</#if>">
             <a href="/u/newest">
                 <i class="layui-icon">&#xe63a;</i>
@@ -21,7 +23,13 @@
         <li class="layui-nav-item <#if currentUrl?? && currentUrl=='/u/msg'>layui-this</#if>">
             <a href="/u/msg">
                 <i class="layui-icon">&#xe611;</i>
-                我的消息
+                用户私信
+            </a>
+        </li>
+        <li class="layui-nav-item <#if currentUrl?? && currentUrl=='/u/sys_msg'>layui-this</#if>">
+            <a href="/u/sys_msg">
+                <i class="layui-icon">&#xe606;</i>
+                系统消息
             </a>
         </li>
         <li class="layui-nav-item <#if currentUrl?? && currentUrl=="/u/set">layui-this</#if>">

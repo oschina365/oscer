@@ -179,9 +179,24 @@ public class UserController extends BaseController {
         return "/u/set";
     }
 
+    /**
+     * 用户私信
+     *
+     * @return
+     */
     @GetMapping("msg")
     public String msg() {
         return "/u/msg";
+    }
+
+    /**
+     * 系统私信
+     *
+     * @return
+     */
+    @GetMapping("sys_msg")
+    public String sys_msg() {
+        return "/u/sys_msg";
     }
 
     @GetMapping("newest")
@@ -408,7 +423,7 @@ public class UserController extends BaseController {
         if (code_old == null) {
             return ApiResult.failWithMessage("验证码已过期，请点击验证码图片更换新的验证码");
         }
-        if (!(StringUtils.equalsIgnoreCase(code,code_old.toString()))) {
+        if (!(StringUtils.equalsIgnoreCase(code, code_old.toString()))) {
             return ApiResult.failWithMessage("验证码不正确，请重试");
         }
 

@@ -40,9 +40,8 @@ public class LastMsgDAO extends CommonDao<LastMsg> {
      * @return
      */
     public List<LastMsg> msgs(long user, int page, int size) {
-        String sql = "select id from last_msgs where sender=? order by msg_id desc";
-        List<Long> ids = getDbQuery().query_slice_cache(long.class, getCache_region(), "msgs#" + user, 20, sql, page, size, user);
-        return LastMsg.ME.loadList(ids);
+        String sql = "select * from last_msgs where sender=? order by msg_id desc";
+        return getDbQuery().query_slice_cache(LastMsg.class, getCache_region(), "msgs#" + user, 20, sql, page, size, user);
     }
 
     /**
@@ -67,9 +66,8 @@ public class LastMsgDAO extends CommonDao<LastMsg> {
      * @return
      */
     public List<LastMsg> msgs(long user, int type, int page, int size) {
-        String sql = "select id from last_msgs where sender=? and type=? order by msg_id desc";
-        List<Long> ids = getDbQuery().query_slice_cache(long.class, getCache_region(), "msgs#" + user + "type#" + type, 20, sql, page, size, user);
-        return LastMsg.ME.loadList(ids);
+        String sql = "select * from last_msgs where sender=? and type=? order by msg_id desc";
+        return getDbQuery().query_slice_cache(LastMsg.class, getCache_region(), "msgs#" + user + "type#" + type, 20, sql,page, size, user,type);
     }
 
     public void evict(long user, long receiver, int type) {

@@ -25,6 +25,17 @@ public class MsgDAO extends CommonDao<Msg> {
     }
 
     /**
+     * 系统私信数量
+     *
+     * @param user
+     * @return
+     */
+    public int count_system(long user) {
+        String sql = "select count(*) from msgs where sender=? and type=0";
+        return getDbQuery().stat_cache(getCache_region(), "count#" + user, sql, user);
+    }
+
+    /**
      * 与某用户私信数量
      *
      * @param user
@@ -33,6 +44,31 @@ public class MsgDAO extends CommonDao<Msg> {
     public int count(long user, long receiver) {
         String sql = "select count(*) from msgs where sender=? and receiver=?";
         return getDbQuery().stat_cache(getCache_region(), "count#" + user + "#" + receiver, sql, user, receiver);
+    }
+
+    /**
+     * 与某用户私信数量
+     *
+     * @param user
+     * @return
+     */
+    public int count(long user, long receiver, int type) {
+        String sql = "select count(*) from msgs where sender=? and receiver=?";
+        return getDbQuery().stat_cache(getCache_region(), "count#" + user + "#" + receiver + "#" + type, sql, user, receiver);
+    }
+
+    /**
+     * 分页获取用户的所有系统私信
+     *
+     * @param user
+     * @param page
+     * @param size
+     * @return
+     */
+    public List<Msg> msgs_system(long user, int page, int size) {
+        String sql = "select id from msgs where sender=? and type=0 order by id desc";
+        List<Long> ids = getDbQuery().query_slice_cache(long.class, getCache_region(), "msgs#" + user, 20, sql, page, size, user);
+        return Msg.ME.loadList(ids);
     }
 
     /**
@@ -45,13 +81,33 @@ public class MsgDAO extends CommonDao<Msg> {
      */
     public List<Msg> msgs(long user, long receiver, int page, int size) {
         String sql = "select id from msgs where sender=? and receiver=? order by id desc";
-        List<Long> ids = getDbQuery().query_slice_cache(long.class, getCache_region(), "msgs#" + user + "#" + receiver, 20, sql, page, size, user);
+        List<Long> ids = getDbQuery().query_slice_cache(long.class, getCache_region(), "msgs#" + user + "#" + receiver, 20, sql, page, size, user, receiver);
+        return Msg.ME.loadList(ids);
+    }
+
+    /**
+     * 分页获取所有与某用户私信
+     *
+     * @param user
+     * @param page
+     * @param size
+     * @return
+     */
+    public List<Msg> msgs(long user, long receiver, int type, int page, int size) {
+        String sql = "select id from msgs where sender=? and receiver=? and type=? order by id desc";
+        List<Long> ids = getDbQuery().query_slice_cache(long.class, getCache_region(), "msgs#" + user + "#" + receiver + "#" + type, 20, sql, page, size, user, receiver, type);
         return Msg.ME.loadList(ids);
     }
 
     public void evict(long user, long receiver) {
         CacheMgr.evict(getCache_region(), "count#" + user + "#" + receiver);
         CacheMgr.evict(getCache_region(), "msgs#" + user + "#" + receiver);
+        CacheMgr.evict(getCache_region(), "count#" + user + "#" + receiver + "#0");
+        CacheMgr.evict(getCache_region(), "msgs#" + user + "#" + receiver + "#0");
+        CacheMgr.evict(getCache_region(), "count#" + user + "#" + receiver + "#1");
+        CacheMgr.evict(getCache_region(), "msgs#" + user + "#" + receiver + "#1");
+        CacheMgr.evict(getCache_region(), "count#" + user);
+        CacheMgr.evict(getCache_region(), "msgs#" + user);
     }
 
     public Msg construct(long sender, long receiver, String content, int type, String source) {
@@ -68,20 +124,24 @@ public class MsgDAO extends CommonDao<Msg> {
         if (sender <= 0L || receiver <= 0L || StringUtils.isEmpty(content)) {
             return false;
         }
+        if (sender <= 2L || receiver <= 2L) {
+            type = 0;
+        }
+        int finalType = type;
         DbQuery.get("mysql").transaction(new TransactionService() {
             @Override
             public void execute() throws Exception {
-                Msg send = construct(sender, receiver, content, type, source);
-                Msg rece = construct(receiver, sender, content, type, source);
+                Msg send = construct(sender, receiver, content, finalType, source);
+                Msg rece = construct(receiver, sender, content, finalType, source);
                 long send_id = send.save();
                 long rece_id = rece.save();
-                LastMsg s = LastMsgDAO.ME.construct(sender, receiver, content, type, source, send_id);
-                LastMsg r = LastMsgDAO.ME.construct(receiver, sender, content, type, source, rece_id);
+                LastMsg s = LastMsgDAO.ME.construct(sender, receiver, content, finalType, source, send_id);
+                LastMsg r = LastMsgDAO.ME.construct(receiver, sender, content, finalType, source, rece_id);
                 LastMsgDAO.ME.saveOrUpdate(s);
                 LastMsgDAO.ME.saveOrUpdate(r);
                 evict(sender, receiver);
                 evict(receiver, sender);
-                LastMsgDAO.ME.evict(sender, receiver, type);
+                LastMsgDAO.ME.evict(sender, receiver, finalType);
             }
         });
         return true;

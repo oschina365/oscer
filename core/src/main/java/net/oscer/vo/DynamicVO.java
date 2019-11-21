@@ -82,10 +82,7 @@ public class DynamicVO {
      * @return
      */
     public static List<DynamicVO> construct(List<Dynamic> list) {
-        if (CollectionUtils.isEmpty(list)) {
-            return null;
-        }
-        return list.stream().map(DynamicVO::construct).collect(Collectors.toList());
+        return CollectionUtils.isEmpty(list) ? null : list.stream().map(DynamicVO::construct).collect(Collectors.toList());
 
     }
 

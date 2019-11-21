@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static net.oscer.beans.Msg.TYPE_USER;
 import static net.oscer.beans.Question.MAX_LENGTH_TITLE;
 import static net.oscer.beans.User.SEX_GIRL;
 import static net.oscer.beans.User.SEX_UNKONW;
@@ -574,6 +575,82 @@ public class UniController extends BaseController {
         map.put("count", DynamicDAO.ME.countByUser(loginUser.getId()));
         return ApiResult.successWithObject(map);
     }
+
+    /**
+     * 私信列表
+     * 私信类型（系统私信：0，个人私信：1）,不传参数即查询全部
+     *
+     * @return
+     */
+    @PostMapping("lastmsgs")
+    @ResponseBody
+    public ApiResult lastmsgs(@RequestParam(value = "user", required = false) Long user) throws Exception {
+        User loginUser = current_user(user);
+        if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
+            return ApiResult.failWithMessage("请重新登录");
+        }
+        int type = param("type", -1);
+        long user_id = loginUser.getId();
+        List<LastMsg> list = null;
+        int count = 0;
+        if (type == -1) {
+            list = LastMsgDAO.ME.msgs(user_id, pageNumber, pageSize);
+            count = LastMsgDAO.ME.count(user_id);
+        } else {
+            list = LastMsgDAO.ME.msgs(user_id, type, pageNumber, pageSize);
+            count = LastMsgDAO.ME.count(user_id, type);
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("list", MsgVO.construct(list));
+        map.put("count", count);
+        return ApiResult.successWithObject(map);
+    }
+
+    /**
+     * 与某人详细私信列表
+     * 私信类型（系统私信：0，个人私信：1）,不传参数即查询全部
+     *
+     * @return
+     */
+    @PostMapping("user_msgs")
+    @ResponseBody
+    public ApiResult user_msgs(@RequestParam(value = "user", required = false) Long user) throws Exception {
+        User loginUser = current_user(user);
+        if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
+            return ApiResult.failWithMessage("请重新登录");
+        }
+        long receiver = param("receiver", 0L);
+        long user_id = loginUser.getId();
+        List<Msg> list = MsgDAO.ME.msgs(user_id, receiver, TYPE_USER, pageNumber, pageSize);
+        int count = MsgDAO.ME.count(user_id, receiver, TYPE_USER);
+        Map<String, Object> map = new HashMap<>();
+        map.put("list", MsgVO.construct_msg(list));
+        map.put("count", count);
+        return ApiResult.successWithObject(map);
+    }
+
+    /**
+     * 系统私信列表
+     * 私信类型（系统私信：0，个人私信：1）,不传参数即查询全部
+     *
+     * @return
+     */
+    @PostMapping("system_msgs")
+    @ResponseBody
+    public ApiResult systemmsgs(@RequestParam(value = "user", required = false) Long user) throws Exception {
+        User loginUser = current_user(user);
+        if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
+            return ApiResult.failWithMessage("请重新登录");
+        }
+        long user_id = loginUser.getId();
+        List<Msg> list = MsgDAO.ME.msgs_system(user_id, pageNumber, pageSize);
+        int count = MsgDAO.ME.count_system(user_id);
+        Map<String, Object> map = new HashMap<>();
+        map.put("list", MsgVO.construct_msg(list));
+        map.put("count", count);
+        return ApiResult.successWithObject(map);
+    }
+
 
     /**
      * 发送私信

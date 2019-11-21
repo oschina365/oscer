@@ -111,7 +111,6 @@
         } else {
           layui.layer.msg(d.message ? d.message : "网络问题，请重试", {icon: 5});
         }
-        location.reload();
       },error:function () {
         layui.layer.msg("网络问题，请重试", {icon: 5});
       }
@@ -136,7 +135,6 @@
           } else {
             layui.layer.msg(d.message ? d.message : "网络问题，请重试", {icon: 5});
           }
-          location.reload();
         },error:function () {
           layui.layer.msg("网络问题，请重试", {icon: 5});
         }

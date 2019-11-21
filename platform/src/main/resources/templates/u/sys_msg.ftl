@@ -1,5 +1,5 @@
 <#include "../layout/front/layout.ftl"/>
-<@html title_="用户私信-oscer社区">
+<@html title_="系统私信-oscer社区">
 
 <div class="layui-container fly-marginTop fly-user-main">
 
@@ -23,11 +23,14 @@
   {{#  if(d.list!=null&&d.list.length> 0){ }}
   {{#  layui.each(d.list, function(index, item){ }}
   <li>
-    <a href="/u/{{item.sender.id}}" class="fly-avatar"> <img src="{{item.receiver.headimg}}" alt="{{item.receiver.username}}"> </a>
+    <a href="/u/{{item.receiver.id}}" class="fly-avatar"> <img src="{{item.receiver.headimg}}" alt="{{item.receiver.username}}"> </a>
     <h2><a href="/u/{{item.receiver.id}}" target="_blank">{{item.content}}</a></h2>
     <div class="fly-list-info">
-      <a href="/u/{{item.receiver.id}}" link=""> <cite>{{item.receiver.username}}</cite></a><span>{{item.sdf_insert_date}}</span>
-      <a onclick="detail({{item.receiver.id}});" style="color: #1E9FFF;cursor: pointer">共5条消息</a>
+      <a href="/u/{{item.receiver.id}}" link=""> <cite>{{item.receiver.username}}</cite></a>
+      {{#  if(item.receiver.id<=2){ }}
+        <span style="color: #5FB878;">管理员 </span>
+      {{# }}}
+      <span>{{item.sdf_insert_date}}</span>
       <a class="layui-btn layui-btn-xs layui-bg-red">删除</a>
       <a class="layui-btn layui-btn-xs layui-bg-green" onclick="send({{item.receiver.id}});">回复</a>
     </div>
@@ -66,11 +69,6 @@
       layer.close(index);
     });
   };
-
-  function detail(id) {
-
-  };
-
   layui.config({
     version: "3.0.0"
     , base: '../../res/mods/'
@@ -80,16 +78,17 @@
     var form = layui.form, laypage = layui.laypage, laytpl = layui.laytpl, $ = layui.jquery, layer = layui.layer;
     msgs(1);
 
+
     /**
      * 查询数据列表,我的收藏
      * @param number
      */
     function msgs(number) {
       $.ajax({
-        url: '/uni/lastmsgs',
+        url: '/uni/system_msgs',
         method: 'post',
         dataType: 'json',
-        data: {"number": number,'type':1},
+        data: {"number": number},
         success: function (data) {
           if (data && data.code == 1) {
             var listData = {"list": data.result.list};

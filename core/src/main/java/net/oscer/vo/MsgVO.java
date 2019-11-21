@@ -1,7 +1,15 @@
 package net.oscer.vo;
 
 
+import net.oscer.beans.LastMsg;
+import net.oscer.beans.Msg;
+import net.oscer.beans.User;
+import net.oscer.framework.FormatTool;
+import org.apache.commons.collections.CollectionUtils;
+
 import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 私信
@@ -61,5 +69,35 @@ public class MsgVO implements Serializable {
 
     public void setSdf_insert_date(String sdf_insert_date) {
         this.sdf_insert_date = sdf_insert_date;
+    }
+
+    public static List<MsgVO> construct(List<LastMsg> list) {
+        return CollectionUtils.isEmpty(list) ? null : list.stream().map(MsgVO::construct).collect(Collectors.toList());
+    }
+
+    public static MsgVO construct(LastMsg msg) {
+        MsgVO vo = new MsgVO();
+        User sender = User.ME.get(msg.getSender());
+        User receiver = User.ME.get(msg.getReceiver());
+        vo.setSender(UserVO.convert(sender));
+        vo.setReceiver(UserVO.convert(receiver));
+        vo.setContent(msg.getContent());
+        vo.setSdf_insert_date(FormatTool.format_intell_time(msg.getInsert_date()));
+        return vo;
+    }
+
+    public static List<MsgVO> construct_msg(List<Msg> list) {
+        return CollectionUtils.isEmpty(list) ? null : list.stream().map(MsgVO::construct).collect(Collectors.toList());
+    }
+
+    public static MsgVO construct(Msg m) {
+        MsgVO vo = new MsgVO();
+        User sender = User.ME.get(m.getSender());
+        User receiver = User.ME.get(m.getReceiver());
+        vo.setSender(UserVO.convert(sender));
+        vo.setReceiver(UserVO.convert(receiver));
+        vo.setContent(m.getContent());
+        vo.setSdf_insert_date(FormatTool.format_intell_time(m.getInsert_date()));
+        return vo;
     }
 }
