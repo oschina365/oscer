@@ -74,7 +74,6 @@
 </script>
 
 <script id="collectsTpl" type="text/html">
-    {{d.list}}
     {{#  if(d.list!=null&&d.list.length> 0){ }}
     {{#  layui.each(d.list, function(index, item){ }}
     <li>
