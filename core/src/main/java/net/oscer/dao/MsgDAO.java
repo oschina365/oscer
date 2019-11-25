@@ -31,7 +31,7 @@ public class MsgDAO extends CommonDao<Msg> {
      * @return
      */
     public int count_system(long user) {
-        String sql = "select count(*) from msgs where sender=? and type=0";
+        String sql = "select count(*) from msgs where user=? and type=0";
         return getDbQuery().stat_cache(getCache_region(), "count#" + user, sql, user);
     }
 
@@ -42,7 +42,7 @@ public class MsgDAO extends CommonDao<Msg> {
      * @return
      */
     public int count(long user, long receiver) {
-        String sql = "select count(*) from msgs where sender=? and receiver=?";
+        String sql = "select count(*) from msgs where user=? and friend=?";
         return getDbQuery().stat_cache(getCache_region(), "count#" + user + "#" + receiver, sql, user, receiver);
     }
 
@@ -53,7 +53,7 @@ public class MsgDAO extends CommonDao<Msg> {
      * @return
      */
     public int count(long user, long receiver, int type) {
-        String sql = "select count(*) from msgs where sender=? and receiver=?";
+        String sql = "select count(*) from msgs where user=? and friend=?";
         return getDbQuery().stat_cache(getCache_region(), "count#" + user + "#" + receiver + "#" + type, sql, user, receiver);
     }
 
@@ -66,7 +66,7 @@ public class MsgDAO extends CommonDao<Msg> {
      * @return
      */
     public List<Msg> msgs_system(long user, int page, int size) {
-        String sql = "select id from msgs where sender=? and type=0 order by id desc";
+        String sql = "select id from msgs where user=? and type=0 order by id desc";
         List<Long> ids = getDbQuery().query_slice_cache(long.class, getCache_region(), "msgs#" + user, 20, sql, page, size, user);
         return Msg.ME.loadList(ids);
     }
@@ -80,7 +80,7 @@ public class MsgDAO extends CommonDao<Msg> {
      * @return
      */
     public List<Msg> msgs(long user, long receiver, int page, int size) {
-        String sql = "select id from msgs where sender=? and receiver=? order by id desc";
+        String sql = "select id from msgs where user=? and friend=? order by id desc";
         List<Long> ids = getDbQuery().query_slice_cache(long.class, getCache_region(), "msgs#" + user + "#" + receiver, 20, sql, page, size, user, receiver);
         return Msg.ME.loadList(ids);
     }
@@ -94,7 +94,7 @@ public class MsgDAO extends CommonDao<Msg> {
      * @return
      */
     public List<Msg> msgs(long user, long receiver, int type, int page, int size) {
-        String sql = "select id from msgs where sender=? and receiver=? and type=? order by id desc";
+        String sql = "select id from msgs where user=? and friend=? and type=? order by id desc";
         List<Long> ids = getDbQuery().query_slice_cache(long.class, getCache_region(), "msgs#" + user + "#" + receiver + "#" + type, 20, sql, page, size, user, receiver, type);
         return Msg.ME.loadList(ids);
     }
@@ -112,6 +112,8 @@ public class MsgDAO extends CommonDao<Msg> {
 
     public Msg construct(long sender, long receiver, String content, int type, String source) {
         Msg m = new Msg();
+        m.setUser(receiver);
+        m.setFriend(sender);
         m.setSender(sender);
         m.setReceiver(receiver);
         m.setContent(content);
@@ -133,6 +135,8 @@ public class MsgDAO extends CommonDao<Msg> {
             public void execute() throws Exception {
                 Msg send = construct(sender, receiver, content, finalType, source);
                 Msg rece = construct(receiver, sender, content, finalType, source);
+                rece.setSender(sender);
+                rece.setReceiver(receiver);
                 long send_id = send.save();
                 long rece_id = rece.save();
                 LastMsg s = LastMsgDAO.ME.construct(sender, receiver, content, finalType, source, send_id);

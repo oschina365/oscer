@@ -190,6 +190,17 @@ public class UserController extends BaseController {
     }
 
     /**
+     * 与某人的具体私信
+     *
+     * @return
+     */
+    @GetMapping("msgs")
+    public String msgs() {
+        request.setAttribute("id",param("id"));
+        return "/u/detail_msg";
+    }
+
+    /**
      * 系统私信
      *
      * @return

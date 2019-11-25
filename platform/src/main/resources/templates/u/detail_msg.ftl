@@ -1,13 +1,14 @@
-<#include "../layout/front/layout.ftl"/>
+<#include "../layout/front/no_layout.ftl"/>
 <@html title_="用户私信-oscer社区">
-
-<div class="layui-container fly-marginTop fly-user-main">
-
-  <#include '../layout/user/left_nav.ftl'/>
-
-  <div class="fly-panel fly-panel-user" pad10>
+<style>
+  html body {
+    margin-top: unset!important;
+  }
+</style>
+<div class="layui-container fly-user-main">
+  <div style="margin: unset !important;" class="fly-panel fly-panel-user" >
     <div class="layui-tab layui-tab-brief" lay-filter="user">
-      <div class="layui-tab-content" style="padding: 10px 0;">
+      <div class="layui-tab-content" style="padding: 6px 0;">
         <div class="layui-tab-item layui-show">
           <ul class="fly-list">
             <div id="msgBodys"></div>
@@ -24,10 +25,9 @@
   {{#  layui.each(d.list, function(index, item){ }}
   <li>
     <a href="/u/{{item.sender.id}}" class="fly-avatar"> <img src="{{item.sender.headimg}}" alt="{{item.sender.username}}"> </a>
-    <h2><a href="/u/{{item.receiver.id}}" target="_blank">{{item.content}}</a></h2>
+    <h2><a href="/u/{{item.sender.id}}" target="_blank">{{item.content}}</a></h2>
     <div class="fly-list-info">
-      <a href="/u/{{item.receiver.id}}" link=""> <cite>{{item.receiver.username}}</cite></a><span>{{item.sdf_insert_date}}</span>
-      <a onclick="detail({{item.sender.id}});" style="color: #1E9FFF;cursor: pointer">共{{item.count}}消息</a>
+      <a href="/u/{{item.sender.id}}" link=""> <cite>{{item.sender.username}}</cite></a><span>{{item.sdf_insert_date}}</span>
       <a class="layui-btn layui-btn-xs layui-bg-red">删除</a>
       <a class="layui-btn layui-btn-xs layui-bg-green" onclick="send({{item.sender.id}});">回复</a>
     </div>
@@ -67,16 +67,6 @@
     });
   };
 
-  function detail(id) {
-    layer.open({
-      type: 2,
-      title: '详细私信',
-      shadeClose: true,
-      shade: 0.8,
-      area: ['90%', '90%'],
-      content: '/u/msgs?id='+id //iframe的url
-    });
-  };
 
   layui.config({
     version: "3.0.0"
@@ -93,10 +83,10 @@
      */
     function msgs(number) {
       $.ajax({
-        url: '/uni/lastmsgs',
+        url: '/uni/user_msgs',
         method: 'post',
         dataType: 'json',
-        data: {"number": number,'type':1},
+        data: {"number": number,'receiver':${id}},
         success: function (data) {
           if (data && data.code == 1) {
             var listData = {"list": data.result.list};

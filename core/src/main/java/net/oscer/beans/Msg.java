@@ -18,6 +18,9 @@ public class Msg extends Entity {
     public static final int TYPE_SYSTEM = 0;
     public static final int TYPE_USER = 1;
 
+    private long user;
+    private long friend;
+
     /**
      * 发送者
      */
@@ -40,6 +43,21 @@ public class Msg extends Entity {
      */
     private String source;
 
+    public long getUser() {
+        return user;
+    }
+
+    public void setUser(long user) {
+        this.user = user;
+    }
+
+    public long getFriend() {
+        return friend;
+    }
+
+    public void setFriend(long friend) {
+        this.friend = friend;
+    }
 
     public long getSender() {
         return sender;

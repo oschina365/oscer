@@ -39,6 +39,8 @@ public class MsgVO implements Serializable {
      */
     private String sdf_insert_date;
 
+    private int count;
+
     public UserVO getSender() {
         return sender;
     }
@@ -71,6 +73,14 @@ public class MsgVO implements Serializable {
         this.sdf_insert_date = sdf_insert_date;
     }
 
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
     public static List<MsgVO> construct(List<LastMsg> list) {
         return CollectionUtils.isEmpty(list) ? null : list.stream().map(MsgVO::construct).collect(Collectors.toList());
     }
@@ -83,6 +93,7 @@ public class MsgVO implements Serializable {
         vo.setReceiver(UserVO.convert(receiver));
         vo.setContent(msg.getContent());
         vo.setSdf_insert_date(FormatTool.format_intell_time(msg.getInsert_date()));
+        vo.setCount(msg.getCount());
         return vo;
     }
 

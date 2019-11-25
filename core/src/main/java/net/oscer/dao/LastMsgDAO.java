@@ -27,7 +27,7 @@ public class LastMsgDAO extends CommonDao<LastMsg> {
      * @return
      */
     public int count(long user) {
-        String sql = "select count(*) from last_msgs where sender=?";
+        String sql = "select count(*) from last_msgs where user=?";
         return getDbQuery().stat_cache(getCache_region(), "count#" + user, sql, user);
     }
 
@@ -40,7 +40,7 @@ public class LastMsgDAO extends CommonDao<LastMsg> {
      * @return
      */
     public List<LastMsg> msgs(long user, int page, int size) {
-        String sql = "select * from last_msgs where sender=? order by msg_id desc";
+        String sql = "select * from last_msgs where user=? order by msg_id desc";
         return getDbQuery().query_slice_cache(LastMsg.class, getCache_region(), "msgs#" + user, 20, sql, page, size, user);
     }
 
@@ -52,7 +52,7 @@ public class LastMsgDAO extends CommonDao<LastMsg> {
      * @return
      */
     public int count(long user, int type) {
-        String sql = "select count(*) from last_msgs where sender=? and type=?";
+        String sql = "select count(*) from last_msgs where user=? and type=?";
         return getDbQuery().stat_cache(getCache_region(), "count#" + user + "type#" + type, sql, user, type);
     }
 
@@ -66,7 +66,7 @@ public class LastMsgDAO extends CommonDao<LastMsg> {
      * @return
      */
     public List<LastMsg> msgs(long user, int type, int page, int size) {
-        String sql = "select * from last_msgs where sender=? and type=? order by msg_id desc";
+        String sql = "select * from last_msgs where user=? and type=? order by msg_id desc";
         return getDbQuery().query_slice_cache(LastMsg.class, getCache_region(), "msgs#" + user + "type#" + type, 20, sql,page, size, user,type);
     }
 
@@ -84,6 +84,8 @@ public class LastMsgDAO extends CommonDao<LastMsg> {
 
     public LastMsg construct(long sender, long receiver, String content, int type, String source, long msg_id) {
         LastMsg m = new LastMsg();
+        m.setUser(receiver);
+        m.setFriend(sender);
         m.setSender(sender);
         m.setReceiver(receiver);
         m.setContent(content);
@@ -94,10 +96,11 @@ public class LastMsgDAO extends CommonDao<LastMsg> {
     }
 
     public void saveOrUpdate(LastMsg m) {
-        String sql = " insert into last_msgs (sender,receiver,content,type,source,msg_id)  values(?,?,?,?,?,?) on  DUPLICATE key " +
-                "update sender=?,receiver=?,content=?,type=?,source=?,msg_id=?";
-        getDbQuery().update(sql, m.getSender(), m.getReceiver(), m.getContent(), m.getType(), m.getSource(), m.getMsg_id(),
-                m.getSender(), m.getReceiver(), m.getContent(), m.getType(), m.getSource(), m.getMsg_id());
+        String sql = " insert into last_msgs (user,friend,sender,receiver,content,type,source,msg_id,count)  values(?,?,?,?,?,?,?,?,?) on  DUPLICATE key " +
+                "update user=?,friend=?,sender=?,receiver=?,content=?,type=?,source=?,msg_id=?,count=?";
+        int count = MsgDAO.ME.count(m.getSender(),m.getReceiver());
+        getDbQuery().update(sql,m.getUser(),m.getFriend(), m.getSender(), m.getReceiver(), m.getContent(), m.getType(), m.getSource(), m.getMsg_id(),count,
+                m.getUser(),m.getFriend(),m.getSender(), m.getReceiver(), m.getContent(), m.getType(), m.getSource(), m.getMsg_id(),count);
     }
 
 

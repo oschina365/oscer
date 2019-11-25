@@ -15,6 +15,8 @@ public class LastMsg extends Entity {
 
     public final static LastMsg ME = new LastMsg();
 
+    private long user;
+    private long friend;
     /**
      * 发送者
      */
@@ -41,6 +43,24 @@ public class LastMsg extends Entity {
      * 私信来源（网页端，小程序）
      */
     private String source;
+
+    private int count;
+
+    public long getUser() {
+        return user;
+    }
+
+    public void setUser(long user) {
+        this.user = user;
+    }
+
+    public long getFriend() {
+        return friend;
+    }
+
+    public void setFriend(long friend) {
+        this.friend = friend;
+    }
 
     public long getSender() {
         return sender;
@@ -88,5 +108,17 @@ public class LastMsg extends Entity {
 
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public static LastMsg getME() {
+        return ME;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 }
