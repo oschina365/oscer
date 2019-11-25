@@ -98,9 +98,8 @@ public class BaseController {
         String number = request.getParameter("number");
         String size = request.getParameter("size");
         this.pageNumber = StringUtils.isEmpty(number) ? 1 : Integer.parseInt(number);
-        this.pageSize = StringUtils.isEmpty(size) ? pageSize : Integer.parseInt(size);
+        this.pageSize = StringUtils.isEmpty(size) ? 10 : Integer.parseInt(size);
         this.request = request;
-        request.setAttribute("size", pageSize);
         User login_user = getLoginUser();
         if (null != login_user) {
             request.setAttribute("login_user", getLoginUser());

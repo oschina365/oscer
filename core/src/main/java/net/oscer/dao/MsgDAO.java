@@ -150,4 +150,29 @@ public class MsgDAO extends CommonDao<Msg> {
         });
         return true;
     }
+
+    /**
+     * 删除私信
+     *
+     * @param sender
+     * @param receiver
+     * @return
+     * @throws Exception
+     */
+    public boolean delete(long sender, long receiver) throws Exception {
+
+        DbQuery.get("mysql").transaction(new TransactionService() {
+            @Override
+            public void execute() throws Exception {
+                String sql = "delete from msgs where user =? and friend=?";
+                getDbQuery().update(sql, sender, receiver);
+                sql = "delete from last_msgs where user =? and friend=?";
+                getDbQuery().update(sql, sender, receiver);
+                evict(receiver, sender);
+                LastMsgDAO.ME.evict(sender, 0);
+                LastMsgDAO.ME.evict(sender, 1);
+            }
+        });
+        return true;
+    }
 }

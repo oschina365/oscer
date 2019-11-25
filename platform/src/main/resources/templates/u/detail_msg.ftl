@@ -28,7 +28,6 @@
     <h2><a href="/u/{{item.sender.id}}" target="_blank">{{item.content}}</a></h2>
     <div class="fly-list-info">
       <a href="/u/{{item.sender.id}}" link=""> <cite>{{item.sender.username}}</cite></a><span>{{item.sdf_insert_date}}</span>
-      <a class="layui-btn layui-btn-xs layui-bg-red">删除</a>
       <a class="layui-btn layui-btn-xs layui-bg-green" onclick="send({{item.sender.id}});">回复</a>
     </div>
 

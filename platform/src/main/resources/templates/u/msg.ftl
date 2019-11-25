@@ -28,7 +28,7 @@
     <div class="fly-list-info">
       <a href="/u/{{item.receiver.id}}" link=""> <cite>{{item.receiver.username}}</cite></a><span>{{item.sdf_insert_date}}</span>
       <a onclick="detail({{item.sender.id}});" style="color: #1E9FFF;cursor: pointer">共{{item.count}}消息</a>
-      <a class="layui-btn layui-btn-xs layui-bg-red">删除</a>
+      <a class="layui-btn layui-btn-xs layui-bg-red" onclick="delMsg({{item.sender.id}});">删除</a>
       <a class="layui-btn layui-btn-xs layui-bg-green" onclick="send({{item.sender.id}});">回复</a>
     </div>
 
@@ -65,6 +65,29 @@
       });
       layer.close(index);
     });
+  };
+
+  function delMsg(id) {
+      layer.confirm('确定删除与该用户的所有私信？', {
+          btn: ['确定','取消'] //按钮
+      }, function(){
+          $.ajax({
+              url: '/uni/del_msg',
+              method: 'post',
+              dataType: 'json',
+              data: {"receiver":id},
+              success: function (d) {
+                  if (d && d.code == 1) {
+                      layui.layer.msg(d.message ? d.message : "操作成功", {icon: 6});
+                  } else {
+                      layui.layer.msg(d.message ? d.message : "网络问题，请重试", {icon: 5});
+                  }
+                  location.reload();
+              },error:function () {
+                  layui.layer.msg("网络问题，请重试", {icon: 5});
+              }
+          });
+      });
   };
 
   function detail(id) {

@@ -685,4 +685,30 @@ public class UniController extends BaseController {
 
         return ApiResult.success("发送成功");
     }
+
+    /**
+     * 删除与用户所有私信
+     *
+     * @return
+     */
+    @PostMapping("del_msg")
+    @ResponseBody
+    public ApiResult del_msg(@RequestParam(value = "user", required = false) Long user) throws Exception {
+        User loginUser = current_user(user);
+        if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
+            return ApiResult.failWithMessage("请重新登录");
+        }
+        long receiver = param("receiver", 0L);
+        User re = User.ME.get(receiver);
+        if (re == null) {
+            return ApiResult.failWithMessage("用户不存在");
+        }
+
+        boolean r = MsgDAO.ME.delete(loginUser.getId(), receiver);
+        if (!r) {
+            return ApiResult.failWithMessage("删除失败！");
+        }
+
+        return ApiResult.success("删除成功");
+    }
 }
