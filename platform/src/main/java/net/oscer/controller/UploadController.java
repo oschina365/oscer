@@ -2,6 +2,8 @@ package net.oscer.controller;
 
 import com.qiniu.common.QiniuException;
 import net.oscer.api.vo.UploadResultVO;
+import net.oscer.beans.User;
+import net.oscer.common.ApiResult;
 import net.oscer.common.SystemConstant;
 import net.oscer.service.QiNiuService;
 import org.slf4j.Logger;
@@ -55,8 +57,6 @@ public class UploadController extends BaseController {
     }
 
 
-
-
     /**
      * 图片上传，采用webUpload单次上传
      * 转化为byte数组上传
@@ -66,8 +66,9 @@ public class UploadController extends BaseController {
      */
     @RequestMapping(value = "/pic", method = RequestMethod.POST)
     @ResponseBody
-    public UploadResultVO pic(@RequestParam("file") MultipartFile multipartFile) throws IOException {
-        return QiNiuService.pic(multipartFile, getUserId());
+    public UploadResultVO pic(@RequestParam("file") MultipartFile multipartFile, @RequestParam(value = "user", required = false) Long user) throws IOException {
+        User loginUser = current_user(user);
+        return QiNiuService.pic(multipartFile, loginUser == null ? 0L : loginUser.getId());
     }
 
     /**
@@ -80,8 +81,9 @@ public class UploadController extends BaseController {
      */
     @RequestMapping(value = "/lay", method = RequestMethod.POST)
     @ResponseBody
-    public String lay(@RequestParam("file") MultipartFile multipartFile) throws IOException {
-        UploadResultVO vo = QiNiuService.pic(multipartFile, getUserId());
+    public String lay(@RequestParam("file") MultipartFile multipartFile, @RequestParam(value = "user", required = false) Long user) throws IOException {
+        User loginUser = current_user(user);
+        UploadResultVO vo = QiNiuService.pic(multipartFile, loginUser == null ? 0L : loginUser.getId());
         return vo.toString();
     }
 
@@ -95,10 +97,46 @@ public class UploadController extends BaseController {
      */
     @RequestMapping(value = "/lay2", method = RequestMethod.POST)
     @ResponseBody
-    public String lay2(@RequestParam("file") MultipartFile multipartFile) throws IOException {
-        UploadResultVO vo = QiNiuService.pic(multipartFile, getUserId());
-        vo.setKey(vo.getKey()+"?imageslim&imageView2/0/w/1000/h/500");
+    public String lay2(@RequestParam("file") MultipartFile multipartFile, @RequestParam(value = "user", required = false) Long user) throws IOException {
+        User loginUser = current_user(user);
+        UploadResultVO vo = QiNiuService.pic(multipartFile, loginUser == null ? 0L : loginUser.getId());
+        vo.setKey(vo.getKey() + "?imageslim&imageView2/0/w/1000/h/500");
         vo.getData().setSrc(vo.getKey());
         return vo.toString();
+    }
+
+    /**
+     * 图片上传,不压缩图片
+     * 返回格式适合于layui上传图片
+     * 转化为byte数组上传
+     *
+     * @param multipartFile
+     * @return
+     */
+    @RequestMapping(value = "/lay3", method = RequestMethod.POST)
+    @ResponseBody
+    public ApiResult lay3(@RequestParam("file") MultipartFile multipartFile, @RequestParam(value = "user", required = false) Long user) throws IOException {
+        User loginUser = current_user(user);
+        UploadResultVO vo = QiNiuService.pic(multipartFile, loginUser == null ? 0L : loginUser.getId());
+        return ApiResult.successWithObject(vo);
+    }
+
+    /**
+     * 图片上传,不压缩图片
+     * 返回格式适合于layui上传图片
+     * 转化为byte数组上传
+     *
+     * @param multipartFile
+     * @return
+     */
+    @RequestMapping(value = "/lay4", method = RequestMethod.POST)
+    @ResponseBody
+    public String lay4(@RequestParam("file") MultipartFile multipartFile, @RequestParam(value = "user", required = false) Long user) throws IOException {
+        User loginUser = current_user(user);
+        UploadResultVO vo = QiNiuService.pic(multipartFile, loginUser == null ? 0L : loginUser.getId());
+        if (vo.getCode() == 0 && vo.getKey() != null) {
+            return vo.getKey();
+        }
+        return "";
     }
 }

@@ -528,6 +528,10 @@ public class UniController extends BaseController {
         loginUser.setSalt(loginUser._GeneratePwdHash(loginUser.getPassword(), loginUser.getEmail()));
         loginUser.setCity(form.getCity());
         loginUser.setSelf_info(StringUtils.isEmpty(form.getSelf_info()) ? loginUser.getSelf_info() : form.getSelf_info());
+        if(StringUtils.isNotEmpty(form.getHeadimg())){
+            loginUser.setHeadimg(form.getHeadimg());
+
+        }
         loginUser.doUpdate();
         return ApiResult.successWithObject(loginUser);
     }
