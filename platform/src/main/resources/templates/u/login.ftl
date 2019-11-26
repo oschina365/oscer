@@ -31,6 +31,10 @@
               </div>
               <div class="layui-form-item fly-form-app">
                 <span>或者使用第三方账号登入</span>
+                <a href="/oauth/before_bind?rp=osc"
+                   onclick="layer.msg('正在通过开源中国社区登入', {icon:16, shade: 0.1, time:0})" title="Gitee登入">
+                  <img src="https://static.oschina.net/new-osc/img/logo_osc_new.svg" style="max-height: 32px;">
+                </a>
                 <a href="/oauth/before_bind?rp=gitee"
                    onclick="layer.msg('正在通过Gitee登入', {icon:16, shade: 0.1, time:0})" title="Gitee登入">
                   <img src="/res/images/logo_gitee_light_cn_with_domain_name.png" style="max-height: 36px;">

@@ -48,7 +48,7 @@ public class OauthController extends BaseController {
 
     private final static String AFTER_BIND_URL = "http://www.oscer.net/oauth/after_bind";
     private final static String AFTER_BIND_GITEE = "http://www.oscer.net/oauth/after_bind_gitee";
-    private final static String AFTER_BIND_OSC = "http://www.oscer.net/oauth/after_bind_osc";
+    private final static String AFTER_BIND_OSC = "http://oscer.com/oauth/after_bind_osc";
 
     public final static String SOCIAL_AUTH_CACHE = "1h";
     private final static String SOCIAL_AUTH_KEY = "socialauth_id";
@@ -153,10 +153,10 @@ public class OauthController extends BaseController {
                 doBindGitee();
                 return;
             }
-            /*if (StringUtils.equalsIgnoreCase(rp, OauthEnum.FROM.OSC.getForm())) {
+            if (StringUtils.equalsIgnoreCase(rp, OauthEnum.FROM.OSC.getForm())) {
                 doBindOsc();
                 return;
-            }*/
+            }
             try {
                 String after_bind_url = AFTER_BIND_URL;
                 _saveManagerAndGo(rp, after_bind_url);
@@ -233,6 +233,7 @@ public class OauthController extends BaseController {
     }
 
     @GetMapping("/after_bind_osc")
+    @ResponseBody
     public void after_bind_osc() throws IOException {
         String code = param("code");
         Cookie ck = cookie(SOCIAL_AUTH_KEY);
@@ -241,7 +242,7 @@ public class OauthController extends BaseController {
         String state_secret = (String) CacheMgr.get(SOCIAL_AUTH_CACHE, "OSC#" + state);
         Profile p = OscOpenAuth.getProfile(code, state, state_secret, redirect_url);
         if (p != null) {
-            //p.setProviderId(OauthEnum.FROM.OSC.getForm());
+            p.setProviderId(OauthEnum.FROM.OSC.getForm());
         }
         doBind(new AuthProfile(p));
     }
@@ -330,12 +331,22 @@ public class OauthController extends BaseController {
         if (StringUtils.isNotBlank(authProfile.getProfileImageURL())) {
             reg.setHeadimg(authProfile.getProfileImageURL());
             bind.setHeadimg(authProfile.getProfileImageURL());
+        } else {
+            reg.setHeadimg("http://img.oscer.net/avatar/" + (int) (Math.random() * 12) + ".jpg");
         }
-        if (StringUtils.isNotBlank(authProfile.getGender())) {
-            reg.setSex(Integer.valueOf(authProfile.getGender()));
-        }
+
         reg.setSalt(User.ME._GeneratePwdHash(pwd, reg.getEmail()));
         //reg.setFrom(OauthEnum.getFrom(authProfile.getProviderId()));
+        if (StringUtils.isNotEmpty(authProfile.getGender())) {
+            int sex = 0;
+            if (StringUtils.equalsIgnoreCase(authProfile.getGender(), "female")) {
+                sex = 2;
+            }
+            if (StringUtils.equalsIgnoreCase(authProfile.getGender(), "man")) {
+                sex = 1;
+            }
+            reg.setSex(sex);
+        }
         reg.save();
 
         bind.setUser(reg.getId());

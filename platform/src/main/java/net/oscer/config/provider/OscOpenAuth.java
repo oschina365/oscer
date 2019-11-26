@@ -1,6 +1,6 @@
 package net.oscer.config.provider;
 
-import org.apache.commons.lang3.StringUtils;
+import net.oscer.framework.StringUtils;
 import org.brickred.socialauth.Profile;
 import org.json.JSONObject;
 
@@ -92,10 +92,12 @@ public class OscOpenAuth {
 
             Profile profile = new Profile();
             profile.setFirstName(info.getString("name"));
-            profile.setEmail(info.getString("name"));
-            profile.setProfileImageURL(info.getString("avatar_url"));
+            profile.setFullName(info.getString("name"));
+            profile.setEmail(info.getString("email"));
+            profile.setProfileImageURL(info.getString("avatar"));
             //gitee账号id,id唯一
-            profile.setValidatedId(info.getString("id"));
+            profile.setValidatedId(String.valueOf(info.getLong("id")));
+            profile.setGender(info.getString("gender"));
             return profile;
         } catch (Exception e) {
             return null;

@@ -1,8 +1,8 @@
 package net.oscer.config.provider;
 
 import net.oscer.framework.HttpKits;
+import net.oscer.framework.StringUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.brickred.socialauth.Profile;
 import org.json.JSONObject;
 
@@ -106,6 +106,9 @@ public class GiteeOpenAuth {
             profile.setProfileImageURL(info.getString("avatar_url"));
             //gitee账号id,id唯一
             profile.setValidatedId(info.get("id").toString());
+            if (StringUtils.isNotEmpty(info.getString("gender"))) {
+                profile.setGender(info.getString("gender"));
+            }
             return profile;
         } catch (Exception e) {
             e.printStackTrace();
