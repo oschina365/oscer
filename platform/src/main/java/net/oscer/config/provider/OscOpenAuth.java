@@ -39,7 +39,7 @@ public class OscOpenAuth {
      */
     public static JSONObject getAccessTokenInfo(String code, String redirect_url) throws Exception {
         if (redirect_url.equals("")) {
-            redirect_url = "http://oscer.com/oauth/after_bind_osc";
+            redirect_url = "https://www.oscer.net/oauth/after_bind_osc";
         }
         Map<String, String> params = new HashMap<>();
         params.put("client_id", client_id);
@@ -100,6 +100,7 @@ public class OscOpenAuth {
             profile.setGender(info.getString("gender"));
             return profile;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }

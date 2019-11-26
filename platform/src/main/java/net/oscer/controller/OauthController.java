@@ -48,7 +48,7 @@ public class OauthController extends BaseController {
 
     private final static String AFTER_BIND_URL = "http://www.oscer.net/oauth/after_bind";
     private final static String AFTER_BIND_GITEE = "http://www.oscer.net/oauth/after_bind_gitee";
-    private final static String AFTER_BIND_OSC = "http://oscer.com/oauth/after_bind_osc";
+    private final static String AFTER_BIND_OSC = "https://www.oscer.net/oauth/after_bind_osc";
 
     public final static String SOCIAL_AUTH_CACHE = "1h";
     private final static String SOCIAL_AUTH_KEY = "socialauth_id";
