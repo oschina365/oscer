@@ -96,7 +96,7 @@
                   <#--<#list bindMap?keys as key>
                       ${bindMap[key]}
                   </#list>-->
-                 <#if bindMap[form]??>
+                 <#if bindMap?? && bindMap[form]??>
                    <span>已成功绑定<b>${form}</b>，您可以使用${form}帐号直接登录,</span>
                    <a href="javascript:;" class="acc-unbind" type="qq_id">解除绑定</a>
                    <#else >
