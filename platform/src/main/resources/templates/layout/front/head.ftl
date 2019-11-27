@@ -9,8 +9,8 @@
     <meta name="author" content="lifes77">
     <meta name="keywords" content="社区，帖子，情感，博客，技术，个人博客，记录，备忘录，个人记录，java，spring,springboot">
     <meta name="description" content="记录生活，享受生活">
-    <link rel="stylesheet" href="${static}/res/layui/css/layui.css">
-    <link rel="stylesheet" href="${static}/res/css/global.css">
+    <link rel="stylesheet" href="/res/layui/css/layui.css">
+    <link rel="stylesheet" href="/res/css/global.css">
 
     <script src="https://cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
     <script src="/res/layui/layui.js"></script>

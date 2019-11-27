@@ -1,5 +1,12 @@
-<#include "layout/front/layout.ftl"/>
-<@html title_="oscer社区">
+<!DOCTYPE html>
+<html lang="zh" class="app">
+<head>
+    <title>oscer社区</title>
+    <#include "layout/front/head.ftl"/>
+</head>
+<#include "layout/front/header.ftl"/>
+<body>
+
 
     <#include 'layout/front/node.ftl'/>
 
@@ -78,7 +85,7 @@
 
         <#include 'layout/front/index_right_nav.ftl'/>
     </div>
-</div>
+    </div>
 
     <script id="questionListTpl" type="text/html">
     {{#  if(d.list!=null&&d.list.length> 0){ }}
@@ -231,4 +238,7 @@
 
 </script>
 
-</@html>
+
+</body>
+<#include "layout/front/footer.ftl"/>
+</html>
