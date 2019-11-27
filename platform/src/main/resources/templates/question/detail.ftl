@@ -155,7 +155,7 @@
     <li class="jieda-daan">
         <div class="detail-about detail-about-reply">
             <p>{{d.rankMap[item.cq.id]}}楼<span>&nbsp;&nbsp;&nbsp;{{item.sdf_insert_date}}</span></p>
-            <a class="fly-avatar" href="">
+            <a class="fly-avatar" href="/u/{{item.cu.id}}">
                 <img src="{{item.cu.headimg}}" alt=" ">
             </a>
             <div class="fly-detail-user" style="margin-top: 10px;">
