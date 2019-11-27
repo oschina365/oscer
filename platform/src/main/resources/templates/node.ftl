@@ -65,7 +65,9 @@
         <div class="fly-list-info">
             <a href="/u/{{item.q_user.id}}" link>
                 <cite>{{item.q_user.nickname||item.q_user.username}}</cite>
-                <#--<i class="iconfont icon-renzheng" title="认证信息：XXX"></i>-->
+                {{# if(item.q_user.id<= 2){ }}
+                <i class="iconfont icon-renzheng" title="认证信息：管理员"></i>
+                {{# }}}
                 {{# if(item.q_user.vip_text){ }}<i class="layui-badge fly-badge-vip">{{item.q_user.vip_text}}</i>{{# }}}
             </a>
             <span>{{item.q.sdf_insert_date}}</span>
