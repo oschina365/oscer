@@ -92,13 +92,19 @@
             <ul class="app-bind">
               <#list froms as form>
                 <li class="fly-msg app-havebind">
-                  <i class="iconfont icon-qq"></i>
-                  <#--<#list bindMap?keys as key>
-                      ${bindMap[key]}
-                  </#list>-->
+                <#if form=='osc'>
+                    <img src="https://static.oschina.net/new-osc/img/logo_osc_new.svg" style="max-height: 25px;">
+                </#if>
+                <#if form=='gitee'>
+                  <img src="/res/images/logo_gitee_light_cn_with_domain_name.png" style="max-height: 36px;">
+                </#if>
+                <#if form=='github'>
+                  <img src="/res/images/github.png" style="max-height: 36px;">
+                </#if>
+
                  <#if bindMap?? && bindMap[form]??>
                    <span>已成功绑定<b>${form}</b>，您可以使用${form}帐号直接登录,</span>
-                   <a href="javascript:;" class="acc-unbind" type="qq_id">解除绑定</a>
+                  <#-- <a href="javascript:;" class="acc-unbind" type="qq_id">解除绑定</a>-->
                    <#else >
                    <a href="/oauth/before_bind?rp=${form}" onclick="layer.msg('正在绑定${form}', {icon:16, shade: 0.1, time:0})" class="acc-bind" type="qq_id">立即绑定</a>
                    <span>，即可使用${form}帐号登录</span>
@@ -129,9 +135,8 @@ layui.config({
     elem: '.thumbBox',
     url: '/up/lay',
     done: function(res, index, upload){
-      var src = res.result;
+      var src = res.key;
       $("#headimg").val(src);
-
       $('.thumbBox').attr('src',src);
     }
   });
