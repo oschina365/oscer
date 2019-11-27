@@ -336,7 +336,7 @@ public class OauthController extends BaseController {
         }
 
         reg.setSalt(User.ME._GeneratePwdHash(pwd, reg.getEmail()));
-        //reg.setFrom(OauthEnum.getFrom(authProfile.getProviderId()));
+        reg.setFrom(OauthEnum.getFrom(authProfile.getProviderId()));
         if (StringUtils.isNotEmpty(authProfile.getGender())) {
             int sex = 0;
             if (StringUtils.equalsIgnoreCase(authProfile.getGender(), "female")) {
