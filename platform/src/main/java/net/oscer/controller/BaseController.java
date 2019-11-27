@@ -131,6 +131,9 @@ public class BaseController {
         } catch (Exception e) {
             return null;
         }
+        if(true){
+            return login_user;
+        }
         return login_user == null ? (getUserFromCookie() == null ? null : getUserFromCookie()) : (login_user.getId() <= 0 ? null : login_user);
     }
 
