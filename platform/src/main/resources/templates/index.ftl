@@ -98,11 +98,16 @@
             <a class="layui-badge" href="{{item.n.url}}" target="_blank">{{item.n.name}}</a>
             <a href="/q/{{item.q.id}}" target="_blank">{{item.q.title}}</a>
             {{# if(item.q.system_top> 0){ }}<a class="layui-badge layui-bg-blue">顶</a>{{# }}}
+            {{# if(item.q.recomm==1){ }}
+            <a class="layui-badge layui-bg-red">精帖</a>
+            {{# }}}
         </h2>
         <div class="fly-list-info">
             <a href="/u/{{item.q_user.id}}" link>
                 <cite>{{item.q_user.nickname||item.q_user.username}}</cite>
-                <#--<i class="iconfont icon-renzheng" title="认证信息：XXX"></i>-->
+                {{# if(item.q_user.id<= 2){ }}
+                <i class="iconfont icon-renzheng" title="认证信息：管理员"></i>
+                {{# }}}
                 {{# if(item.q_user.vip_text){ }} <i class="layui-badge fly-badge-vip">{{item.q_user.vip_text}}</i>  {{# }}}
             </a>
             <span>{{item.q.sdf_insert_date}}</span>
@@ -119,11 +124,7 @@
             </span>
 
         </div>
-        {{# if(item.q.recomm==1){ }}
-        <div class="fly-list-badge">
-            <span class="layui-badge layui-bg-red">精帖</span>
-        </div>
-        {{# }}}
+
     </li>
     {{#  }); }}
     {{#} else { }}

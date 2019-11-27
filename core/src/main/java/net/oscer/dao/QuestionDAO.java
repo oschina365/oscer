@@ -99,7 +99,7 @@ public class QuestionDAO extends CommonDao<Question> {
     }
 
     public List<Question> tops(int limit) {
-        String sql = "select id from questions where status=0 and system_top > 0 order by recomm desc,system_top desc limit ?";
+        String sql = "select id from questions where status=0 and system_top > 0 order by recomm desc,system_top desc, id desc limit ?";
         List<Long> ids = getDbQuery().query_cache(long.class, isCacheNullObject(), getCache_region(), "tops#" + limit, sql, limit);
         return Question.ME.loadList(ids);
     }
