@@ -132,7 +132,7 @@
             <#list authorQuestions as orther>
                 <#if orther?? && orther.title??>
                     <dd>
-                    <a href="">${orther.title}</a>
+                    <a href="/q/${orther.id}">${orther.title}</a>
                     <span><i class="iconfont icon-pinglun1"></i> ${orther.comment_count}</span>
                     </dd>
                 </#if>
