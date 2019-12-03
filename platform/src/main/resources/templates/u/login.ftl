@@ -39,10 +39,10 @@
                    onclick="layer.msg('正在通过Gitee登入', {icon:16, shade: 0.1, time:0})" title="Gitee登入">
                   <img src="/res/images/logo_gitee_light_cn_with_domain_name.png" style="max-height: 36px;">
                 </a>
-                <a href="/oauth/before_bind?rp=github"
+               <#-- <a href="/oauth/before_bind?rp=github"
                    onclick="layer.msg('正在通过Github登入', {icon:16, shade: 0.1, time:0})" title="Github登入">
                   <img src="/res/images/github.png" style="max-height: 36px;">
-                </a>
+                </a>-->
               </div>
           </div>
         </div>
