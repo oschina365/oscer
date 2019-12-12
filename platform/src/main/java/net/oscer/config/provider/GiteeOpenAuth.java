@@ -99,16 +99,15 @@ public class GiteeOpenAuth {
             }
             String access_token = json.getString("access_token");
             JSONObject info = getUserInfo(access_token);
-
             Profile profile = new Profile();
             profile.setFullName(info.getString("name"));
             profile.setEmail(info.getString("name"));
             profile.setProfileImageURL(info.getString("avatar_url"));
             //gitee账号id,id唯一
             profile.setValidatedId(info.get("id").toString());
-            if (StringUtils.isNotEmpty(info.getString("gender"))) {
+          /*  if (StringUtils.isNotEmpty(info.getString("gender"))) {
                 profile.setGender(info.getString("gender"));
-            }
+            }*/
             return profile;
         } catch (Exception e) {
             e.printStackTrace();
