@@ -50,7 +50,7 @@ public class QuestionDAO extends CommonDao<Question> {
             @Override
             public void execute() throws Exception {
                 question.save();
-                DynamicDAO.ME.save(question.getUser(), question.getId());
+                DynamicDAO.ME.save(question.getUser(), question.getId(),question.getStatus());
                 id[0] = question.getId();
             }
 

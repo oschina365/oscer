@@ -364,7 +364,7 @@ public class User extends Entity implements Serializable {
     }
 
     public void setSdf_insert_date(String sdf_insert_date) {
-        this.sdf_insert_date =  FormatTool.format_intell_time(this.insert_date);
+        this.sdf_insert_date = FormatTool.format_intell_time(this.insert_date);
     }
 
     public String getSdf_last_date() {
@@ -372,7 +372,7 @@ public class User extends Entity implements Serializable {
     }
 
     public void setSdf_last_date(String sdf_last_date) {
-        this.sdf_last_date =  FormatTool.format_intell_time(this.last_date);
+        this.sdf_last_date = FormatTool.format_intell_time(this.last_date);
     }
 
     public String getFrom() {
@@ -467,6 +467,9 @@ public class User extends Entity implements Serializable {
     public String vip() {
         if (this == null || this.getId() <= 0L) {
             return null;
+        }
+        if (this.getId() <= 2) {
+            return "管理员";
         }
         if (this.getScore() >= VIP7_SCORE) {
             return VIP_MAP.get(VIP7_SCORE);

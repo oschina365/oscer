@@ -5,10 +5,7 @@ import net.oscer.beans.Node;
 import net.oscer.beans.Question;
 import net.oscer.beans.User;
 import net.oscer.common.ApiResult;
-import net.oscer.dao.CollectQuestionDAO;
-import net.oscer.dao.FriendDAO;
-import net.oscer.dao.NodeDAO;
-import net.oscer.dao.QuestionDAO;
+import net.oscer.dao.*;
 import net.oscer.enums.TextCheckEnum;
 import net.oscer.enums.ViewEnum;
 import net.oscer.framework.FormatTool;
@@ -64,7 +61,7 @@ public class QuestionController extends BaseController {
         }
         int status = 0;
         if (loginUser != null) {
-            if (loginUser.getId() == q.getUser() || loginUser.getId()<=2L) {
+            if (loginUser.getId() == q.getUser() || loginUser.getId() <= 2L) {
                 status = 1;
             }
             request.setAttribute("followed", FriendDAO.ME.followed(loginUser.getId(), q.getUser()));
@@ -201,6 +198,7 @@ public class QuestionController extends BaseController {
 
         form.setUser(login_user.getId());
         form.setTitle(StringUtils.abbreviate(form.getTitle(), MAX_LENGTH_TITLE));
+        DynamicDAO.ME.updateStatus(login_user.getId(), form.getStatus() == 0 ? 0 : 1);
         form.doUpdate();
         QuestionDAO.ME.evictNode(form.getNode());
         return ApiResult.successWithObject(form.getId());

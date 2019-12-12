@@ -26,7 +26,8 @@ public class Dynamic extends Entity {
     private long question;
 
     /**
-     * 显示状态，正常显示为0，如用户被封号，就隐藏
+     * 显示状态，正常显示为0，如用户被封号,隐私帖子，就隐藏
+     * 隐私帖子：1，用户被封号：2
      */
     private Integer status;
 

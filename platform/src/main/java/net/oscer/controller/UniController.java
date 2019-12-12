@@ -465,7 +465,7 @@ public class UniController extends BaseController {
      */
     @PostMapping("/q/add")
     @ResponseBody
-    public ApiResult add(Question form, @RequestParam("user") Long user) {
+    public ApiResult add(Question form, @RequestParam("user") Long user) throws Exception {
         User loginUser = current_user(user);
         if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
             return ApiResult.failWithMessage("请重新登录");
@@ -489,7 +489,7 @@ public class UniController extends BaseController {
         if (result.getCode() == ApiResult.fail) {
             return result;
         }
-        form.save();
+        QuestionDAO.ME.save(form);
         Node n = Node.ME.get(form.getNode());
         QuestionDAO.ME.evictNode(form.getNode());
         QuestionDAO.ME.evict(loginUser.getId());
