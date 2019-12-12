@@ -7,6 +7,7 @@ import net.oscer.dao.NodeDAO;
 import net.oscer.db.CacheMgr;
 import net.oscer.enums.IpPassEnum;
 import net.oscer.enums.UrlPassEnum;
+import net.oscer.framework.IpUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -40,7 +41,7 @@ public class UrlPermissionsFilter extends PermissionsAuthorizationFilter {
     /**
      * 单个访问数量
      */
-    public static final int MAX_SINGLE_COUNT = 100;
+    public static final int MAX_SINGLE_COUNT = 30 * 60 * 1000;
 
     public static final String CACHE_TOTAL = "Total";
 
@@ -50,7 +51,7 @@ public class UrlPermissionsFilter extends PermissionsAuthorizationFilter {
         Subject subject = SecurityUtils.getSubject();
 
         User user = ((User) subject.getPrincipal());
-        String ip = request.getRemoteAddr();
+        String ip = IpUtil.getIpAddress((HttpServletRequest) request);
 
         long id = 0L;
         if (user != null && user.getId() > 0L) {
