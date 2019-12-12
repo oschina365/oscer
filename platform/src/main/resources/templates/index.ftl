@@ -98,9 +98,7 @@
             <a class="layui-badge" href="{{item.n.url}}" target="_blank">{{item.n.name}}</a>
             <a href="/q/{{item.q.id}}" target="_blank">{{item.q.title}}</a>
             {{# if(item.q.system_top> 0){ }}<a class="layui-badge layui-bg-blue">顶</a>{{# }}}
-            {{# if(item.q.recomm==1){ }}
-            <a class="layui-badge layui-bg-red">精帖</a>
-            {{# }}}
+            {{# if(item.q.recomm==1){ }}  <a class="layui-badge layui-bg-red">荐</a>{{# }}}
         </h2>
         <div class="fly-list-info">
             <a href="/u/{{item.q_user.id}}" link>
