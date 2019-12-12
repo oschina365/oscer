@@ -197,7 +197,7 @@ public class QuestionController extends BaseController {
         }
         Long id = form.getId();
         Question old = Question.ME.get(id);
-        if(login_user.getId()<=2){
+        if(login_user.getId()>2){
             if (form == null || old == null || login_user.getId() != old.getUser()) {
                 return ApiResult.failWithMessage("该帖子不存在");
             }
