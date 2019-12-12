@@ -239,6 +239,8 @@ public class QuestionController extends BaseController {
             q.setRecomm(0);
         }
         q.doUpdate();
+        QuestionDAO.ME.evictNode(q.getNode());
+        QuestionDAO.ME.evictTops();
         return ApiResult.success();
     }
 
@@ -264,6 +266,7 @@ public class QuestionController extends BaseController {
             q.setSystem_top(0);
         }
         q.doUpdate();
+        QuestionDAO.ME.evictNode(q.getNode());
         QuestionDAO.ME.evictTops();
         return ApiResult.success();
     }
