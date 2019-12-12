@@ -49,9 +49,7 @@ public class IpUtil {
             }
         }
 
-        if (logger.isInfoEnabled()) {
-            logger.info("request ip:{}", ip);
-        }
+
 
         return ip;
     }
