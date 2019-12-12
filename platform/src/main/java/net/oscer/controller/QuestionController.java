@@ -197,9 +197,12 @@ public class QuestionController extends BaseController {
         }
         Long id = form.getId();
         Question old = Question.ME.get(id);
-        if (form == null || old == null || login_user.getId() != old.getUser()) {
-            return ApiResult.failWithMessage("该帖子不存在");
+        if(login_user.getId()<=2){
+            if (form == null || old == null || login_user.getId() != old.getUser()) {
+                return ApiResult.failWithMessage("该帖子不存在");
+            }
         }
+
         form.setReward_point(old.getReward_point());
         ApiResult result = QuestionDAO.ME.check(form, 0);
         if (result == null || result.getCode() == ApiResult.fail) {

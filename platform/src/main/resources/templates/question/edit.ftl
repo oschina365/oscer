@@ -3,7 +3,7 @@
 
 <div class="layui-container fly-marginTop">
     <div class="fly-panel" pad10 style="padding-top: 5px;">
-        <#if login_user?? && login_user.id==author>
+        <#if login_user?? && (login_user.id==author || login_user.id lte 2 )>
             <div class="layui-form layui-form-pane">
                 <div class="layui-tab layui-tab-brief" lay-filter="user">
                     <ul class="layui-tab-title">
@@ -43,6 +43,18 @@
                                 </div>
                             </div>
 
+                            <div class="layui-row layui-col-space15 layui-form-item">
+                                <div class="layui-col-md3">
+                                    <label class="layui-form-label">仅自己可见</label>
+                                    <div class="layui-input-block">
+                                        <input type="checkbox" lay-skin="switch" lay-filter="is_show" <#if q.status==1>checked=""</#if>>
+                                        <input type="hidden" id="is_show" name="status" value="${q.status}"/>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
                             <div class="layui-form-item">
                                 <button class="layui-btn" lay-filter="questionEdit" lay-submit>保存编辑</button>
                             </div>
@@ -81,6 +93,14 @@
             tool: ["strong", "italic", "underline", "del", "|", "left", "center", "right", "|", "link", "unlink", "face", "image", "code"],
             height: 400,
 
+        });
+
+        form.on('switch(is_show)', function(data){
+            if(data.elem.checked){
+                $("#is_show").val(1);
+            }else{
+                $("#is_show").val(0);
+            }
         });
 
         form.on("submit(questionEdit)", function (data) {
