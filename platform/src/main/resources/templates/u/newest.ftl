@@ -17,21 +17,24 @@
 <script id="listTpl" type="text/html">
     {{#  if(d.list!=null&&d.list.length> 0){ }}
     {{#  layui.each(d.list, function(index, item){ }}
-    <li>
-        <a href="/u/{{item.author.id}}" class="fly-avatar" style="top: unset;"> <img src="{{item.author.headimg}}" alt="{{item.author.username}}"> </a>
-        <p>
+        {{# if(item){ }}
+            <li>
+                <a href="/u/{{item.author.id}}" class="fly-avatar" style="top: unset;"> <img src="{{item.author.headimg}}" alt="{{item.author.username}}"> </a>
+                <p>
 
-            <span>{{item.sdf_insert_date}}</span>
-        </p>
-        {{# if(item.d.comment> 0){ }}
-            发表了评论：{{item.commentQuestion.content}}
+                    <span>{{item.sdf_insert_date}}</span>
+                </p>
+                {{# if(item.d.comment> 0){ }}
+                    发表了评论：{{item.commentQuestion.content}}
+                {{#} else { }}
+                发布了新的帖子：
+                {{# }}}
+                <div class="home-dacontent">
+                    <a href="/q/{{item.q.id}}" target="_blank">{{item.q.title}}</a>
+                </div>
+            </li>
         {{#} else { }}
-        发布了新的帖子：
         {{# }}}
-        <div class="home-dacontent">
-            <a href="/q/{{item.q.id}}" target="_blank">{{item.q.title}}</a>
-        </div>
-    </li>
     {{#  }); }}
     {{#} else { }}
     <div class="fly-none">没有相关帖子</div>
