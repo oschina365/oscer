@@ -87,7 +87,7 @@
             <dd>
             <dd><a href="https://www.oschina.net" target="_blank">开源中国</a>
             <dd>
-            <dd><a href="" class="fly-link">申请友链</a>
+            <#--<dd><a href="" class="fly-link">申请友链</a>-->
             <dd>
         </dl>
     </div>
