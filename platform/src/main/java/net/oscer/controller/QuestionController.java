@@ -150,20 +150,30 @@ public class QuestionController extends BaseController {
      */
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Long id) {
+        User login_user = getLoginUser();
+        if (login_user == null || !login_user.status_is_normal()) {
+            setErrorMsg("请登录后重试");
+            return "/error/404";
+        }
         Question q = Question.ME.get(id);
         if (null == q || q.getId() <= 0L) {
+            setErrorMsg("该帖子不存在");
             return "/error/404";
         }
-        if (q.getStatus() != 0) {
-            return "403";
-        }
+
         User u = User.ME.get(q.getUser());
         if (null == u || u.getId() <= 0L || u.getStatus() != User.STATUS_NORMAL) {
-            return "403";
-        }
-        if (q.getUser() != u.getId()) {
+            setErrorMsg("用户不存在或被封，请联系管理员");
             return "/error/404";
         }
+        if(login_user.getId()>2){
+            if (login_user.getId()!=u.getId()) {
+                setErrorMsg("无权限编辑该帖");
+                return "/error/404";
+            }
+        }
+
+
         request.setAttribute("author", q.getUser());
         request.setAttribute("q", q);
         request.setAttribute("u", u);
