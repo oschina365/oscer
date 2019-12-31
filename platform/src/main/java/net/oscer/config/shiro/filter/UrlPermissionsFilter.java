@@ -82,7 +82,7 @@ public class UrlPermissionsFilter extends PermissionsAuthorizationFilter {
             if (StringUtils.startsWith(curUrl, url)) {
                 pass = true;
                 if(!StringUtils.equalsIgnoreCase(url,UrlPassEnum.res)){
-                    System.out.println(String.format("访问ip：%s,url: %s", ip,curUrl));
+                    System.out.println(String.format("访问url: %s",curUrl));
                 }
                 break;
             }
