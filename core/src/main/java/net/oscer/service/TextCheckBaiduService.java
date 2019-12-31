@@ -32,10 +32,10 @@ public abstract class TextCheckBaiduService {
     public final static long REG_TIME_30 = REG_TIME_1 * 30;//注册时间1个月
     public final static long REG_TIME_90 = REG_TIME_1 * 90;//注册时间3个月
 
-    public static final double PASS_SCORE = 0.75;//注册时间三个月内
-    public static final double AD_PASS_SCORE_30 = 0.6;//恶意推广的分值界限，注册时间30天内
-    public static final double AD_PASS_SCORE_7 = 0.5;//恶意推广的分值界限，注册时间7天内
-    public static final double AD_PASS_SCORE_1 = 0.4;//恶意推广的分值界限，注册时间1天内
+    public static final double PASS_SCORE = 0.92;//注册时间三个月内
+    public static final double AD_PASS_SCORE_30 = 0.9;//恶意推广的分值界限，注册时间30天内
+    public static final double AD_PASS_SCORE_7 = 0.85;//恶意推广的分值界限，注册时间7天内
+    public static final double AD_PASS_SCORE_1 = 0.8;//恶意推广的分值界限，注册时间1天内
 
     public static final int AD_LABEL = 4;//恶意推广label值
 
