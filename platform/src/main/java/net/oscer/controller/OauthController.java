@@ -5,6 +5,7 @@ import net.oscer.beans.User;
 import net.oscer.beans.UserBind;
 import net.oscer.common.ApiResult;
 import net.oscer.config.provider.*;
+import net.oscer.dao.MsgDAO;
 import net.oscer.dao.UserBindDAO;
 import net.oscer.dao.UserDAO;
 import net.oscer.db.CacheMgr;
@@ -179,7 +180,7 @@ public class OauthController extends BaseController {
      * @throws Exception
      */
     @GetMapping("/after_bind")
-    public void after_bind() throws IOException, ServletException {
+    public void after_bind() throws Exception {
         Cookie ck = cookie(SOCIAL_AUTH_KEY);
         String socialauth_id = (ck != null) ? ck.getValue() : null;
         String state = param("state", "");
@@ -234,7 +235,7 @@ public class OauthController extends BaseController {
 
     @GetMapping("/after_bind_osc")
     @ResponseBody
-    public void after_bind_osc() throws IOException {
+    public void after_bind_osc() throws Exception {
         String code = param("code");
         Cookie ck = cookie(SOCIAL_AUTH_KEY);
         String state = (ck != null) ? ck.getValue() : null;
@@ -249,7 +250,7 @@ public class OauthController extends BaseController {
 
     @GetMapping("/after_bind_gitee")
     @ResponseBody
-    public void after_bind_gitee() throws IOException {
+    public void after_bind_gitee() throws Exception {
         String code = param("code");
         Cookie ck = cookie(SOCIAL_AUTH_KEY);
         String state = (ck != null) ? ck.getValue() : null;
@@ -262,7 +263,7 @@ public class OauthController extends BaseController {
         doBind(new AuthProfile(p));
     }
 
-    private void doBind(AuthProfile authProfile) throws IOException {
+    private void doBind(AuthProfile authProfile) throws Exception {
         User loginUser = getLoginUser();
         UserBind bind = null;
         if (loginUser != null) {
@@ -290,6 +291,7 @@ public class OauthController extends BaseController {
         } else {
             bind = UserBindDAO.ME.bindByName(authProfile.getProviderId(), authProfile.getFullName());
         }
+        System.out.println("bind:"+bind);
         if (bind != null && bind.getId() > 0L) {
             loginUser = User.ME.get(bind.getUser());
         } else {
@@ -299,6 +301,7 @@ public class OauthController extends BaseController {
             redirect(LinkTool.root());
             return;
         }
+        System.out.println("exist:"+loginUser);
         ApiResult result = UserDAO.ME.login(authProfile.getFullName(), authProfile.getValidatedId(), ip(), true, authProfile.getProviderId());
         if (result.getCode() == ApiResult.fail) {
             String html = "<p>Redirecting...</p><script type='text/javascript'>   location.href='" + LinkTool.root() + "';</script>";
@@ -313,7 +316,7 @@ public class OauthController extends BaseController {
 
     }
 
-    private User openidReg(AuthProfile authProfile) {
+    private User openidReg(AuthProfile authProfile) throws Exception {
         if (authProfile == null || StringUtils.isBlank(authProfile.getFullName())) {
             return null;
         }
@@ -359,6 +362,7 @@ public class OauthController extends BaseController {
         }
         bind.save();
         CacheMgr.evict(UserBind.ME.CacheRegion(), "user#" + reg.getId());
+        MsgDAO.ME.send(2L, reg.getId(), "欢迎加入OSCER社区！", 0, "网页端");
         return reg;
     }
 

@@ -98,6 +98,7 @@ public class OscOpenAuth {
             //gitee账号id,id唯一
             profile.setValidatedId(String.valueOf(info.getLong("id")));
             profile.setGender(info.getString("gender"));
+            System.out.println(info);
             return profile;
         } catch (Exception e) {
             e.printStackTrace();
