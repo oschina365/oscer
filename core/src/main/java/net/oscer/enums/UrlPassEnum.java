@@ -27,6 +27,7 @@ public class UrlPassEnum {
     public static final String error_400 = "/400";
     public static final String up = "/up/";
     public static final String captcha = "/captcha/";
+    public static final String resume = "/resume";
 
-    public static final List<String> list = Arrays.asList(user, u, druid, res, q, oauth, comment,sign,api,tw,uni,f,error_500,error_400,up,captcha);
+    public static final List<String> list = Arrays.asList(user, u, druid, res, q, oauth, comment,sign,api,tw,uni,f,error_500,error_400,up,captcha,resume);
 }

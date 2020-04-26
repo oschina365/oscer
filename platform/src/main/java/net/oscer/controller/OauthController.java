@@ -237,6 +237,7 @@ public class OauthController extends BaseController {
     @ResponseBody
     public void after_bind_osc() throws Exception {
         String code = param("code");
+        System.out.println(code);
         Cookie ck = cookie(SOCIAL_AUTH_KEY);
         String state = (ck != null) ? ck.getValue() : null;
         String redirect_url = param("goto", "");
@@ -395,7 +396,9 @@ public class OauthController extends BaseController {
 
 
     public static void main(String[] args) {
+        CacheMgr.set("1h","127.0.0.1",1);
         System.out.println(RandomStringUtils.randomAlphanumeric(8));
+        System.out.println(CacheMgr.get("1h","127.0.0.1"));
     }
 
 

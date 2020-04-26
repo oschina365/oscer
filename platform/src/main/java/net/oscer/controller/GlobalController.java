@@ -31,6 +31,11 @@ public class GlobalController extends BaseController {
         return "/error/" + code;
     }
 
+    @RequestMapping("/resume")
+    public String resume() {
+        return "/resume/2";
+    }
+
     @RequestMapping("/")
     public String index() {
         List<Node> nodes = NodeDAO.ME.nodes(Node.STATUS_NORMAL, 0);

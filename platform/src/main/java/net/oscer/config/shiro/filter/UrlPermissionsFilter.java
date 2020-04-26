@@ -78,6 +78,9 @@ public class UrlPermissionsFilter extends PermissionsAuthorizationFilter {
 
         List<String> urls = UrlPassEnum.list;
         boolean pass = false;
+        if(curUrl.contains("res/resume")){
+            pass = false;
+        }
         for (String url : urls) {
             if (StringUtils.startsWith(curUrl, url)) {
                 pass = true;
