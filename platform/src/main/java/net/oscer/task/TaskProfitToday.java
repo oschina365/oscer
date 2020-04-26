@@ -22,11 +22,11 @@ public class TaskProfitToday {
     public final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
-     * 每天凌晨23点59分59秒时刻，重置当日签到积分数据
+     * 每隔一分钟请求今日头条
      *
      * @throws Exception
      */
-    @Scheduled(cron = "0 */5 * * * ?")
+    @Scheduled(cron = "0 */1 * * * ?")
     public void timer() throws Exception {
         Profit.speed_toutiao_kz();
     }

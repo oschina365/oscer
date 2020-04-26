@@ -1,6 +1,9 @@
 package net.oscer;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import net.oscer.db.CacheMgr;
+import net.oscer.profit.SpeedToutiao;
 import util.DateUtil;
 import util.NumberUtil;
 import util.URLConnectionUtil;
@@ -21,6 +24,12 @@ import java.util.stream.IntStream;
 public class Test {
 
     public static void main(String[] args) throws IOException {
+        String str = "{\"err_no\": 0, \"data\": {\"show_watch_video_task\": false, \"next_treasure_time\": 1587883651, \"new_excitation_ad\": {\"score_source\": 1, \"fixed\": false, \"ad_id\": 2, \"score_amount\": 31, \"task_id\": 188}, \"treasure_ui_status\": 2, \"current_time\": 1587883051, \"pre_ui_status\": 2, \"stop_ts\": 1588217626, \"share_amount\": 200, \"score_amount\": 1300, \"double_bonus\": false}, \"err_tips\": \"success\"}\n";
+        System.out.printf(str);
+        SpeedToutiao toutiao = JSONArray.parseObject(str,SpeedToutiao.class);
+        System.out.printf(str);
+        System.out.println(1587883651L * 1000);
+        System.out.println(System.currentTimeMillis());
         //write();
         //ThreadPool();
         //tweet_pub("弹", "_user_behavior_=6924a789-8e01-48fc-8fd1-7b4f542a84a8; visit-gitee-stars-bts-14-190305=1; banner_osc_scr_zhych%200308=1; Hm_lvt_d237257153dcc02ba4647b448cbafcb8=1552275927; _ga=GA1.2.648698262.1552459971; bad_id8387c580-a888-11e5-bc38-bb63a4ea0854=a0848d21-455c-11e9-ad87-bbe88d56d4af; visit-detail-banner-ad-0304-shych=1; banner_osc_scr_zhych%200315=1; visit-detail-banner-ad-0320-szych=1; banner_osc_scr_zhych%200320=1; banner_osc_scr_zhych%200321=1; aliyungf_tc=AQAAAJ7oTWbIbgQAUzWJd//opsblfce6; Hm_lvt_a411c4d1664dd70048ee98afe7b28f0b=1554861742,1554889082,1554892660,1554947941; SL_GWPT_Show_Hide_tmp=1; SL_wptGlobTipTmp=1; _reg_key_=teMXWQpcVTpCtNoNiJj9; oscid=gAK91cd8tb84ms5SeLwVQyiV3HsmQn%2BQHmKz7JfWP9l34Ovp6M2pl%2BZ%2FpZeMB2HfdsjW5wnh%2FogwV8kez%2Bqojxraos3gKoR%2FOHzJUqrecsy%2BAriBkMuy0SK4E0Ls6rfa9iqkPcKEua7LXrdAS5uPqP3n%2B5pE0GAJnFuJvvUfFi8%3D; Hm_lpvt_a411c4d1664dd70048ee98afe7b28f0b=1554963613; arp_scroll_position=0", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36");
@@ -43,8 +52,8 @@ public class Test {
                 URLConnectionUtil.sendGet("http://my.oschina.com/action/visit/blog",map,"id="+url.split("/")[url.split("/").length-1]);
             });
         }*/
-        String cookie = "excgd=0426; UM_distinctid=169f79830a615f-0e149ac4c2ac2e-2202a7b-38400-169f79830a812b; qh[360]=1; _ga=GA1.2.997258058.1578009281; sid_guard=38f058fd150bf793ae127123324c7077%7C1586665413%7C5184000%7CThu%2C+11-Jun-2020+04%3A23%3A33+GMT; uid_tt=cf71df9f0c3593232758c22cc0d9d82d; sid_tt=38f058fd150bf793ae127123324c7077; sessionid=38f058fd150bf793ae127123324c7077; learning_shelf_visited=1; WIN_WH=360_564; SLARDAR_WEB_ID=57325458385; install_id=1134326640806067; ttreq=1$0c81c82d98f1f3e828ace469f3aaeaeef8477575; odin_tt=764c784b494c445038466f7a5154445414ee5994facbb78d084f43ce4abb79a4e97108525d577c8cb264feb8cb3a0c82";
-        open_jinri(null,cookie,"Dalvik/2.1.0 (Linux; U; Android 7.1.1; 15 Build/NGI77B) NewsArticle/7.4.3 cronet/TTNetVersion:4df3ca9d 2019-11-25");
+        //String cookie = "excgd=0426; UM_distinctid=169f79830a615f-0e149ac4c2ac2e-2202a7b-38400-169f79830a812b; qh[360]=1; _ga=GA1.2.997258058.1578009281; sid_guard=38f058fd150bf793ae127123324c7077%7C1586665413%7C5184000%7CThu%2C+11-Jun-2020+04%3A23%3A33+GMT; uid_tt=cf71df9f0c3593232758c22cc0d9d82d; sid_tt=38f058fd150bf793ae127123324c7077; sessionid=38f058fd150bf793ae127123324c7077; learning_shelf_visited=1; WIN_WH=360_564; SLARDAR_WEB_ID=57325458385; install_id=1134326640806067; ttreq=1$0c81c82d98f1f3e828ace469f3aaeaeef8477575; odin_tt=764c784b494c445038466f7a5154445414ee5994facbb78d084f43ce4abb79a4e97108525d577c8cb264feb8cb3a0c82";
+        //open_jinri(null,cookie,"Dalvik/2.1.0 (Linux; U; Android 7.1.1; 15 Build/NGI77B) NewsArticle/7.4.3 cronet/TTNetVersion:4df3ca9d 2019-11-25");
 
     }
 
