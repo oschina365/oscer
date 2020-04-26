@@ -23,12 +23,15 @@ public class Profit {
     public static final String URL_SPEED_TOUTIAO_KZ = URL_SPEED_TOUTIAO + "?rit=coin&use_ecpm=0&_request_from=web&iid=1134326640806067&device_id=57325458385&ac=wifi&mac_address=90%3AF0%3A52%3A58%3A9A%3A40&channel=lite_meizu&aid=35&app_name=news_article_lite&version_code=743&version_name=7.4.3&device_platform=android&ab_version=668907%2C668905%2C668906%2C1640299%2C1652857%2C668908%2C668903%2C668904%2C928942%2C1454796&ab_client=a1%2Cc4%2Ce1%2Cf2%2Cg2%2Cf7&ab_group=z2&ab_feature=z1&abflag=3&ssmix=a&device_type=15&device_brand=Meizu&language=zh&os_api=25&os_version=7.1.1&uuid=866774030804994&openudid=c2a06ab4fbe2dbbf&manifest_version_code=7430&resolution=1080*1920&dpi=480&update_version_code=74304&_rticket=1587878596336&plugin_state=265515039&sa_enable=0&tma_jssdk_version=1.61.0.7&rom_version=25&cdid=000c5001-30df-4462-810b-9debe7cd83a9%20HTTP/1.1";
     public static final String UA_SPEED_TOUTIAO_KZ = "Dalvik/2.1.0 (Linux; U; Android 7.1.1; 15 Build/NGI77B) NewsArticle/7.4.3 cronet/TTNetVersion:4df3ca9d 2019-11-25";
 
+    public static final String URL_SPEED_TOUTIAO_SASA = URL_SPEED_TOUTIAO + "?rit=coin&use_ecpm=0&_request_from=web&iid=1134326640806067&device_id=57325458385&ac=wifi&mac_address=90%3AF0%3A52%3A58%3A9A%3A40&channel=lite_meizu&aid=35&app_name=news_article_lite&version_code=743&version_name=7.4.3&device_platform=android&ab_version=668907%2C668905%2C668906%2C1640299%2C1652857%2C668908%2C668903%2C668904%2C928942%2C1454796&ab_client=a1%2Cc4%2Ce1%2Cf2%2Cg2%2Cf7&ab_group=z2&ab_feature=z1&abflag=3&ssmix=a&device_type=15&device_brand=Meizu&language=zh&os_api=25&os_version=7.1.1&uuid=866774030804994&openudid=c2a06ab4fbe2dbbf&manifest_version_code=7430&resolution=1080*1920&dpi=480&update_version_code=74304&_rticket=1587878596336&plugin_state=265515039&sa_enable=0&tma_jssdk_version=1.61.0.7&rom_version=25&cdid=000c5001-30df-4462-810b-9debe7cd83a9%20HTTP/1.1";
+    public static final String UA_SPEED_TOUTIAO_SASA = "Dalvik/2.1.0 (Linux; U; Android 7.1.1; 15 Build/NGI77B) NewsArticle/7.4.3 cronet/TTNetVersion:4df3ca9d 2019-11-25";
+
     public static void main(String[] args) throws InterruptedException {
         System.out.println(stampToDate(1588217626 * 1000L));
     }
 
     public static void speed_toutiao_kz() throws InterruptedException {
-        String cookie = "excgd=0426; UM_distinctid=169f79830a615f-0e149ac4c2ac2e-2202a7b-38400-169f79830a812b; qh[360]=1; _ga=GA1.2.997258058.1578009281; sid_guard=38f058fd150bf793ae127123324c7077%7C1586665413%7C5184000%7CThu%2C+11-Jun-2020+04%3A23%3A33+GMT; uid_tt=cf71df9f0c3593232758c22cc0d9d82d; sid_tt=38f058fd150bf793ae127123324c7077; sessionid=38f058fd150bf793ae127123324c7077; learning_shelf_visited=1; WIN_WH=360_564; SLARDAR_WEB_ID=57325458385; install_id=1134326640806067; ttreq=1$0c81c82d98f1f3e828ace469f3aaeaeef8477575; odin_tt=764c784b494c445038466f7a5154445414ee5994facbb78d084f43ce4abb79a4e97108525d577c8cb264feb8cb3a0c82";
+        String cookie = "0426; UM_distinctid=169f79830a615f-0e149ac4c2ac2e-2202a7b-38400-169f79830a812b; qh[360]=1; _ga=GA1.2.997258058.1578009281; learning_shelf_visited=1; WIN_WH=360_564; install_id=1134326640806067; ttreq=1$0c81c82d98f1f3e828ace469f3aaeaeef8477575; passport_csrf_token=c7809735fea84422059e14085b15b8bb; d_ticket=d2abd2a3e49939b3abfcf71ac46155701ef97; sid_guard=0bedac91630b4452a5dd189693f4e71d%7C1587891793%7C5184000%7CThu%2C+25-Jun-2020+09%3A03%3A13+GMT; uid_tt=ef98639daa04da67810a666536d42ab0; sid_tt=0bedac91630b4452a5dd189693f4e71d; sessionid=0bedac91630b4452a5dd189693f4e71d; odin_tt=6b576367336965676e77354c504e73773cc43073d6b7de811e9a1adc7cafa5602ba735d3e95931c73d6584fe1fa6391a; SLARDAR_WEB_ID=57325458385";
         speed_toutiao("kz", URL_SPEED_TOUTIAO_KZ, cookie, UA_SPEED_TOUTIAO_KZ);
     }
 
@@ -52,6 +55,7 @@ public class Profit {
         }
         if (toutiao.getErr_no() != 0 || toutiao.getData() == null) {
             System.out.println(toutiao.getErr_tips());
+            return;
         }
         SpeedToutiao.DataBean data = toutiao.getData();
         //下次开启宝箱时间
