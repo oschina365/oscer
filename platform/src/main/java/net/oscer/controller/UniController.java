@@ -170,7 +170,7 @@ public class UniController extends BaseController {
         List<Question> list = Arrays.asList(q);
         Map<String, Object> map = new HashMap<>();
         map.put("q", q);
-        map.put("u", u);
+        map.put("u", UserVO.convert(u));
         map.put("detail", QuestionVO.list(list, loginUser, rhtml));
         return ApiResult.successWithObject(map);
     }
