@@ -2,11 +2,10 @@ package net.oscer;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import net.oscer.common.DateUtil;
+import net.oscer.common.URLConnectionUtil;
 import net.oscer.db.CacheMgr;
 import net.oscer.profit.SpeedToutiao;
-import util.DateUtil;
-import util.NumberUtil;
-import util.URLConnectionUtil;
 
 import javax.swing.*;
 import java.awt.*;

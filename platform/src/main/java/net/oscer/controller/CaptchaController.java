@@ -1,10 +1,10 @@
 package net.oscer.controller;
 
+import net.oscer.common.IpUtil;
 import net.oscer.service.CaptchaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import util.IpUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

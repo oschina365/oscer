@@ -2,11 +2,11 @@ package net.oscer.service;
 
 import net.oscer.beans.SendEmailRecord;
 import net.oscer.common.ApiResult;
+import net.oscer.common.IpUtil;
+import net.oscer.common.RandomValidateCode;
 import net.oscer.dao.SendEmailRecordDAO;
 import net.oscer.enums.EmailTemplateTypeEnum;
 import org.springframework.stereotype.Service;
-import util.IpUtil;
-import util.RandomValidateCode;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

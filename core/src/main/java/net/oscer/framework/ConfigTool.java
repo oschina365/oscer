@@ -12,7 +12,7 @@ import java.util.Properties;
  * @author kz
  */
 public class ConfigTool {
-    private static final Logger log = LoggerFactory.getLogger(util.ConfigTool.class);
+    private static final Logger log = LoggerFactory.getLogger(ConfigTool.class);
 
     private static Properties prop = null;
     private static boolean isPropLoaded = false;

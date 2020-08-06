@@ -1,6 +1,7 @@
 package net.oscer;
 
 import net.oscer.framework.ConfigTool;
+import net.oscer.service.QiNiuApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -11,7 +12,6 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import qiniu.QiNiuApi;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;

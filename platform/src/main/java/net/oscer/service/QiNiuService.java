@@ -2,19 +2,19 @@ package net.oscer.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.qiniu.common.QiniuException;
-import enums.ResultEnum;
 import net.oscer.api.vo.UploadResultVO;
+import net.oscer.beans.Photo;
 import net.oscer.beans.SysFile;
-import net.oscer.common.SystemConstant;
+import net.oscer.common.*;
 import net.oscer.enums.QiNiuEnum;
+import net.oscer.enums.ResultEnum;
+import net.oscer.framework.FormatTool;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
-import qiniu.QiNiuApi;
-import util.*;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -24,6 +24,7 @@ import java.awt.image.ImageFilter;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * 七牛上传辅助类
@@ -74,7 +75,7 @@ public class QiNiuService {
         return false;
     }
 
-    public JSONObject uploadFileByte(byte[] fileByte, String fileKey) {
+    public static JSONObject uploadFileByte(byte[] fileByte, String fileKey) {
         JSONObject result = ResultUtil.getSuccessResult("上传成功");
         try {
             result = QiNiuApi.uploadFileByte(fileByte, fileKey);
@@ -114,6 +115,16 @@ public class QiNiuService {
         }
         sysFile.save();
 
+    }
+
+    public static void save(JSONObject jo, Photo photo) {
+        if ("success".equals(jo.getString("result_code"))) {
+            String key = jo.getString("key");
+            logger.info("[upload]上传结果返回-->key:" + key);
+        } else {
+            logger.info("[upload]上传失败");
+        }
+        photo.save();
     }
 
     class UploadProcess implements Runnable {
@@ -159,7 +170,7 @@ public class QiNiuService {
     }
 
     public static UploadResultVO pic(MultipartFile multipartFile, long userId) throws IOException {
-        if(userId<=0L){
+        if (userId <= 0L) {
             return UploadResultVO.failWith("请先登录");
         }
         long begin = System.currentTimeMillis();
@@ -189,7 +200,47 @@ public class QiNiuService {
             result = uploadFileByte(multipartFile.getBytes(), newFileName, sysFile);
         }
         logger.info("本次上传耗时：{}ms,文件名：{}，上传完毕时间：{}", (System.currentTimeMillis() - begin), originFileName, DateUtil.format(new Date(), DateUtil.YYYY_MM_DD_HH_MM_SS));
-        return UploadResultVO.successWith(net.oscer.framework.ConfigTool.getProp("qiniu.domain") ,"上传成功", result.getString("key"), fileSize,originFileName,null);
+        return UploadResultVO.successWith(net.oscer.framework.ConfigTool.getProp("qiniu.domain"), "上传成功", result.getString("key"), fileSize, originFileName, null);
+    }
+
+    public static UploadResultVO photo(MultipartFile multipartFile, long userId) throws IOException {
+        if (userId <= 0L) {
+            return UploadResultVO.failWith("请先登录");
+        }
+        long begin = System.currentTimeMillis();
+        if (multipartFile.isEmpty()) {
+            return UploadResultVO.failWith("图片为空");
+        }
+        String originFileName = multipartFile.getOriginalFilename();
+        if (!StringUtils.contains(SystemConstant.QINIU_SUFFIXIMAGE, FileUtil.getFileSuffix(originFileName).toUpperCase())) {
+            return UploadResultVO.failWith("图片类型不对");
+        }
+        long fileSize = multipartFile.getSize();
+        String newFileName = userId + SystemConstant.QINIU_SLASH + "photo" + SystemConstant.QINIU_SLASH + originFileName;
+        Photo p = new Photo();
+        Date now = new Date();
+        p.setUser(userId);
+        p.setUpload_time(now);
+        Map<String, Object> map = FormatTool.getTime(now);
+        p.setYear((Integer) map.get("year"));
+        p.setMonth((Integer) map.get("month"));
+        p.setDay((Integer) map.get("day"));
+        JSONObject result = new JSONObject();
+        try {
+            result = uploadFileByte(multipartFile.getBytes(), newFileName);
+        } catch (QiniuException q) {
+            new QiNiuApi(net.oscer.framework.ConfigTool.getProp("qiniu.access"), net.oscer.framework.ConfigTool.getProp("qiniu.secret"), net.oscer.framework.ConfigTool.getProp("qiniu.bucket"));
+            logger.info("##########七牛重新连接成功##########");
+            result = uploadFileByte(multipartFile.getBytes(), newFileName);
+        }
+        String domain = net.oscer.framework.ConfigTool.getProp("qiniu.domain");
+        String key = result.getString("key");
+        if (key != null) {
+            p.setUrl("http://" + domain + "/" + key);
+            p.save();
+        }
+        logger.info("本次上传耗时：{}ms,文件名：{}，上传完毕时间：{}", (System.currentTimeMillis() - begin), originFileName, DateUtil.format(new Date(), DateUtil.YYYY_MM_DD_HH_MM_SS));
+        return UploadResultVO.successWith(domain, "上传成功", key, fileSize, originFileName, null);
     }
 
 

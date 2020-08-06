@@ -715,4 +715,21 @@ public class UniController extends BaseController {
 
         return ApiResult.success("删除成功");
     }
+
+    @PostMapping("photos")
+    @ResponseBody
+    public ApiResult photos(@RequestParam(value = "user", required = false) Long user) throws Exception {
+        User loginUser = current_user(user);
+        if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
+            return ApiResult.failWithMessage("请重新登录");
+        }
+        Map<String, Object> map = new HashMap<>();
+        //帖子列表
+        List<Photo> photos = PhotoDAO.ME.photos(loginUser.getId(), pageNumber, 8);
+        map.put("photos", photos);
+        //帖子总数
+        int count = PhotoDAO.ME.count(loginUser.getId());
+        map.put("count", count);
+        return ApiResult.successWithObject(map);
+    }
 }

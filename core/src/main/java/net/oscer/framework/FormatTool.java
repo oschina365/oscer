@@ -14,6 +14,8 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import static net.oscer.common.PatternUtil.*;
@@ -665,8 +667,8 @@ public class FormatTool {
     }
 
 
-    public static String getSimpleContent(String txt){
-        if(StringUtils.isEmpty(txt)){
+    public static String getSimpleContent(String txt) {
+        if (StringUtils.isEmpty(txt)) {
             return txt;
         }
         String regEx = "[`~!\\-_@#$%^&*()+=|{}:;\\\\\\\\[\\\\\\\\].<>/?~！@#￥%……&*（）——+『』$》《〖〗｛｝|{}【】‘；：”“’。，、？]";
@@ -674,9 +676,9 @@ public class FormatTool {
         return checkSpecial(txt);
     }
 
-    public static String checkSpecial(String txt){
+    public static String checkSpecial(String txt) {
         String pattern = "[\\t\\n\\f\\r\\p{Z}]";
-        txt = txt.replaceAll(pattern,"");
+        txt = txt.replaceAll(pattern, "");
         return txt;
     }
 
@@ -699,5 +701,23 @@ public class FormatTool {
 
         content = RegularUtils.fixTopic(content, sender, 0L, 5, false);
         return content;
+    }
+
+
+    public static Map<String, Object> getTime(Date date) {
+        Calendar now = Calendar.getInstance();
+        if (date != null) {
+            now.setTime(date);
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("year", now.get(Calendar.YEAR));
+        map.put("month", (now.get(Calendar.MONTH) + 1));
+        map.put("day", now.get(Calendar.DAY_OF_MONTH));
+        map.put("hour", now.get(Calendar.HOUR_OF_DAY));
+        map.put("minute", now.get(Calendar.MINUTE));
+        map.put("second", now.get(Calendar.SECOND));
+        map.put("millisecond", now.getTimeInMillis());
+        map.put("time", now.getTime());
+        return map;
     }
 }

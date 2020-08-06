@@ -4,9 +4,9 @@ import com.forever7776.sendcloud.core.service.SendCloudService;
 import com.forever7776.sendcloud.core.util.ResponseData;
 import com.forever7776.sendcloud.remote.common.vo.ResultVO;
 import com.forever7776.sendcloud.remote.common.vo.SendCloudEmailParamVO;
-import enums.ResultEnum;
 import net.oscer.beans.SendEmailTemplate;
 import net.oscer.dao.SendEmailTemplateDAO;
+import net.oscer.enums.ResultEnum;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;

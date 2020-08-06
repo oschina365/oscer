@@ -26,9 +26,9 @@ public class TaskProfitToday {
      *
      * @throws Exception
      */
-    @Scheduled(cron = "0 */1 * * * ?")
+    @Scheduled(cron = "0 */59 * * * ?")
     public void timer() throws Exception {
-        Profit.speed_toutiao_kz();
+        //Profit.speed_toutiao_kz();
     }
 
 }

@@ -5,6 +5,7 @@ import net.oscer.api.vo.UploadResultVO;
 import net.oscer.beans.User;
 import net.oscer.common.ApiResult;
 import net.oscer.common.SystemConstant;
+import net.oscer.dao.PhotoDAO;
 import net.oscer.service.QiNiuService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import util.ConfigTool;
 
 import java.io.IOException;
 
@@ -86,6 +86,25 @@ public class UploadController extends BaseController {
         UploadResultVO vo = QiNiuService.pic(multipartFile, loginUser == null ? 0L : loginUser.getId());
         return vo.toString();
     }
+
+    /**
+     * 上传照片
+     * 图片上传,不压缩图片
+     * 返回格式适合于layui上传图片
+     * 转化为byte数组上传
+     *
+     * @param multipartFile
+     * @return
+     */
+    @RequestMapping(value = "/photo", method = RequestMethod.POST)
+    @ResponseBody
+    public String photo(@RequestParam("file") MultipartFile multipartFile, @RequestParam(value = "user", required = false) Long user) throws IOException {
+        User loginUser = current_user(user);
+        UploadResultVO vo = QiNiuService.photo(multipartFile, loginUser == null ? 0L : loginUser.getId());
+        PhotoDAO.ME.evict(loginUser.getId());
+        return vo.toString();
+    }
+
 
     /**
      * 图片上传，压缩图片

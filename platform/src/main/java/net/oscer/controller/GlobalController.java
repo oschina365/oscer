@@ -4,6 +4,7 @@ import net.oscer.beans.*;
 import net.oscer.dao.*;
 import net.oscer.vo.QuestionVO;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +21,11 @@ import java.util.Map;
 @RequestMapping
 @Controller
 public class GlobalController extends BaseController {
+
+    @GetMapping("/case")
+    public String caseHtml(){
+        return "/u/case";
+    }
 
     @RequestMapping("/500")
     public String error_500() {
