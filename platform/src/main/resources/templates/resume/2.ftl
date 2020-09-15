@@ -4,7 +4,7 @@
 
 <div>
 
-    <header class="header"></header>
+    <#include "../layout/front/header.ftl"/>
 
     <article class="container">
         <section class="side" id="side">
@@ -21,7 +21,7 @@
                         <span></span>
                     </div>
                     <!-- 头像照片 -->
-                    <img class="avatar" src="https://oscimg.oschina.net/oscnet/up-7da09418d15c03e31e3ff4f8c0036c7d.jpg!/both/200x200?t=1551437227000" >
+                    <img class="avatar" src="https://oscimg.oschina.net/oscnet/up-7da09418d15c03e31e3ff4f8c0036c7d.jpg!/both/200x200" >
                 </section>
 
                 <h4 class="info-job">JAVA开发工程师 / 深圳</h4>
@@ -151,6 +151,9 @@
                     <li>
                         <h3>
                             <span>深圳市奥思网络科技有限公司</span>
+                            <span class="link">
+                                <a href="https://www.oschina.net/" target="_blank">开源中国</a>
+                            </span>
                             <time>2018.05-至今</time>
                         </h3>
                         <ul class="info-content">
@@ -176,6 +179,9 @@
                     <li>
                         <h3>
                             <span>深圳启会科技发展有限公司</span>
+                            <span class="link">
+                                <a href="https://www.zhihuihuiwu.com/" target="_blank">智慧会务</a>
+                            </span>
                             <time>2017.04-2018.04</time>
                         </h3>
                         <ul class="info-content">
@@ -217,7 +223,7 @@
                         <h3>
                             <span>博客平台</span>
                             <span class="link">
-                                <a href="http://lifes77.com" target="_blank">lifes77</a>
+                                <a href="http://oscer.net" target="_blank">oscer</a>
                             </span>
                             <time>2018.03-2018.06</time>
                         </h3>
@@ -225,29 +231,13 @@
                             <li>技术栈：Servlet+Dbutils+Velocity+J2cache+Elasticsearch+jieba</li>
                             <li>
                                 <i class="fa fa-bars" aria-hidden="true"></i>
-                                功能有：博客，动弹，备忘录，相册。。。
+                                功能有：博客，备忘录，相册。。。
                                 <br/>
                                 <i class="fa fa-users" aria-hidden="true"></i>
                                 [愿景]提供一个简单实用互帮互助的博客平台供大家使用
                                 <br/>
                                 <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
                                 欢迎大家使用</li>
-                        </ul>
-                    </li>
-                    <li>
-                        <h3>
-                            <span>后台管理系统</span>
-                            <span class="link">
-                                <a href="http://lifes77.xyz" target="_blank">lifes77-xyz</a>
-                            </span>
-                            <time>2018.03-2018.06</time>
-                        </h3>
-                        <ul class="info-content">
-                            <li>技术栈：Springboot+Mybatis-Plus+layui</li>
-                            <li>
-                                <i class="fa fa-bars" aria-hidden="true"></i>
-                                管理平台
-                            </li>
                         </ul>
                     </li>
                 </ul>
@@ -283,7 +273,7 @@
 
 
     <footer class="footer">
-        <p>© 2019 柯真</p>
+        <p>© 2020 柯真</p>
     </footer>
 
     <!-- 侧栏 -->
