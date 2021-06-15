@@ -132,6 +132,18 @@
 </script>
     <script>
 
+        function home_tweets(_this,show) {
+            $(".tweet-span a").removeClass("green_color");
+            $(_this).addClass("green_color");
+            if(show && show=="hot"){
+                $("#tweetListDataHot").show();
+                $("#tweetListDataNew").hide();
+            }else{
+                $("#tweetListDataHot").hide();
+                $("#tweetListDataNew").show();
+            }
+        }
+
     function add() {
         $.ajax({
             url: '/u/logined',
@@ -172,6 +184,7 @@
             , laypage = layui.laypage, laytpl = layui.laytpl, $ = layui.jquery;
 
         dataList(1);
+        tweetData();
 
         /**
          * 查询数据列表
@@ -204,6 +217,72 @@
 
                     }
                 }
+            });
+        }
+
+        /**
+         * 动弹列表
+         */
+        function tweetData() {
+            $("#tweetIndexList").html("");
+            layui.use('flow', function () {
+
+                var flow = layui.flow;
+                flow.load({
+                    elem: '#tweetIndexList',
+                    end:" ",
+                    done: function (page, next) {
+                        var $ = layui.jquery;
+                        var lis = [];
+                        $.post('/tweet/list', {"number":page}, function (res) {
+                            if (res) {
+                                layui.each(res, function (index, item) {
+                                    var name = item.user.username;
+                                    if(item.user.nickname){
+                                        name = item.user.nickname;
+                                    }
+                                    var active_html ="",active_color="";
+
+                                    var praiseCount = 0;
+                                    if(item.tweet.praise_count){
+                                        praiseCount = item.tweet.praise_count;
+                                    }
+                                    lis.push(
+                                        '<li>'+
+                                        '<div class="story-content">'+
+                                        '<div class="mt-story-title js-story-title" story-data-show="true">'+
+                                        '<ul class="hour-head">'+
+                                        '<li><a href="/u/'+item.user.id+'" target="_blank"><img class="hour-tx" src="'+item.user.headimg+'" alt="头像"></li></a>'+
+                                        '<li><a href="/u/'+item.user.id+'" target="_blank"><p style="font-size: 12px;">'+name+'</p></a><p>'+item.insertDate+'</p></li>'+
+                                        '</ul>'+
+                                        '</div>'+
+                                        '<div class="mt-index-info-parent">'+
+                                        '<div class="story-info mt-story-info">'+
+                                        '<p class="story-detail-hide hour-detail-hide mt-index-cont mt-index-cont2 js-mt-index-cont2">'+
+
+                                        '<a href="/tweet/'+item.tweet.id+'" target="_blank" style="color: #0d1215;margin-left: -72%;">'+item.tweet.content+'</a><br>'+
+                                        '<a onclick="tweet_praise('+item.tweet.id+')" style="cursor:hand;color: #bbb">'+
+                                        '<i class="layui-icon layui-icon-praise" title="点赞" style="margin-left: 60%;padding: 0 5px;"></i><em>&nbsp;<c id="tweetPraiseCount_'+item.tweet.id+'">'+item.tweet.praise_count+'</c></em>'+
+                                        '</a>'+
+                                        '<a href="/tweet/'+item.tweet.id+'" target="_blank" style="color: #bbb;padding: 0 5px;">'+
+                                        '<i class="layui-icon layui-icon-reply-fill" title="评论" ></i><em>'+item.tweet.comment_count+'</em>'+
+                                        '</a>'+
+
+                                        '</p>'+
+                                        '</div>'+
+                                        '</div>'+
+                                        '</div>'+
+                                        '</li>'
+                                    );
+                                });
+
+                                next(lis.join(''), false);
+                            }
+
+                        });
+                    }
+
+                });
             });
         }
 

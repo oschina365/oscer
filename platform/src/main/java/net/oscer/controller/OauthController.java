@@ -30,10 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -396,9 +393,13 @@ public class OauthController extends BaseController {
 
 
     public static void main(String[] args) {
-        CacheMgr.set("1h","127.0.0.1",1);
+        /*CacheMgr.set("1h","127.0.0.1",1);
         System.out.println(RandomStringUtils.randomAlphanumeric(8));
-        System.out.println(CacheMgr.get("1h","127.0.0.1"));
+        System.out.println(CacheMgr.get("1h","127.0.0.1"));*/
+        List<Long> list = new ArrayList<>();
+        Map<String,Long> a = new HashMap<>();
+        list.add(1L);
+        list.add(2L);
     }
 
 

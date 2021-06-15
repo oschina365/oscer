@@ -88,6 +88,7 @@ public class OscOpenAuth {
                 return null;
             }
             String access_token = json.getString("access_token");
+            System.out.println("access_token:" + access_token);
             JSONObject info = getUserInfo(access_token);
 
             Profile profile = new Profile();

@@ -28,7 +28,9 @@ public class UrlPassEnum {
     public static final String up = "/up/";
     public static final String captcha = "/captcha/";
     public static final String resume = "/resume";
-    public static final String Case = "/case";
+    public static final String photo = "/p";
+    public static final String tool = "/tool/";
+    public static final String tweet = "/tweet/";
 
-    public static final List<String> list = Arrays.asList(user, u, druid, res, q, oauth, comment,sign,api,tw,uni,f,error_500,error_400,up,captcha,resume,Case);
+    public static final List<String> list = Arrays.asList(user, u, druid, res, q, oauth, comment, sign, api, tw, uni, f, error_500, error_400, up, captcha, resume, photo, tool, tweet);
 }

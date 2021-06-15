@@ -1,5 +1,7 @@
 package net.oscer.framework;
 
+import net.oscer.beans.User;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.ini4j.Ini;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

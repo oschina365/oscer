@@ -7,6 +7,15 @@
         </div>
     </div>-->
 
+    <div class="fly-panel">
+        <div class="fly-panel" style="padding: 10px 0; text-align: center;">
+            <#include '../../tweet/tweet_push.ftl'/>
+            <#include '../../tweet/tweet_slide.ftl'/>
+            <#include '../../tweet/tweet_list.ftl'/>
+        </div>
+    </div>
+
+
     <div class="fly-panel fly-signin">
         <div class="fly-panel-title">
             签到

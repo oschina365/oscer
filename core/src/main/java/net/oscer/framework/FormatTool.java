@@ -622,7 +622,7 @@ public class FormatTool {
         return false;
     }
 
-    public String[] list(String text) {
+    public static String[] list(String text) {
         if (StringUtils.isBlank(text)) {
             return null;
         }

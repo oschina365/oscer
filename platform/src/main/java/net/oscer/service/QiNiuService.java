@@ -182,7 +182,7 @@ public class QiNiuService {
             return UploadResultVO.failWith("图片类型不对");
         }
         long fileSize = multipartFile.getSize();
-        String newFileName = userId + SystemConstant.QINIU_SLASH + originFileName;
+        String newFileName = System.nanoTime() + SystemConstant.QINIU_SLASH + userId + SystemConstant.QINIU_SLASH + originFileName;
         SysFile sysFile = new SysFile();
         sysFile.setUser_id(userId);
         sysFile.setFile_type(0);

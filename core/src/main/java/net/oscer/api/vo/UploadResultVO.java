@@ -49,6 +49,7 @@ public class UploadResultVO implements Serializable {
     public static class data {
         private String src;
         private String thumb;//缩略图
+
         public String getSrc() {
             return src;
         }
@@ -67,7 +68,7 @@ public class UploadResultVO implements Serializable {
 
         @Override
         public String toString() {
-            return "src" + '\"' + ":\"" + src + '\"'+
+            return "src" + '\"' + ":\"" + src + '\"' +
                     ",\"thumb" + '\"' + ":\"" + thumb + '\"';
         }
     }
@@ -130,8 +131,9 @@ public class UploadResultVO implements Serializable {
     public UploadResultVO() {
     }
 
-    public UploadResultVO(int code) {
+    public UploadResultVO(int code, String msg) {
         this.code = code;
+        this.msg = msg;
     }
 
     public UploadResultVO(int code, String msg, String key, long size, String name, data data) {
@@ -200,7 +202,7 @@ public class UploadResultVO implements Serializable {
      * @return
      */
     public static UploadResultVO failWith(String msg) {
-        return new UploadResultVO(status.FAIL.getCode());
+        return new UploadResultVO(status.FAIL.getCode(), msg);
     }
 
 }

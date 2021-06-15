@@ -46,11 +46,8 @@ public class QuestionController extends BaseController {
         }
         if (q.getStatus() != 0) {
             if (loginUser == null || loginUser.getId() != q.getUser()) {
-                if (loginUser.getId() > 2L) {
-                    setErrorMsg("该帖子为私有或审核中");
-                    return "/error/403";
-                }
-
+                setErrorMsg("该帖子为私有或审核中");
+                return "/error/403";
             }
 
         }

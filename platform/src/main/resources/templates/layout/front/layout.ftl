@@ -1,10 +1,13 @@
 <#include "../public.ftl"/>
-<#macro html title_="oscer" js_=[]>
+<#macro html title_="oscer" js_=[] css_=[]>
 <!DOCTYPE html>
 <html lang="zh" class="app">
 <head>
     <title>${title_!''}</title>
     <#include "head.ftl"/>
+    <#list css_ as css>
+        ${css}
+    </#list>
 </head>
 <body>
     <#include "header.ftl"/>

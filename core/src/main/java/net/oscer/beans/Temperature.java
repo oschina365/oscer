@@ -21,6 +21,10 @@ public class Temperature extends Entity {
      * 体温
      */
     public static final String TYPE_TEMPERATURE = "temperature";
+    /**
+     * 收益
+     */
+    public static final String TYPE_PROFIT = "profit";
 
     /**
      * 用户ID
@@ -86,7 +90,7 @@ public class Temperature extends Entity {
         this.type = type;
     }
 
-    public String formatCreateTime(){
-        return FormatTool.formatDate(this.getCreate_time(),"yyyy-MM-dd HH:mm:ss");
+    public String formatCreateTime() {
+        return FormatTool.formatDate(this.getCreate_time(), "yyyy-MM-dd HH:mm:ss");
     }
 }

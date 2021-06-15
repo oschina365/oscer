@@ -221,6 +221,37 @@
             </exclusions>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.t-io/tio-core -->
+        <dependency>
+            <groupId>org.t-io</groupId>
+            <artifactId>tio-core</artifactId>
+            <version>3.2.1.v20181024-RELEASE</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.t-io/tio-websocket-server -->
+        <dependency>
+            <groupId>org.t-io</groupId>
+            <artifactId>tio-websocket-server</artifactId>
+            <version>3.2.1.v20181024-RELEASE</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.t-io/tio-websocket-common -->
+        <dependency>
+            <groupId>org.t-io</groupId>
+            <artifactId>tio-websocket-common</artifactId>
+            <version>3.2.1.v20181024-RELEASE</version>
+        </dependency>
+
     </dependencies>
 
     <build>
