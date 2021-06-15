@@ -62,6 +62,8 @@ public class MyShiroRealm extends AuthorizingRealm {
             throw new DisabledAccountException(msg);
         }
         if (!User.ME._GeneratePwdHashCommonBoolean(password, name)) {
+            System.out.println(String.format("password:%s", password));
+            System.out.println(String.format("name:%s", password));
             if (CacheMgr.exists(LOGIN_COUNT, name)) {
                 login_count = (int) CacheMgr.get(LOGIN_COUNT, name);
             }

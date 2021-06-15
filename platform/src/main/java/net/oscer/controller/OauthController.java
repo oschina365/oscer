@@ -46,7 +46,7 @@ public class OauthController extends BaseController {
 
     private final static String AFTER_BIND_URL = "http://www.oscer.net/oauth/after_bind";
     private final static String AFTER_BIND_GITEE = "http://www.oscer.net/oauth/after_bind_gitee";
-    private final static String AFTER_BIND_OSC = "https://www.oscer.net/oauth/after_bind_osc";
+    private final static String AFTER_BIND_OSC = "http://www.oscer.net/oauth/after_bind_osc";
 
     public final static String SOCIAL_AUTH_CACHE = "1h";
     private final static String SOCIAL_AUTH_KEY = "socialauth_id";
@@ -306,7 +306,7 @@ public class OauthController extends BaseController {
             print(html);
         } else {
             UserBindDAO.ME.evict(loginUser.getId());
-            loginUser(loginUser.getEmail(), loginUser.getSalt());
+            loginUser(loginUser.getUsername(), loginUser.getSalt());
             saveUserInCookie((User) result.getResult());
             redirect(LinkTool.root());
             return;
