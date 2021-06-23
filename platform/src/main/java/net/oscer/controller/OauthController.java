@@ -308,7 +308,7 @@ public class OauthController extends BaseController {
             UserBindDAO.ME.evict(loginUser.getId());
             loginUser(loginUser.getUsername(), loginUser.getSalt());
             saveUserInCookie((User) result.getResult());
-            redirect(LinkTool.root());
+            redirect("http://www.oscer.net");
             return;
         }
 

@@ -18,6 +18,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.tio.http.common.HttpRequest;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TweetDAO extends CommonDao<Tweet> {
 
@@ -36,16 +37,16 @@ public class TweetDAO extends CommonDao<Tweet> {
      * @param size
      * @return
      */
-    public List<Long> selectTweetIdsByShow(String show, int page, int size) {
+    public List<Number> selectTweetIdsByShow(String show, int page, int size) {
         String sql = "select id from tweets where status=1 " + TweetEnum.show_sql_map.get(show);
         if (show.equalsIgnoreCase(TweetEnum.HOME_SHOW.ALL.getCode())) {
             sql = "select id from tweets where status=1 order by id desc";
-            return getDbQuery().query_slice_cache(Long.class, Tweet.ME.CacheRegion(), show, 50, sql, page, size);
+            return getDbQuery().query_slice_cache(Number.class, Tweet.ME.CacheRegion(), show, 50, sql, page, size);
         }
         if (show.equalsIgnoreCase(TweetEnum.HOME_SHOW.HOT.getCode())) {
-            return getDbQuery().query_cache(Long.class, false, Tweet.CACHE_HOT_TWEET_IDS, "all", sql);
+            return getDbQuery().query_cache(Number.class, false, Tweet.CACHE_HOT_TWEET_IDS, "all", sql);
         }
-        return getDbQuery().query_cache(Long.class, false, Tweet.ME.CacheRegion(), show, sql);
+        return getDbQuery().query_cache(Number.class, false, Tweet.ME.CacheRegion(), show, sql);
     }
 
     public int total() {
@@ -54,7 +55,8 @@ public class TweetDAO extends CommonDao<Tweet> {
     }
 
     public List<TweetViewObject> selectTweetsByShow(User loginUser, String show, int page, int size) {
-        List<Long> ids = selectTweetIdsByShow(show, page, size);
+        List<Number> numbers = selectTweetIdsByShow(show, page, size);
+        List<Long> ids = numbers.stream().map(Number::longValue).collect(Collectors.toList());
         if (CollectionUtils.isEmpty(ids)) {
             return null;
         }

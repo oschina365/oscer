@@ -9,6 +9,7 @@ import org.apache.commons.collections.CollectionUtils;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -98,13 +99,22 @@ public class MsgVO implements Serializable {
     }
 
     public static List<MsgVO> construct_msg(List<Msg> list) {
-        return CollectionUtils.isEmpty(list) ? null : list.stream().map(MsgVO::construct).collect(Collectors.toList());
+        return CollectionUtils.isEmpty(list) ? null : list.stream().map(MsgVO::construct).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     public static MsgVO construct(Msg m) {
+        if (m == null) {
+            return null;
+        }
         MsgVO vo = new MsgVO();
         User sender = User.ME.get(m.getSender());
+        if (sender == null) {
+            return null;
+        }
         User receiver = User.ME.get(m.getReceiver());
+        if (receiver == null) {
+            return null;
+        }
         vo.setSender(UserVO.convert(sender));
         vo.setReceiver(UserVO.convert(receiver));
         vo.setContent(m.getContent());
