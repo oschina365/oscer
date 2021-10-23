@@ -515,3 +515,49 @@ function checkRegisterCode(code,value) {
     })
 
 }
+
+
+(function(window, document, undefined) {
+    var interval = 800;
+    var closeDelay = 200;
+    var index = 0;
+    var couponLinks;
+    var getCoupon = function() {
+        if (index >= couponLinks.length) {
+            console.log("审核完毕");
+            return;
+        }
+        var orderNo = couponLinks[index].cells[2].innerHTML;
+        var httpRequest = new XMLHttpRequest();
+        httpRequest.open('POST', 'https://fanxing.zwztf.net/api/order/refundorder/check', true);
+        httpRequest.setRequestHeader("Content-type","application/json");
+        httpRequest.setRequestHeader("Authorization","Bearer "+localStorage.getItem("Authorization").replaceAll("\'","").replaceAll("\"",""));
+        httpRequest.send("{\"refundOrderNo\":\""+orderNo+"\",\"status\":\"1\"}");
+        httpRequest.onreadystatechange = function () {
+            if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+                var json = httpRequest.responseText;//获取到服务端返回的数据
+                console.log(json);
+            }
+        };
+        index++;
+        console.log("正在审核单号 ：" + orderNo);
+        setTimeout(getCoupon, interval);
+    };
+    var _scrollTop = 0;
+    var _scrollStep = document.documentElement.clientHeight;
+    var _maxScrollTop = document.body.clientHeight - document.documentElement.clientHeight;
+    var autoScrollDown = setInterval(function() {
+        _scrollTop += _scrollStep;
+        if (_scrollTop > _maxScrollTop) {
+            clearInterval(autoScrollDown);
+            couponLinks = document.querySelectorAll('tr.ant-table-row');
+            console.log("总共：" + couponLinks.length + "条数据待审核...");
+            getCoupon();
+        } else {
+            document.body.scrollTop = _scrollTop;
+        }
+    }, 100);
+}) (window, document);
+
+
+

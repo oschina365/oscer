@@ -21,21 +21,22 @@ public class TestMysqlDb {
 
     public static final String bill_name_1 = "sale_bill_1";
     public static final String bill_name_3 = "sale_bill_3";
-    public static final String tenantCode_1 = "10000001";
+    public static final String tenantCode_1 = "10000035";
     public static final String tenantCode_35 = "10000035";
 
     public static void main(String[] args) throws SQLException {
         //bill-数据中心，错误的   order_head-中台数据，正确的
-        List<Map<String, Object>> bills1 = bills(bill_name_1, tenantCode_1, 2);
-        List<Map<String, Object>> bills35 = bills(bill_name_3, tenantCode_35,2);
+        List<Map<String, Object>> bills1 = bills(bill_name_3, tenantCode_1, 2);
+        //List<Map<String, Object>> bills35 = bills(bill_name_3, tenantCode_35,2);
         //bills35.stream().filter(b -> b.get("bill_no").equals("74761623374120589")).findFirst();
-        //List<Map<String, Object>> order1 = mid1OrderHead(tenantCode_1);
+        List<Map<String, Object>> order1 = mid1OrderHead(tenantCode_1);
         //List<Map<String, Object>> order35 = mid2OrderHead(tenantCode_35);
         //order35.stream().filter(b -> b.get("order_number").equals("74761623374120589")).findFirst();
-        List<Map<String, Object>> order35_refunds = mid2OrderRefund(tenantCode_35);
+        //List<Map<String, Object>> order35_refunds = mid2OrderRefund(tenantCode_35);
         List<Map<String, Object>> order1_refunds = mid1OrderRefund(tenantCode_1);
-        //sync(bill_name_1, tenantCode_1, bills1, order1);
-        sync(bill_name_3, tenantCode_35, bills35, order35_refunds,true);
+        sync(bill_name_1, tenantCode_1, bills1, order1,true);
+        sync(bill_name_1, tenantCode_1, bills1, order1,false);
+        //sync(bill_name_3, tenantCode_35, bills35, order35_refunds,true);
 
         //sync(bill_name_1, tenantCode_1, bills1, order1,false);
         //sync(bill_name_1, tenantCode_1, bills1, order1_refunds, true);
@@ -75,10 +76,6 @@ public class TestMysqlDb {
             try {
                 boolean b = true;
                 if (refund) {
-                    System.out.println(order.get("id").toString());
-                    if(order.get("id").toString().equals("623106430152531970")){
-                        System.out.println(order);
-                    }
                     b = updateBill(tableName, bill.get("tenant_code"), bill.get("id"), order.get("can_pos"), order.get("finish_time"), order.get("posflag"), order.get("pos_time"));
                 } else {
                     b = updateBill(tableName, bill.get("tenant_code"), bill.get("id"), order.get("can_pos"), order.get("finish_time"), order.get("posflag"), order.get("pos_time"));
@@ -122,7 +119,7 @@ public class TestMysqlDb {
     }
 
     public static List<Map<String, Object>> bills(String tableName, String tenantCode, int billType) throws SQLException {
-        String sql = "select * from " + tableName + " where tenant_code=? and bill_type=? and create_time > '2021-07-01 00:00:00' ";
+        String sql = "select * from " + tableName + " where tenant_code=? and bill_type=? and create_time between '2021-08-01 00:00:00' and '2021-08-30 23:59:59' ";
         List<Map<String, Object>> result = DBData.findBySql(sql, tenantCode, billType);
         String billTypeMsg = "正单";
         if (billType == 2) {
@@ -140,7 +137,7 @@ public class TestMysqlDb {
      * @throws SQLException
      */
     public static List<Map<String, Object>> mid1OrderHead(String tenantCode) throws SQLException {
-        String sql = "select * from order_head where tenant_code=? and create_time > '2021-07-13 00:00:00' ";
+        String sql = "select * from order_head where tenant_code=? and create_time between '2021-08-01 00:00:00' and '2021-08-30 23:59:59' ";
         List<Map<String, Object>> result = DBData1.findBySql(sql, tenantCode);
         log.info(String.format("[mid1数据库的order_head表]商家编号[%s]查询的 正单 结果数量：%s", tenantCode, result.size()));
         return result;
@@ -154,7 +151,7 @@ public class TestMysqlDb {
      * @throws SQLException
      */
     public static List<Map<String, Object>> mid2OrderHead(String tenantCode) throws SQLException {
-        String sql = "select * from order_head where tenant_code=? and create_time > '2021-07-13 00:00:00' ";
+        String sql = "select * from order_head where tenant_code=? and create_time between '2021-08-01 00:00:00' and '2021-08-30 23:59:59' ";
         List<Map<String, Object>> result = DBData2.findBySql(sql, tenantCode);
         log.info(String.format("[mid2数据库的order_head表]商家编号[%s]查询的 正单 结果数量：%s", tenantCode, result.size()));
         return result;
@@ -168,7 +165,7 @@ public class TestMysqlDb {
      * @throws SQLException
      */
     public static List<Map<String, Object>> mid1OrderRefund(String tenantCode) throws SQLException {
-        String sql = "select * from return_order_head where tenant_code=? and create_time > '2021-07-01 00:00:00' ";
+        String sql = "select * from return_order_head where tenant_code=? and create_time between '2021-08-01 00:00:00' and '2021-08-30 23:59:59' ";
         List<Map<String, Object>> result = DBData1.findBySql(sql, tenantCode);
         log.info(String.format("[mid1数据库的order_head表]商家编号[%s]查询的 退单 结果数量：%s", tenantCode, result.size()));
         return result;
@@ -182,7 +179,7 @@ public class TestMysqlDb {
      * @throws SQLException
      */
     public static List<Map<String, Object>> mid2OrderRefund(String tenantCode) throws SQLException {
-        String sql = "select * from return_order_head where tenant_code=? and create_time > '2021-07-13 00:00:00' ";
+        String sql = "select * from return_order_head where tenant_code=? and create_time between '2021-08-01 00:00:00' and '2021-08-30 23:59:59'";
         List<Map<String, Object>> result = DBData2.findBySql(sql, tenantCode);
         log.info(String.format("[mid2数据库的order_head表]商家编号[%s]查询的 退单 结果数量：%s", tenantCode, result.size()));
         return result;

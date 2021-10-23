@@ -1,5 +1,6 @@
 package net.oscer.framework;
 
+import com.alibaba.fastjson.JSONObject;
 import net.oscer.beans.User;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.ini4j.Ini;
@@ -66,7 +67,7 @@ public class LinkTool {
         return getConfigKey("hosts.properties", key, g);
     }
 
-    public static class Data{
+    public static class Data {
         private int a;
         private String b;
 
@@ -92,7 +93,7 @@ public class LinkTool {
         }
     }
 
-    public static void main(String[] args) {
+  /*  public static void main(String[] args) {
         List<Data> list = new ArrayList<>();
         list.add(new Data(1,"1"));
         list.add(new Data(2,"2"));
@@ -102,6 +103,21 @@ public class LinkTool {
         list.parallelStream().forEach(a->a.setA(3));
 
         System.out.println(list);
-    }
+    }*/
 
+    public static void main(String[] args) {
+        List<Integer> list = new ArrayList<Integer>() {{
+            add(1);
+            add(3);
+            add(5);
+            add(6);
+        }};
+        int total = list.size();
+        long queryTime = (total / 3) + ((total % 3) == 0L ? 0L : 1L);
+        for (int i = 1; i <= queryTime; i++) {
+            List<Integer> ids = list.subList((i - 1) * 3, (i * 3 > total ? total : i * 3));
+            System.out.println(JSONObject.toJSONString(ids));
+            System.out.println(String.format("查询第%s次", i));
+        }
+    }
 }

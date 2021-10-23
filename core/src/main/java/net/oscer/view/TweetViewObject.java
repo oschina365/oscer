@@ -9,6 +9,7 @@ import net.oscer.framework.FormatTool;
 import net.oscer.framework.LinkTool;
 import net.oscer.framework.StringUtils;
 import net.oscer.vo.UserVO;
+import net.sf.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -118,4 +119,5 @@ public class TweetViewObject {
             }
         }
     }
+
 }

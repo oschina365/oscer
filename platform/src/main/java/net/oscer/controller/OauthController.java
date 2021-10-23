@@ -1,6 +1,7 @@
 package net.oscer.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import net.oscer.beans.User;
 import net.oscer.beans.UserBind;
 import net.oscer.common.ApiResult;
@@ -283,13 +284,13 @@ public class OauthController extends BaseController {
             redirect(LinkTool.root() + "?error=profile");
             return;
         }
-
+        System.out.println("authProfile:" + JSONObject.toJSONString(authProfile));
         if (StringUtils.isNotBlank(authProfile.getValidatedId())) {
             bind = UserBindDAO.ME.bindByUnion_id(authProfile.getProviderId(), authProfile.getValidatedId(), authProfile.getFullName());
         } else {
             bind = UserBindDAO.ME.bindByName(authProfile.getProviderId(), authProfile.getFullName());
         }
-        System.out.println("bind:"+bind);
+        System.out.println("bind:" + bind);
         if (bind != null && bind.getId() > 0L) {
             loginUser = User.ME.get(bind.getUser());
         } else {
@@ -299,7 +300,7 @@ public class OauthController extends BaseController {
             redirect(LinkTool.root());
             return;
         }
-        System.out.println("exist:"+loginUser);
+        System.out.println("exist:" + loginUser);
         ApiResult result = UserDAO.ME.login(authProfile.getFullName(), authProfile.getValidatedId(), ip(), true, authProfile.getProviderId());
         if (result.getCode() == ApiResult.fail) {
             String html = "<p>Redirecting...</p><script type='text/javascript'>   location.href='" + LinkTool.root() + "';</script>";
@@ -397,7 +398,7 @@ public class OauthController extends BaseController {
         System.out.println(RandomStringUtils.randomAlphanumeric(8));
         System.out.println(CacheMgr.get("1h","127.0.0.1"));*/
         List<Long> list = new ArrayList<>();
-        Map<String,Long> a = new HashMap<>();
+        Map<String, Long> a = new HashMap<>();
         list.add(1L);
         list.add(2L);
     }

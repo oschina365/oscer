@@ -120,6 +120,7 @@ public class WsMsgHandler implements IWsMsgHandler {
         if (StringUtils.isBlank(text)) {
             return null;
         }
+        System.out.println(String.format("登录用户%s,动弹发布的内容：%s", user.getName(), text));
         Tweet tweet = TweetDAO.ME.push(httpRequest, user.getId(), map);
 
         // String msg = "动弹发布成功";

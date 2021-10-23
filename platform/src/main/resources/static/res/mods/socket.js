@@ -153,9 +153,9 @@ function push_tweet() {
         } else if (!content.trim()) {
             layer.msg("内容不能为空~~~", {icon: 5});
             return;
-        } else if (!getCookie("tweet", 1000 * 20)) {
+       /* } else if (!getCookie("tweet", 1000 * 20)) {
             layer.msg("动弹得太快了，休息下~~~", {icon: 5});
-            return;
+            return;*/
         } else {
             var lis = $(".tweetIndexUl li");
             var photos = [];
