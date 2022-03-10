@@ -1,12 +1,13 @@
 package net.oscer.framework;
 
-import com.forever7776.sendcloud.core.service.SendCloudService;
-import com.forever7776.sendcloud.core.util.ResponseData;
-import com.forever7776.sendcloud.remote.common.vo.ResultVO;
-import com.forever7776.sendcloud.remote.common.vo.SendCloudEmailParamVO;
+
 import net.oscer.beans.SendEmailTemplate;
 import net.oscer.dao.SendEmailTemplateDAO;
 import net.oscer.enums.ResultEnum;
+import net.oscer.sendcloud.SendCloudService;
+import net.oscer.sendcloud.common.util.ResponseData;
+import net.oscer.sendcloud.common.vo.ResultVO;
+import net.oscer.sendcloud.common.vo.SendCloudEmailParamVO;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;

@@ -1,7 +1,5 @@
 package net.oscer.controller;
 
-import com.forever7776.sendcloud.remote.common.vo.ResultVO;
-import com.forever7776.sendcloud.remote.common.vo.SendCloudEmailParamVO;
 import net.oscer.api.vo.UploadResultVO;
 import net.oscer.beans.SendEmailRecord;
 import net.oscer.beans.User;
@@ -11,6 +9,8 @@ import net.oscer.dao.SendEmailRecordDAO;
 import net.oscer.dao.UserDAO;
 import net.oscer.enums.EmailTemplateTypeEnum;
 import net.oscer.framework.*;
+import net.oscer.sendcloud.common.vo.ResultVO;
+import net.oscer.sendcloud.common.vo.SendCloudEmailParamVO;
 import net.oscer.service.CaptchaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

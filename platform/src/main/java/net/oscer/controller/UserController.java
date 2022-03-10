@@ -1,7 +1,5 @@
 package net.oscer.controller;
 
-import com.forever7776.sendcloud.remote.common.vo.ResultVO;
-import com.forever7776.sendcloud.remote.common.vo.SendCloudEmailParamVO;
 import net.oscer.beans.*;
 import net.oscer.common.ApiResult;
 import net.oscer.common.PlaceHoldersConstants;
@@ -11,6 +9,8 @@ import net.oscer.db.Entity;
 import net.oscer.enums.EmailTemplateTypeEnum;
 import net.oscer.framework.FormatTool;
 import net.oscer.framework.Send;
+import net.oscer.sendcloud.common.vo.ResultVO;
+import net.oscer.sendcloud.common.vo.SendCloudEmailParamVO;
 import net.oscer.service.CaptchaService;
 import net.oscer.vo.UserVO;
 import org.apache.commons.collections.CollectionUtils;
