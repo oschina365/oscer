@@ -13,4 +13,8 @@
     <link rel="stylesheet" href="/res/css/global.css">
 
     <script src="https://cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
     <script src="/res/layui/layui.js"></script>
+    <script src="/res/mods/tiohandler.js"></script>
+    <script src="/res/mods/tiows.js"></script>
+    <script src="/res/mods/socket.js"></script>

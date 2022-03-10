@@ -2,6 +2,8 @@ package net.oscer.controller;
 
 import net.oscer.beans.*;
 import net.oscer.dao.*;
+import net.oscer.db.CacheMgr;
+import net.oscer.view.TweetViewObject;
 import net.oscer.vo.QuestionVO;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,9 +24,19 @@ import java.util.Map;
 @Controller
 public class GlobalController extends BaseController {
 
-    @GetMapping("/case")
-    public String caseHtml(){
-        return "/u/case";
+    @GetMapping("/p")
+    public String caseHtml() {
+        return "/u/photo";
+    }
+
+    @GetMapping("/p/{name}")
+    public String caseHtml(@PathVariable("name") String name) {
+        if (name.equalsIgnoreCase("kezhen")) {
+            CacheMgr.set("Photo", "kezhen", "kezhen");
+        } else {
+            CacheMgr.evict("Photo", "kezhen");
+        }
+        return "/u/photo";
     }
 
     @RequestMapping("/500")
@@ -48,7 +60,7 @@ public class GlobalController extends BaseController {
         request.setAttribute("nodes", nodes);
         //查询置顶的帖子
         List<Question> tops = QuestionDAO.ME.tops(Question.SYSTEM_LIMIT_TOP);
-        request.setAttribute("tops", QuestionVO.list(tops,getLoginUser(), "0"));
+        request.setAttribute("tops", QuestionVO.list(tops, getLoginUser(), "0"));
 
         //回帖周榜
         List<Map<User, Integer>> weekUserCommentHots = CommentQuestionDAO.ME.weekUserCommentHots();
@@ -70,7 +82,6 @@ public class GlobalController extends BaseController {
         }
         //查询今天已签到的人数
         request.setAttribute("count_signed_today", UserDAO.ME.count_signed_today());
-
 
         return "index";
     }

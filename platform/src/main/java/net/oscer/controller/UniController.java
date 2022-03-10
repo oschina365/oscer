@@ -138,6 +138,7 @@ public class UniController extends BaseController {
         //帖子总数
         int count = QuestionDAO.ME.countNode(id);
         map.put("count", count);
+        map.put("lastPage", (count / 10) + ((count % 10) == 0L ? 0L : 1L));
         return ApiResult.successWithObject(map);
     }
 
@@ -188,9 +189,7 @@ public class UniController extends BaseController {
         User login_user = getLoginUser();
         Map<String, Object> map = new HashMap<>(2);
         //评论列表 --分页
-        String size = request.getParameter("size");
-        int s = StringUtils.isEmpty(size) ? 10 : Integer.parseInt(size);
-        List<CommentQuestion> comments = CommentQuestionDAO.ME.first(id, pageNumber, s);
+        List<CommentQuestion> comments = CommentQuestionDAO.ME.first(id, pageNumber, pageSize);
         if (CacheMgr.exists(CommentQuestion.ME.CacheRegion(), "rankMap#" + id)) {
             map.put("rankMap", CacheMgr.get(CommentQuestion.ME.CacheRegion(), "rankMap#" + id));
         } else {
@@ -528,7 +527,7 @@ public class UniController extends BaseController {
         loginUser.setSalt(loginUser._GeneratePwdHash(loginUser.getPassword(), loginUser.getEmail()));
         loginUser.setCity(form.getCity());
         loginUser.setSelf_info(StringUtils.isEmpty(form.getSelf_info()) ? loginUser.getSelf_info() : form.getSelf_info());
-        if(StringUtils.isNotEmpty(form.getHeadimg())){
+        if (StringUtils.isNotEmpty(form.getHeadimg())) {
             loginUser.setHeadimg(form.getHeadimg());
 
         }
@@ -719,7 +718,17 @@ public class UniController extends BaseController {
     @PostMapping("photos")
     @ResponseBody
     public ApiResult photos(@RequestParam(value = "user", required = false) Long user) throws Exception {
-        User loginUser = current_user(user);
+        User loginUser = null;
+        if (CacheMgr.exists("Photo", "kezhen")) {
+            loginUser = new User();
+            loginUser.setStatus(STATUS_NORMAL);
+            loginUser.setId(2L);
+        }
+        User u = current_user(user);
+        if (u != null) {
+            loginUser = u;
+            CacheMgr.evict("Photo", "kezhen");
+        }
         if (null == loginUser || loginUser.getStatus() != STATUS_NORMAL) {
             return ApiResult.failWithMessage("请重新登录");
         }
@@ -731,5 +740,12 @@ public class UniController extends BaseController {
         int count = PhotoDAO.ME.count(loginUser.getId());
         map.put("count", count);
         return ApiResult.successWithObject(map);
+    }
+
+    @PostMapping("wxlogin")
+    @ResponseBody
+    public ApiResult wxlogin() throws Exception {
+
+        return ApiResult.success();
     }
 }

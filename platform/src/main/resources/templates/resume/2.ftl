@@ -24,7 +24,7 @@
                     <img class="avatar" src="https://oscimg.oschina.net/oscnet/up-7da09418d15c03e31e3ff4f8c0036c7d.jpg!/both/200x200" >
                 </section>
 
-                <h4 class="info-job">JAVA开发工程师 / 深圳</h4>
+                <h4 class="info-job">JAVA开发工程师</h4>
 
             </section>
 
@@ -36,7 +36,7 @@
                 <ul>
                     <li>
                         <label>个人信息</label>
-                        <span>柯真 / 男 / 25岁</span>
+                        <span>柯真 / 男 / 1993</span>
                     </li>
                     <li>
                         <label>手机号码</label>
@@ -52,7 +52,7 @@
                     </li>
                     <li>
                         <label>期望薪资</label>
-                        <span>16K</span>
+                        <span>14K~18k</span>
                     </li>
                 </ul>
             </section>
@@ -161,9 +161,10 @@
                                 <mark><a href="https://my.oschina.net/kezhen" target="_blank">个人空间</a></mark>、
                                 <mark><a href="https://www.oschina.net/blog" target="_blank">博客</a></mark>、
                                 <mark><a href="https://www.oschina.net/question" target="_blank">问答</a></mark>、
-                                <mark><a href="https://www.oschina.net/oschina-10th-anniversary/lottery" target="_blank">开源中国10周年抽奖</a></mark>、
-                                <mark><a href="https://www.oschina.net/project/top_cn_2018" target="_blank">2018年开源软件评选</a></mark>、
+                                <mark><a href="https://www.oschina.net/oschina-10th-anniversary/lottery" target="_blank">周年庆抽奖</a></mark>、
+                                <mark><a href="https://www.oschina.net/project/top_cn_2018" target="_blank">开源软件评选</a></mark>、
                                 <mark><a href="https://www.oschina.net/search?scope=all&q=j2cache" target="_blank">新版搜索</a></mark>
+                                <mark><a href="https://www.oschina.net/search?scope=all&q=j2cache" target="_blank">微信小程序</a></mark>
                                 等模块的开发，修复与维护社区项目,解决bug,改善社区用户体验；
                                 </li>
                             <li>开发<mark><a href="https://www.oschina.net/app" target="_blank">客户端</a></mark>需要的api接口，如果博客列表，问答列表等接口；</li>
@@ -280,7 +281,7 @@
     <aside>
         <ul>
             <li>
-                <a href="http://117.48.200.114:83/JAVA简历-柯真.docx" target="_blank">下载简历</a>
+                <a href="/res/resume/JAVA简历-柯真.docx" target="_blank">下载简历</a>
             </li>
             <li>
                 <a href="https://my.oschina.net/kezhen" target="_blank">Blog</a>

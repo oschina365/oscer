@@ -58,17 +58,27 @@ public class UrlPermissionsFilter extends PermissionsAuthorizationFilter {
             id = user.getId();
         }
 
+        if (!StringUtils.startsWith(curUrl, UrlPassEnum.res)) {
+            System.out.println(String.format("访问ip：%s,url: %s", ip, curUrl));
+        }
+
+        if (StringUtils.startsWith(curUrl, "/res")) {
+            return true;
+        }
+
         if (StringUtils.startsWith(curUrl, "/error/")) {
             return true;
         }
 
-        if (!canView(ip, id, curUrl)) {
-            this.setUnauthorizedUrl("/error/4003");
-            return false;
+        if (StringUtils.startsWith(curUrl, "/p")) {
+            return true;
+        }
+
+        if (StringUtils.startsWith(curUrl, "/tweet")) {
+            return true;
         }
 
         if (StringUtils.equalsIgnoreCase(curUrl, "/")) {
-            System.out.println(String.format("访问ip：%s,url: 首页", ip));
             return true;
         }
 
@@ -78,18 +88,20 @@ public class UrlPermissionsFilter extends PermissionsAuthorizationFilter {
 
         List<String> urls = UrlPassEnum.list;
         boolean pass = false;
-        if(curUrl.contains("res/resume")){
+        if (curUrl.contains("res/resume")) {
             pass = false;
         }
         for (String url : urls) {
             if (StringUtils.startsWith(curUrl, url)) {
                 pass = true;
-                if(!StringUtils.equalsIgnoreCase(url,UrlPassEnum.res)){
-                    System.out.println(String.format("访问url: %s",curUrl));
-                }
                 break;
             }
         }
+        if (pass && !canView(ip, id, curUrl)) {
+            this.setUnauthorizedUrl("/error/403");
+            return false;
+        }
+
         if (pass) {
             return true;
         }
@@ -148,33 +160,46 @@ public class UrlPermissionsFilter extends PermissionsAuthorizationFilter {
      * 对ip或者某个用户进行访问限制
      */
     public boolean canView(String ip, long user, String url) {
-        if(true){
+        /*if(true){
+            return true;
+        }*/
+        if (StringUtils.startsWith(url, UrlPassEnum.res)) {
             return true;
         }
-        if (ip.equalsIgnoreCase(IpPassEnum.local) || ip.equalsIgnoreCase(IpPassEnum.local) || ip.equalsIgnoreCase(IpPassEnum.remote_local)) {
+        if (ip.equalsIgnoreCase(IpPassEnum.local) || ip.equalsIgnoreCase(IpPassEnum.local1) || ip.equalsIgnoreCase(IpPassEnum.remote_local)) {
             return true;
         }
         //单个ip所有访问链接次数
         Object totalView = CacheMgr.get(CACHE_TOTAL, ip);
-        if (totalView != null && ((Integer) totalView) > MAX_VIEW_COUNT) { return false; }
+        if (totalView != null && ((Integer) totalView) > MAX_VIEW_COUNT) {
+            return false;
+        }
         if (user > 0L) {
             //所有访问链接次数
             Object total = CacheMgr.get(CACHE_TOTAL, String.valueOf(user));
-            if (total != null && ((Integer) total) > MAX_VIEW_COUNT) { return false; }
+            if (total != null && ((Integer) total) > MAX_VIEW_COUNT) {
+                return false;
+            }
             //单个访问链接次数--用户
             Object urlView = CacheMgr.get(url, String.valueOf(user));
-            if (urlView != null && ((Integer) urlView) > MAX_SINGLE_COUNT) { return false; }
+            if (urlView != null && ((Integer) urlView) > MAX_SINGLE_COUNT) {
+                return false;
+            }
             CacheMgr.incr(CACHE_TOTAL, String.valueOf(user));
             if (!UrlPassEnum.list.contains(url)) {
                 CacheMgr.incr(url, String.valueOf(user));
             }
         } else {
             //单个ip
-            Object urlView = CacheMgr.get(ip, url);
-            if (urlView != null && ((Integer) urlView) > MAX_SINGLE_COUNT) { return false; }
+            Object urlView = CacheMgr.get(url, ip);
+            if (urlView != null && ((Integer) urlView) > MAX_SINGLE_COUNT) {
+                return false;
+            }
         }
-        CacheMgr.incr(CACHE_TOTAL, ip);
-        if (!UrlPassEnum.list.contains(url)) { CacheMgr.incr(ip, url); }
+        if (!StringUtils.startsWith(url, UrlPassEnum.res)) {
+            CacheMgr.incr(CACHE_TOTAL, ip);
+            CacheMgr.incr(url, ip);
+        }
         return true;
     }
 }

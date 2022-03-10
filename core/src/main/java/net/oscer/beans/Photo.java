@@ -22,6 +22,7 @@ public class Photo extends Entity {
     private int month;
     private int day;
     private Date upload_time;
+    private String type;
 
     public long getUser() {
         return user;
@@ -77,5 +78,13 @@ public class Photo extends Entity {
 
     public void setUpload_time(Date upload_time) {
         this.upload_time = upload_time;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

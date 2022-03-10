@@ -8,3 +8,4 @@
 <#--<#assign static = "http://p6cfjoz1f.bkt.clouddn.com"/>-->
 <#assign static = request.contextPath/>
 <#macro res u_=""><#if context??>${context.ver('/resources/static/'+u_)}<#else>${static}/js/${u_}</#if></#macro>
+

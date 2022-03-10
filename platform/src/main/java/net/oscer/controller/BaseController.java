@@ -5,7 +5,7 @@ import net.oscer.common.ApiResult;
 import net.oscer.framework.CryptUtils;
 import net.oscer.framework.FormatTool;
 import net.oscer.framework.RequestUtils;
-import org.apache.commons.lang3.StringUtils;
+import net.oscer.framework.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -97,8 +97,8 @@ public class BaseController {
         //第几页
         String number = request.getParameter("number");
         String size = request.getParameter("size");
-        this.pageNumber = StringUtils.isEmpty(number) ? 1 : Integer.parseInt(number);
-        this.pageSize = StringUtils.isEmpty(size) ? 10 : Integer.parseInt(size);
+        this.pageNumber = StringUtils.isNotBlank(number) && StringUtils.isNumeric(number) ? Integer.parseInt(number) : 1;
+        this.pageSize = StringUtils.isNotBlank(size) && StringUtils.isNumeric(size) ? Integer.parseInt(size) : 10;
         this.request = request;
         User login_user = getLoginUser();
         if (null != login_user) {
@@ -131,7 +131,7 @@ public class BaseController {
         } catch (Exception e) {
             return null;
         }
-        if(true){
+        if (true) {
             return login_user;
         }
         return login_user == null ? (getUserFromCookie() == null ? null : getUserFromCookie()) : (login_user.getId() <= 0 ? null : login_user);
@@ -313,7 +313,7 @@ public class BaseController {
     }
 
     public Cookie cookie(String name) {
-        if(cookies==null || StringUtils.isEmpty(name)){
+        if (cookies == null || StringUtils.isEmpty(name)) {
             return null;
         }
         return cookies.get(name);
@@ -335,7 +335,7 @@ public class BaseController {
 
     public Cookie deleteCookie(String name, boolean all_sub_domain) {
         Cookie cookie = cookie(name);
-        if(cookie==null){
+        if (cookie == null) {
             return null;
         }
         cookie(name, "", 0, all_sub_domain);
@@ -491,5 +491,19 @@ public class BaseController {
         }
         return User.ME.get(id);
     }
+
+    public static User getUserByCookie(String uid) {
+        if (org.apache.commons.lang.StringUtils.isBlank(uid)) {
+            return null;
+        }
+        String ck = decrypt(uid, E_KEY);
+        final String[] items = org.apache.commons.lang.StringUtils.split(ck, '|');
+        if (items != null && items.length >= COOKIE_LENGTH_START && items.length <= COOKIE_LENGTH_END) {
+            Long id = NumberUtils.toLong(items[0], -1L);
+            return User.ME.get(id);
+        }
+        return null;
+    }
+
 
 }

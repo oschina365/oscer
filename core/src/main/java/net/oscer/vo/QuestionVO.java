@@ -220,6 +220,9 @@ public class QuestionVO {
             }
             //vo.setBanner(StringUtils.getFirstImageUrl(q.getContent()));
             vo.setBanners(StringUtils.getMoreImageUrl(q.getContent(), 3));
+            if (CollectionUtils.isNotEmpty(vo.getBanners())) {
+                vo.setBanner(vo.getBanners().get(0));
+            }
             vo.setType(3);
             if (CollectionUtils.isEmpty(vo.getBanners()) || vo.getBanners().size() == 3) {
                 vo.setType(3);

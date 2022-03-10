@@ -5,10 +5,12 @@
 
     <div class="layui-container">
     <form action="/tw/add" method="post" id="listForm">
+        <input type="hidden" name="type" value="${type}"/>
         <div class="layui-form-item">
-            <label class="layui-form-label">温度</label>
+
+            <label class="layui-form-label"><#if type=="profit">收益<#else >温度</#if></label>
             <div class="layui-input-block">
-                <input type="text" name="temperature" lay-verify="title" autocomplete="off" placeholder="请输入温度值"
+                <input type="text" name="temperature" lay-verify="title" autocomplete="off" placeholder="请输入<#if type=="profit">收益<#else >温度</#if>值"
                        class="layui-input">
             </div>
         </div>
@@ -28,6 +30,10 @@
     <div class="layui-form-item">
         <div class="layui-input-block">
             <div id="speedChartMain" style="width: 100%; height: 400px;"></div>
+            <#if type=="profit">
+                <br>
+                <h3 style="text-align: center;">截止目前总收益：${sum}￥</h3><br>
+            </#if>
         </div>
     </div>
 </div>
@@ -90,6 +96,8 @@
             , layer = parent.layer === undefined ? layui.layer : parent.layer
             ,  $ = layui.jquery, laydate = layui.laydate,form=layui.form;
 
+        var type = $("input[name='type']").val();
+
         //日期
         laydate.render({
             type: 'datetime', //默认，可不填
@@ -101,8 +109,14 @@
             url: '/tw/list',
             type: 'post',
             dataType: 'json',
+            data:{"type":type},
             success: function (d) {
+                console.log(d);
                 if (d && d.code == 1) {
+                    if(!d.result){
+                        layer.msg("数据为空，请添加");
+                        return;
+                    }
 
                     // 基于准备好的dom，初始化echarts实例
                     var myChart = echarts.init(document.getElementById('speedChartMain'));
@@ -111,7 +125,7 @@
                             trigger: 'axis'
                         },
                         legend: {
-                            data: ['体温']
+                            data: [type=='profit'?'收益':'体温']
                         },
                         grid: {
                             left: '3%',
@@ -132,16 +146,14 @@
                         yAxis: {
 
                             type : 'value',
-                            name : '温度',
-                            min: 34,
-                            max: 38,
+                            name : type=='profit'?'金额':'温度',
                             axisLabel: {
-                                formatter: '{value} ℃'
+                                formatter: '{value} '+(type=='profit'?'￥':'℃')
                             }
                         },
                         series: [
                             {
-                                name: '体温',
+                                name: type=='profit'?'收益':'体温',
                                 type: 'line',
                                 stack: '总量',
                                 data: d.result.nums,
@@ -151,7 +163,7 @@
                                         position: 'top',
                                         formatter: function(a) {
 
-                                            return a.data+"℃";
+                                            return a.data+(type=='profit'?'￥':'℃');
                                         }
                                     }
                                 }

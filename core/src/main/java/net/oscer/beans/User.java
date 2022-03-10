@@ -421,6 +421,7 @@ public class User extends Entity implements Serializable {
      * @return
      */
     public String _GeneratePwdHash(String input_pwd, User user) {
+        System.out.println(String.format("salt:%s", DigestUtils.shaHex(user.getEmail() + "->" + DigestUtils.shaHex(input_pwd))));
         return DigestUtils.shaHex(user.getEmail() + "->" + DigestUtils.shaHex(input_pwd));
     }
 
@@ -461,6 +462,7 @@ public class User extends Entity implements Serializable {
         if (u != null) {
             return _ValidatePwd(input_pwd, u);
         }
+        System.out.println("用户不存在");
         return false;
     }
 

@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static net.oscer.db.Entity.ONLINE;
 
@@ -60,6 +62,8 @@ public class MyShiroRealm extends AuthorizingRealm {
             throw new DisabledAccountException(msg);
         }
         if (!User.ME._GeneratePwdHashCommonBoolean(password, name)) {
+            System.out.println(String.format("password:%s", password));
+            System.out.println(String.format("name:%s", password));
             if (CacheMgr.exists(LOGIN_COUNT, name)) {
                 login_count = (int) CacheMgr.get(LOGIN_COUNT, name);
             }
@@ -76,7 +80,12 @@ public class MyShiroRealm extends AuthorizingRealm {
         u.setLogin_time(new Date());
         u.setOnline(ONLINE);
         u.setScore(u.getScore());
-        u.doUpdate();
+        //u.doUpdate();
+        Map<String, Object> map = new HashMap<>();
+        map.put("login_time", new Date());
+        map.put("online", ONLINE);
+        map.put("score", u.getScore());
+        u.updateFields(map);
         logger.info("身份认证成功，登录用户:{}", name);
 
         return new SimpleAuthenticationInfo(u, password, getName());

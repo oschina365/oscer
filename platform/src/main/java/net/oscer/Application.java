@@ -1,6 +1,8 @@
 package net.oscer;
 
+import net.oscer.beans.VisitDetail;
 import net.oscer.framework.ConfigTool;
+import net.oscer.server.WebsocketStarter;
 import net.oscer.service.QiNiuApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +44,11 @@ public class Application extends SpringBootServletInitializer {
             public void onStartup(ServletContext servletContext) throws ServletException {
                 new QiNiuApi(ConfigTool.getProp("qiniu.access"), ConfigTool.getProp("qiniu.secret"), ConfigTool.getProp("qiniu.bucket"));
                 logger.info("启动成功");
+                try {
+                    WebsocketStarter.start();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         };
     }

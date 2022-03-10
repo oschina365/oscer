@@ -1,10 +1,15 @@
 package net.oscer.framework;
 
+import com.alibaba.fastjson.JSONObject;
+import net.oscer.beans.User;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.ini4j.Ini;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class LinkTool {
@@ -62,4 +67,57 @@ public class LinkTool {
         return getConfigKey("hosts.properties", key, g);
     }
 
+    public static class Data {
+        private int a;
+        private String b;
+
+        public int getA() {
+            return a;
+        }
+
+        public void setA(int a) {
+            this.a = a;
+        }
+
+        public String getB() {
+            return b;
+        }
+
+        public void setB(String b) {
+            this.b = b;
+        }
+
+        public Data(int a, String b) {
+            this.a = a;
+            this.b = b;
+        }
+    }
+
+  /*  public static void main(String[] args) {
+        List<Data> list = new ArrayList<>();
+        list.add(new Data(1,"1"));
+        list.add(new Data(2,"2"));
+
+        System.out.println(list);
+
+        list.parallelStream().forEach(a->a.setA(3));
+
+        System.out.println(list);
+    }*/
+
+    public static void main(String[] args) {
+        List<Integer> list = new ArrayList<Integer>() {{
+            add(1);
+            add(3);
+            add(5);
+            add(6);
+        }};
+        int total = list.size();
+        long queryTime = (total / 3) + ((total % 3) == 0L ? 0L : 1L);
+        for (int i = 1; i <= queryTime; i++) {
+            List<Integer> ids = list.subList((i - 1) * 3, (i * 3 > total ? total : i * 3));
+            System.out.println(JSONObject.toJSONString(ids));
+            System.out.println(String.format("查询第%s次", i));
+        }
+    }
 }

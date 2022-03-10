@@ -30,4 +30,9 @@ public class TemperatureDAO extends CommonDao<Temperature> {
         String cacheKey = "listByType#" + user + "#" + type;
         CacheMgr.evict(getCache_region(), cacheKey);
     }
+
+    public int sum(long user, String type) {
+        String sql = "select sum(temperature) from temperatures where user=? and type=?";
+        return getDbQuery().stat(sql, user, type);
+    }
 }

@@ -53,6 +53,7 @@ public class ShiroConfig {
 
         Map<String, String> chains = Maps.newHashMap();
         chains.put("/tools/**", "anon");
+        chains.put("/res/**", "anon");
         chains.put("/**", "perms");
         bean.setFilterChainDefinitionMap(chains);
         return bean;

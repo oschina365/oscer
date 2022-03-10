@@ -7,11 +7,12 @@
         </a>
         <ul class="layui-nav fly-nav layui-hide-xs">
             <li class="layui-nav-item layui-this"><a href="/">首页</a></li>
-            <#if login_user?? && login_user.id<=2>
+            <#--<#if login_user?? && login_user.id<=2>
                 <li class="layui-nav-item">
                     <a href="/tw">体温</a>
                 </li>
-            </#if>
+            </#if>-->
+            <li class="layui-nav-item layui-this"><a href="/tweet">动弹广场</a></li>
         </ul>
 
         <ul class="layui-nav fly-nav-user">
