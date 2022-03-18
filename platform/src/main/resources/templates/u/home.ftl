@@ -112,6 +112,7 @@
 <script id="fansTpl" type="text/html">
     {{#  if(d.list!=null&&d.list.length> 0){ }}
     {{#  layui.each(d.list, function(index, item){ }}
+    {{# if(item!=null){ }}
     <li>
         <a href="/u/{{item.id}}" target="_blank" class="fly-avatar" style="left: unset;top: unset;">
             <img src="{{item.headimg}}" alt="{{item.nickname||item.username}}">
@@ -124,7 +125,7 @@
         {{# }}}
         <a class="mine-edit" style="background-color: #24998D;cursor: pointer;" onclick="follow({{item.id}})">
             {{# if(fn(d.currentFans,item.id) ){ }}
-                取消关注
+            取消关注
             {{# }}}
             {{# if(!fn(d.currentFans,item.id) ){ }}
             关注
@@ -132,6 +133,8 @@
         </a>
         <a class="mine-edit" style="background-color: #3366CC;cursor: pointer;" onclick="follow({{item.id}})">私信</a>
     </li>
+    {{# }}}
+
     {{#  }); }}
     {{#} else { }}
     <div class="fly-none">没有相关帖子</div>

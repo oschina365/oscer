@@ -16,12 +16,6 @@
     <url>http://www.oscer.net</url>
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/com.alipay.sdk/alipay-sdk-java -->
-        <dependency>
-            <groupId>com.alipay.sdk</groupId>
-            <artifactId>alipay-sdk-java</artifactId>
-            <version>4.16.2.ALL</version>
-        </dependency>
 
         <dependency>
             <groupId>net.sf.ezmorph</groupId>

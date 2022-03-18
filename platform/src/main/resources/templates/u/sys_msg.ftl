@@ -22,6 +22,7 @@
 <script id="msgTpl" type="text/html">
   {{#  if(d.list!=null&&d.list.length> 0){ }}
   {{#  layui.each(d.list, function(index, item){ }}
+  {{# if(item!=null){ }}
   <li>
     <a href="/u/{{item.receiver.id}}" class="fly-avatar"> <img src="{{item.receiver.headimg}}" alt="{{item.receiver.username}}"> </a>
     <h2><a href="/u/{{item.receiver.id}}" target="_blank">{{item.content}}</a></h2>
@@ -36,6 +37,7 @@
     </div>
 
   </li>
+  {{# }}}
   {{#  }); }}
   {{#} else { }}
   <div class="fly-none">没有相关消息</div>

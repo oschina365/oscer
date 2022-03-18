@@ -1,19 +1,14 @@
 package net.oscer.controller;
 
-import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.plugins.Page;
 import net.oscer.beans.User;
 import net.oscer.common.ApiResult;
 import net.oscer.dao.TweetDAO;
 import net.oscer.view.TweetViewObject;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 

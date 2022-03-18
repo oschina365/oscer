@@ -6,7 +6,6 @@ import net.oscer.common.ApiResult;
 import net.oscer.controller.BaseController;
 import net.oscer.dao.TweetDAO;
 import net.oscer.db.Entity;
-import net.oscer.framework.LinkTool;
 import net.oscer.framework.StringUtils;
 import net.oscer.view.TweetViewObject;
 import org.slf4j.Logger;

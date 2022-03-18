@@ -53,6 +53,9 @@ public class LastMsgDAO extends CommonDao<LastMsg> {
      */
     public int count(long user, int type) {
         String sql = "select count(*) from last_msgs where user=? and type=?";
+        if (true) {
+            return getDbQuery().stat(sql, user, type);
+        }
         return getDbQuery().stat_cache(getCache_region(), "count#" + user + "type#" + type, sql, user, type);
     }
 
@@ -67,7 +70,7 @@ public class LastMsgDAO extends CommonDao<LastMsg> {
      */
     public List<LastMsg> msgs(long user, int type, int page, int size) {
         String sql = "select * from last_msgs where user=? and type=? order by msg_id desc";
-        return getDbQuery().query_slice_cache(LastMsg.class, getCache_region(), "msgs#" + user + "type#" + type, 20, sql,page, size, user,type);
+        return getDbQuery().query_slice_cache(LastMsg.class, getCache_region(), "msgs#" + user + "type#" + type, 20, sql, page, size, user, type);
     }
 
     public void evict(long user, long receiver, int type) {
@@ -98,9 +101,9 @@ public class LastMsgDAO extends CommonDao<LastMsg> {
     public void saveOrUpdate(LastMsg m) {
         String sql = " insert into last_msgs (user,friend,sender,receiver,content,type,source,msg_id,count)  values(?,?,?,?,?,?,?,?,?) on  DUPLICATE key " +
                 "update user=?,friend=?,sender=?,receiver=?,content=?,type=?,source=?,msg_id=?,count=?";
-        int count = MsgDAO.ME.count(m.getSender(),m.getReceiver());
-        getDbQuery().update(sql,m.getUser(),m.getFriend(), m.getSender(), m.getReceiver(), m.getContent(), m.getType(), m.getSource(), m.getMsg_id(),count,
-                m.getUser(),m.getFriend(),m.getSender(), m.getReceiver(), m.getContent(), m.getType(), m.getSource(), m.getMsg_id(),count);
+        int count = MsgDAO.ME.count(m.getSender(), m.getReceiver());
+        getDbQuery().update(sql, m.getUser(), m.getFriend(), m.getSender(), m.getReceiver(), m.getContent(), m.getType(), m.getSource(), m.getMsg_id(), count,
+                m.getUser(), m.getFriend(), m.getSender(), m.getReceiver(), m.getContent(), m.getType(), m.getSource(), m.getMsg_id(), count);
     }
 
 

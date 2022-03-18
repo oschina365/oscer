@@ -13,7 +13,6 @@
     <packaging>jar</packaging>
 
     <name>platform</name>
-    <url>http://www.example.com</url>
 
     <dependencies>
         <dependency>

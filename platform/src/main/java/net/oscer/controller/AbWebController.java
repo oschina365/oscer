@@ -5,10 +5,7 @@ import net.oscer.common.URLConnectionUtil;
 import net.oscer.framework.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -50,6 +47,23 @@ public class AbWebController {
         @Override
         public void run() {
             String str = URLConnectionUtil.sendGet((url), null, null);
+        }
+    }
+
+    public static void main(String[] args) {
+        List<String> urls = new ArrayList<String>(){{
+            add("http://124.222.233.124/api/");
+            add("http://124.222.233.124/api/articles?current=1");
+            add("http://124.222.233.124/api/articles?current=2");
+            add("http://124.222.233.124/api/articles/54");
+            add("http://124.222.233.124/api/comments?current=1&type=1&articleId=54");
+        }};
+        ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(100, 150, 1, TimeUnit.DAYS, new LinkedBlockingQueue<Runnable>());
+        Map<String, String> headerMap = new HashMap<>();
+        for (int i = 0; i < 10000000; i++) {
+            urls.parallelStream().forEach(row -> {
+                poolExecutor.execute(new exec(headerMap, row));
+            });
         }
     }
 

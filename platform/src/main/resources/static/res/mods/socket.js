@@ -1,6 +1,6 @@
 var ws_protocol = 'ws'; // ws 或 wss
 var ip = '114.67.207.123'
-var port = 84
+var port = 8801
 var user = null;
 
 var heartbeatTimeout = 5000; // 心跳超时时间，单位：毫秒

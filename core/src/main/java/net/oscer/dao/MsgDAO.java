@@ -7,6 +7,7 @@ import net.oscer.db.DbQuery;
 import net.oscer.db.TransactionService;
 import net.oscer.framework.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,6 +55,9 @@ public class MsgDAO extends CommonDao<Msg> {
      */
     public int count(long user, long receiver, int type) {
         String sql = "select count(*) from msgs where user=? and friend=?";
+        if (true) {
+            return getDbQuery().stat(sql, user, receiver);
+        }
         return getDbQuery().stat_cache(getCache_region(), "count#" + user + "#" + receiver + "#" + type, sql, user, receiver);
     }
 
@@ -95,7 +99,13 @@ public class MsgDAO extends CommonDao<Msg> {
      */
     public List<Msg> msgs(long user, long receiver, int type, int page, int size) {
         String sql = "select id from msgs where user=? and friend=? and type=? order by id desc";
-        List<Long> ids = getDbQuery().query_slice_cache(long.class, getCache_region(), "msgs#" + user + "#" + receiver + "#" + type, 20, sql, page, size, user, receiver, type);
+        List<Long> ids = new ArrayList<>();
+        if (true) {
+            ids = getDbQuery().query_slice(long.class, sql, page, size, user, receiver, type);
+        } else {
+            ids = getDbQuery().query_slice_cache(long.class, getCache_region(), "msgs#" + user + "#" + receiver + "#" + type, 20, sql, page, size, user, receiver, type);
+        }
+
         return Msg.ME.loadList(ids);
     }
 

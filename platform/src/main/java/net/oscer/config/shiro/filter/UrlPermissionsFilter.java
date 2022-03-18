@@ -3,6 +3,7 @@ package net.oscer.config.shiro.filter;
 
 import net.oscer.beans.Node;
 import net.oscer.beans.User;
+import net.oscer.common.DateUtil;
 import net.oscer.dao.NodeDAO;
 import net.oscer.db.CacheMgr;
 import net.oscer.enums.IpPassEnum;
@@ -21,9 +22,12 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import static net.oscer.common.DateUtil.YYYY_MM_DD_HH_MM_SS;
 
 
 /**
@@ -59,7 +63,7 @@ public class UrlPermissionsFilter extends PermissionsAuthorizationFilter {
         }
 
         if (!StringUtils.startsWith(curUrl, UrlPassEnum.res)) {
-            System.out.println(String.format("访问ip：%s,url: %s", ip, curUrl));
+            System.out.println(String.format("%s,访问ip：%s,url: %s", DateUtil.format(new Date(), YYYY_MM_DD_HH_MM_SS), ip, curUrl));
         }
 
         if (StringUtils.startsWith(curUrl, "/res")) {
@@ -75,6 +79,10 @@ public class UrlPermissionsFilter extends PermissionsAuthorizationFilter {
         }
 
         if (StringUtils.startsWith(curUrl, "/tweet")) {
+            return true;
+        }
+
+        if (StringUtils.startsWith(curUrl, "/auth")) {
             return true;
         }
 

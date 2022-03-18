@@ -1,11 +1,11 @@
 <div class="layui-col-md4">
 
-    <#--<div class="fly-panel">
+    <div class="fly-panel">
         <div class="fly-panel" style="padding: 10px 0; text-align: center;">
-            <img src="/res/images/oscer_wx.jpg" style="max-width: 100%;max-height: 215px;" alt="oscer">
-            <p style="position: relative; color: #999;">扫码体验小程序</p>
+            <img src="/res/images/mr2.jpg" style="max-width: 100%;max-height: 215px;" alt="oscer">
+            <p style="position: relative; color: #999;">支付宝扫码领取红包</p>
         </div>
-    </div>-->
+    </div>
 
     <div class="fly-panel">
         <div class="fly-panel" style="padding: 10px 0; text-align: center;">

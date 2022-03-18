@@ -90,6 +90,7 @@
           
           <div class="layui-form layui-form-pane layui-tab-item">
             <ul class="app-bind">
+              <#if froms ??>
               <#list froms as form>
                 <li class="fly-msg app-havebind">
                 <#if form=='osc'>
@@ -111,7 +112,7 @@
                  </#if>
                 </li>
               </#list>
-
+              </#if>
             </ul>
           </div>
         </div>

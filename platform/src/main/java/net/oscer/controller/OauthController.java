@@ -214,8 +214,8 @@ public class OauthController extends BaseController {
         String state = RandomStringUtils.randomAlphanumeric(10);
         deleteCookie(SOCIAL_AUTH_KEY, false);
         cookie(SOCIAL_AUTH_KEY, state, -1, false);
-        redirect(OscOpenAuth.getAuthorizeUrl(AFTER_BIND_OSC));
         CacheMgr.set(SOCIAL_AUTH_CACHE, "OSC#" + state, state);
+        redirect(OscOpenAuth.getAuthorizeUrl(AFTER_BIND_OSC));
     }
 
     private void doBindGitee() throws Exception {
@@ -226,9 +226,9 @@ public class OauthController extends BaseController {
             e.printStackTrace();
         }
 
+        CacheMgr.set(SOCIAL_AUTH_CACHE, "GITEE#" + state, state);
         cookie(SOCIAL_AUTH_KEY, state, -1, false);
         redirect(GiteeOpenAuth.getAuthorizeUrl(AFTER_BIND_GITEE));
-        CacheMgr.set(SOCIAL_AUTH_CACHE, "GITEE#" + state, state);
     }
 
     @GetMapping("/after_bind_osc")
