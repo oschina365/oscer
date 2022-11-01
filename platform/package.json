@@ -34,7 +34,7 @@
     "expand-range": "^2.0.0",
     "expand-tilde": "^2.0.2",
     "extend-shallow": "^2.0.1",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.2",
     "gulp-cdn-replace": "^0.6.0",
     "gulp-imagemin": "^4.1.0",
     "gulp-qndn": "0.0.4",
