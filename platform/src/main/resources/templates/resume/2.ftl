@@ -150,11 +150,25 @@
                 <ul>
                     <li>
                         <h3>
+                            <span>安徽知托付信息技术有限公司（武汉研发中心）</span>
+                            <span class="link">
+                                <a href="https://www.oschina.net/" target="_blank">中皖知托付</a>
+                            </span>
+                            <time>2021.04-至今</time>
+                        </h3>
+                        <ul class="info-content">
+                            <li>安徽知托付信息技术有限公司
+                            </li>
+                            <li>负责公司支付宝小程序的所有业务开发与对接</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <h3>
                             <span>深圳市奥思网络科技有限公司</span>
                             <span class="link">
                                 <a href="https://www.oschina.net/" target="_blank">开源中国</a>
                             </span>
-                            <time>2018.05-至今</time>
+                            <time>2018.05-2021.03</time>
                         </h3>
                         <ul class="info-content">
                             <li>深度参与<mark><a href="https://www.oschina.net" target="_blank">开源中国社区</a></mark>项目改版后端开发工作，独立承担并完成
