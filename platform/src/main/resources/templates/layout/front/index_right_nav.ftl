@@ -2,13 +2,6 @@
 
     <div class="fly-panel">
         <div class="fly-panel" style="padding: 10px 0; text-align: center;">
-            <img src="/res/images/mr2.jpg" style="max-width: 100%;max-height: 215px;" alt="oscer">
-            <p style="position: relative; color: #999;">支付宝扫码领取红包</p>
-        </div>
-    </div>
-
-    <div class="fly-panel">
-        <div class="fly-panel" style="padding: 10px 0; text-align: center;">
             <#include '../../tweet/tweet_push.ftl'/>
             <#include '../../tweet/tweet_slide.ftl'/>
             <#include '../../tweet/tweet_list.ftl'/>
@@ -92,9 +85,9 @@
     <div class="fly-panel fly-link">
         <h3 class="fly-panel-title">友情链接</h3>
         <dl class="fly-panel-main">
-            <dd><a href="http://www.layui.com" target="_blank">layui</a>
-            <dd>
             <dd><a href="https://www.oschina.net" target="_blank">开源中国</a>
+            <dd>
+            <dd><a href="https://www.zhyd.me" title="一个程序员的个人博客，心之所向，无所不能" target="_blank">张亚东博客</a>
             <dd>
             <#--<dd><a href="" class="fly-link">申请友链</a>-->
             <dd>

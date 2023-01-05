@@ -18,3 +18,4 @@
     <script src="/res/mods/tiohandler.js"></script>
     <script src="/res/mods/tiows.js"></script>
     <script src="/res/mods/socket.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2501658715901884" crossorigin="anonymous"></script>
